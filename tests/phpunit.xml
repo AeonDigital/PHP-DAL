@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+    colors="true" verbose="true" stopOnFailure="false"
+    bootstrap="phpunit.php">
+
+    <!--
+        Todos os endereços de arquivos e diretórios são relativos ao 
+        diretório no qual o PHP unit foi iniciado, ou aquele onde está
+        o arquivo de configuração "phpunit.xml".
+    -->
+
+    <testsuites>
+        <testsuite name="AeonDigital-DAL">
+            <!--
+                Defina aqui cada arquivo de testes que será utilizado.
+            -->
+            <file>src/aConnectionTest.php</file>
+            <file>src/DALTest.php</file>
+        </testsuite>
+    </testsuites>
+    <filter>
+       <whitelist processUncoveredFilesFromWhitelist="true">
+            <!--
+                Defina aqui cada diretório de projeto que será
+                avaliado em um teste de cobertura.
+            -->
+            <directory>../src</directory>
+        </whitelist>
+    </filter>
+</phpunit>

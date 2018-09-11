@@ -1,0 +1,38 @@
+{
+    "name": "aeondigital/phpdal",
+    "description": "Provê uma camada de acesso à bancos de dados.",
+    "type": "library",
+    "minimum-stability": "stable",
+    "license": "GPL-3.0-or-later",
+    "require": {
+        "php": ">=7.1.14"
+    },
+    "require-dev": {
+        "php": ">=7.1.14"
+    },
+    "authors": [
+        {
+            "name": "Rianna Cantarelli",
+            "email": "rianna.aeon@gmail.com",
+            "homepage": "http://aeondigital.com.br",
+            "role": "developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AeonDigital\\DAL\\": "/src"
+        }
+    },
+    "keywords": [
+        "data",
+        "access",
+        "layer",
+        "dal",
+        "database",
+        "base",
+        "insert",
+        "update",
+        "delete",
+        "pdo"
+    ]
+}
