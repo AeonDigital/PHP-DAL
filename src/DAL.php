@@ -3,8 +3,8 @@ declare (strict_types = 1);
 
 namespace AeonDigital\DAL;
 
-use AeonDigital\DAL\Interfaces\iConnection as iConnection;
-
+use AeonDigital\Numbers\RealNumber as RealNumber;
+use AeonDigital\DAL\Interfaces\iDAL as iDAL;
 
 
 
@@ -21,7 +21,7 @@ use AeonDigital\DAL\Interfaces\iConnection as iConnection;
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
  * @copyright   GNUv3
  */
-class Connection implements iConnection
+class DAL implements iDAL
 {
 
 
@@ -35,14 +35,17 @@ class Connection implements iConnection
      */
     private $dbConnection = null;
     /**
-     * Retorna o objeto "dbConnection" desta instância.
+     * Retorna um objeto clone do 
+     * "dbConnection" desta instância.
      *
      * @return       PDO
      */
-    public function getConnection() : \PDO
+    public function getCloneConnection() : \PDO
     {
-        return $this->dbConnection;
+        return clone $this->dbConnection;
     }
+
+
 
 
 
@@ -53,6 +56,8 @@ class Connection implements iConnection
      * @type        PDOStatement
      */
     private $dbPreparedStatment = null;
+
+
 
 
 
@@ -74,7 +79,6 @@ class Connection implements iConnection
     }
 
 
-
     /**
      * Host da conexão com o banco de dados.
      *
@@ -90,7 +94,6 @@ class Connection implements iConnection
     { 
         return $this->dbHost; 
     }
-
 
 
     /**
@@ -124,7 +127,7 @@ class Connection implements iConnection
      * Substitui a conexão desta instância pela
      * do objeto passado.
      *
-     * @param       iConnection $oConnection
+     * @param       iDAL $oConnection
      *              Objeto que contêm a conexão que passará a ser
      *              usada por esta instância.
      * 
@@ -132,9 +135,9 @@ class Connection implements iConnection
      * 
      * @codeCoverageIgnore
      */
-    public function replaceConnection(iConnection $oConnection) : void
+    public function replaceConnection(iDAL $oConnection) : void
     {
-        $this->dbConnection         = $oConnection->getConnection();
+        $this->dbConnection         = $oConnection->getCloneConnection();
         $this->dbPreparedStatment   = null;
         $this->dbType               = $oConnection->getDBType();
         $this->dbHost               = $oConnection->getDBHost();
@@ -196,7 +199,6 @@ class Connection implements iConnection
     }
 
 
-
     /**
      * Executa uma instrução SQL e retorna os dados obtidos.
      *
@@ -209,18 +211,128 @@ class Connection implements iConnection
      * 
      * @return      ?array
      */
-    public function executeQuery(string $strSQL, ?array $parans = null) : ?array
+    public function getDataTable(string $strSQL, ?array $parans = null) : ?array
     {
         $r = $this->executeInstruction($strSQL, $parans);
-        $rset = [];
+        $dataTable = [];
         if ($r === true) {
-            $rset = $this->dbPreparedStatment->fetchAll(\PDO::FETCH_ASSOC);
+            $dataTable = $this->dbPreparedStatment->fetchAll(\PDO::FETCH_ASSOC);
         }
-        return (($rset === []) ? null : $rset);
+        return (($dataTable === []) ? null : $dataTable);
     }
 
 
+    /**
+     * Executa uma instrução SQL e retorna apenas a primeira linha
+     * de dados obtidos.
+     *
+     * @param       string $strSQL
+     *              Instrução a ser executada.
+     * 
+     * @param       ?array $parans
+     *              Array associativo contendo as chaves e respectivos
+     *              valores que serão substituídos na instrução SQL.
+     * 
+     * @return      ?array
+     */
+    public function getDataRow(string $strSQL, ?array $parans = null) : ?array
+    {
+        $dataRow = $this->getDataTable($strSQL, $parans);
+        if ($dataRow !== null) {
+            $dataRow = $dataRow[0];
+        }
+        return $dataRow;
+    }
 
+
+    /**
+     * Executa uma instrução SQL e retorna apenas a coluna da primeira linha
+     * de dados obtidos.
+     * O valor "null" será retornado caso a consulta não traga resultados.
+     *
+     * @param       string $strSQL
+     *              Instrução a ser executada.
+     * 
+     * @param       ?array $parans
+     *              Array associativo contendo as chaves e respectivos
+     *              valores que serão substituídos na instrução SQL.
+     * 
+     * @param       string $castTo
+     *              Indica o tipo que o valor resgatado deve ser retornado
+     *              Esperado: "bool", "int", "float", "real", "datetime", "string".
+     * 
+     * @return      ?mixed
+     */
+    function getDataColumn(string $strSQL, ?array $parans = null, string $castTo = "string")
+    {
+        $r = null;
+        $dataRow = $this->getDataRow($strSQL, $parans);
+        
+        if ($dataRow !== null) {
+            $r = $dataRow[key($dataRow)];
+
+            // @codeCoverageIgnoreStart  
+            if($r !== null) {
+                switch(strtolower($castTo)) {
+                    case "bool":
+                    case "boolean":
+                        $r = (bool)$r;
+                        break;
+
+                    case "int":
+                    case "integer":
+                        $r = (int)$r;
+                        break;
+
+                    case "float":
+                    case "double":
+                        $r = (float)$r;
+                        break;
+
+                    case "real":
+                    case "decimal":
+                        $r = new RealNumber($r);
+
+                    case "datetime":
+                        $r = \DateTime::createFromFormat("Y-m-d H:i:s", $r);
+                        break;
+
+                    case "string":
+                        $r = (string)$r;
+                        break;
+                }
+            }
+            // @codeCoverageIgnoreEnd
+        }
+
+        return $r;
+    }
+
+
+    /**
+     * Efetua uma consulta SQL do tipo "COUNT" e retorna seu resultado.
+     * A consulta passada deve sempre trazer o resultado da contagem em 
+     * um "alias" chamado "count".
+     * 
+     * @example
+     * > SELECT COUNT(id) as count FROM TargetTable WHERE column=:column;
+     *
+     * @param       string $strSQL
+     *              Instrução a ser executada.
+     * 
+     * @param       ?array $parans
+     *              Array associativo contendo as chaves e respectivos
+     *              valores que serão substituídos na instrução SQL.
+     * 
+     * @return      int
+     * 
+     * @codeCoverageIgnore
+     */
+    public function getCountOf(string $strSQL, ?array $parans = null) : int
+    {
+        $r = $this->getDataColumn($strSQL, $parans, "int");
+        return (($r === null) ? 0 : $r);
+    }
 
 
     /**
@@ -236,7 +348,6 @@ class Connection implements iConnection
     }
 
 
-
     /**
      * Retorna a quantidade de linhas afetadas pela
      * última instrução SQL executada ou a quantidade
@@ -248,7 +359,6 @@ class Connection implements iConnection
     {
         return $this->dbPreparedStatment->rowCount();
     }
-
 
 
     /**
@@ -272,15 +382,70 @@ class Connection implements iConnection
     }
 
 
-
     /**
      * Retorna o último ID inserido na última instrução.
      *
      * @return      ?int
      */
-    function getLastInsertId() : ?int
+    public function getLastInsertId() : ?int
     {
         return (($this->isExecuted() === true) ? (int)$this->dbConnection->lastInsertId() : null);
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Indica se o modo de transação está aberto.
+     *
+     * @return      bool
+     */
+    public function inTransaction() : bool
+    {
+        return $this->dbConnection->inTransaction();
+    }
+
+
+    /**
+     * Inicia o modo de transação, dando ao desenvolvedor
+     * a responsabilidade de efetuar o commit ou rollback conforme
+     * a necessidade.
+     *
+     * @return      bool
+     */
+    public function beginTransaction() : bool
+    {
+        return $this->dbConnection->beginTransaction();
+    }
+
+
+    /**
+     * Efetiva as transações realizadas desde que o modo 
+     * de transação foi aberto.
+     *
+     * @return      bool
+     */
+    public function commit() : bool
+    {
+        return $this->dbConnection->commit();
+    }
+
+
+    /**
+     * Efetua o rollback das transações feitas desde que o 
+     * modo de transação foi aberto.
+     *
+     * @return      bool
+     */
+    public function rollBack() : bool
+    {
+        return $this->dbConnection->rollBack();
     }
 
 

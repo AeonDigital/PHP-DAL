@@ -6,7 +6,7 @@
 $rootDir = realpath(__DIR__ . "/..");
 $srcDir = $rootDir . "/src";
 
-require_once $srcDir . "/Interfaces/iConnection.php";
-require_once $srcDir . "/Connection.php";
+require_once $srcDir . "/Interfaces/iDAL.php";
+require_once $srcDir . "/DAL.php";
 //require_once $srcDir . "/DAL.php";
 //require_once $srcDir . "/ParseQualityHeaders.php";

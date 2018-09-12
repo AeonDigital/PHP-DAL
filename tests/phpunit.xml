@@ -16,7 +16,6 @@
             <!--
                 Defina aqui cada arquivo de testes que será utilizado.
             -->
-            <file>src/aConnectionTest.php</file>
             <file>src/DALTest.php</file>
         </testsuite>
     </testsuites>
