@@ -23,7 +23,7 @@
     "autoload": {
         "psr-4": {
             "AeonDigital\\DAL\\": "/src",
-            "AeonDigital\\DAL\\Interfaces": "/src/Interfaces"
+            "AeonDigital\\DAL\\Interfaces\\": "/src/Interfaces"
         }
     },
     "keywords": [
