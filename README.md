@@ -15,7 +15,7 @@ Provê uma camada de acesso à bancos de dados.
 ## AeonDigital\DAL\DAL
 Classe principal do projeto. Permite efetuar uma conexão com um banco de dados usando o PDO do PHP e simplifica o uso do mesmo para as operações mais comuns de uso.  
 
-**Métodos referentes às propriedades da conexão**
+**Métodos referentes às propriedades da conexão**  
 
   - `getCloneConnection`    : Retorna um clone da conexão atual.
   - `getDBType`             : Retorna o tipo do banco de dados usado nesta conexão.
@@ -25,7 +25,7 @@ Classe principal do projeto. Permite efetuar uma conexão com um banco de dados 
 
 &nbsp; 
 
-**Métodos de execução de instruções SQL**
+**Métodos de execução de instruções SQL**  
 
   - `executeInstruction`    : Efetua a execução de uma instrução SQL.
   - `getDataTable`          : Efetua uma consulta SQL e retorna seu resultado.
@@ -39,7 +39,7 @@ Classe principal do projeto. Permite efetuar uma conexão com um banco de dados 
 
 &nbsp; 
 
-**Métodos referentes ao uso de Transaction**
+**Métodos referentes ao uso de Transaction**  
 Quando ativo o desenvolvedor deve definir quando a instrução SQL deve ser firmada no banco de dados ou quando deve ser efetuado o rollback ao estado anterior ao modo transaction iniciar.
 
   - `inTransaction`         : Indica se a conexão está em modo "transaction".
