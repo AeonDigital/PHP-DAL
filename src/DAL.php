@@ -414,15 +414,20 @@ class DAL implements iDAL
 
 
 
+
+
+
+
+
     /**
-     * Efetua a contagem de registros existentes na tabela de 
-     * dados indicada.
+     * Efetua a contagem da totalidade de registros existentes 
+     * na tabela de dados indicada.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
      * 
      * @param       string $pkName
-     *              Nome da chave primária a ser usada.
+     *              Nome da chave primária da tabela.
      *
      * @return      int
      */
@@ -432,6 +437,54 @@ class DAL implements iDAL
         return $this->getCountOf($strSQL);
     }
 
+
+
+
+
+    /**
+     * Efetua a contagem de registros existentes na tabela de dados indicada
+     * que corresponda com o valor passado para a coluna indicada.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $colName
+     *              Nome da coluna a ser usada.
+     * 
+     * @param       mixed $colValue
+     *              Valor a ser pesquisado.
+     * 
+     * @return      bool
+     */
+    function countRowsWith(string $tablename, string $colName, $colValue) : int
+    {
+        $strSQL = "SELECT COUNT($colName) as count FROM $tablename WHERE $colName=:$colName;";
+        return $this->getCountOf($strSQL, ["$colName" => $colValue]);
+    }
+
+
+
+
+
+    /**
+     * Verifica se existe na tabela de dados indicada um ou mais registros
+     * que possua na coluna indicada o valor passado.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $colName
+     *              Nome da coluna a ser usada.
+     * 
+     * @param       mixed $colValue
+     *              Valor a ser pesquisado.
+     * 
+     * @return      bool
+     */
+    public function hasRowsWith(string $tablename, string $colName, $colValue) : bool
+    {
+        return ($this->countRowsWith($tablename, $colName, $colValue) > 0);
+    }
 
 
 

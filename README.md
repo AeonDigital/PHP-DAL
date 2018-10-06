@@ -42,6 +42,8 @@ Classe principal do projeto. Permite efetuar uma conexão com um banco de dados 
 
   - `getLastPK`             : Retorna o último Id (PrimaryKey com AutoIncrement) definido na tabela alvo.
   - `countRowsFrom`         : Efetua a contagem de registros existentes na tabela alvo.
+  - `countRowsWith`         : Efetua a contagem de registros existentes com o valor passado.
+  - `hasRowsWith`           : Identifica se existe ao menos 1 registro na tabela alvo com o valor passado.
   - `insertInto`            : Insere um novo registro na tabela alvo.
   - `updateSet`             : Atualiza um novo registro na tabela alvo.
   - `insertOrUpdate`        : Insere ou atualiza o registro passado na tabela alvo.

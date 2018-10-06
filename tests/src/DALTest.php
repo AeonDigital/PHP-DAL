@@ -173,7 +173,8 @@ class DALTest extends TestCase
 
 
     //
-    // executeInstruction | getDataTable | isExecuted | countAffectedRows | getLastError
+    // executeInstruction | getDataTable | getDataRow | getDataColumn | getCountOf
+    // isExecuted | countAffectedRows | getLastError
     //
 
     public function test_methods_for_executeinstructions()
@@ -185,10 +186,13 @@ class DALTest extends TestCase
         $strSQL = "DELETE FROM user;";
         $r = $obj->executeInstruction($strSQL);
         $this->assertTrue($r);
+        $this->assertSame(0, $obj->getCountOf("SELECT COUNT(id) as count FROM user;"));
 
         $strSQL = "ALTER TABLE user AUTO_INCREMENT = 500;";
         $r = $obj->executeInstruction($strSQL);
         $this->assertTrue($r);
+
+        
 
 
 
@@ -210,6 +214,7 @@ class DALTest extends TestCase
         $this->assertNull($obj->getLastError());
         $this->assertSame(1, $obj->countAffectedRows());
         $this->assertSame(500, $obj->getLastPK("user", "Id"));
+        $this->assertSame(1, $obj->getCountOf("SELECT COUNT(id) as count FROM user;"));
 
 
 
@@ -365,7 +370,8 @@ class DALTest extends TestCase
 
 
     //
-    //  countRowsFrom | insertInto | updateSet | insertOrUpdate | selectFrom | deleteFrom
+    // getLastPK | countRowsFrom | countRowsWith | hasRowsWith 
+    // insertInto | updateSet | insertOrUpdate | selectFrom | deleteFrom
     //
 
     public function test_methods_for_crud() 
@@ -419,7 +425,42 @@ class DALTest extends TestCase
         $this->assertSame($parans["register"]->format("Y-m-d H:i:s"), $rowData["register"]);
 
 
+
+        $parans = [
+            "firstname" => "user02",
+            "lastname"  => "ln01",
+            "email"     => "email01",
+            "active"    => true,
+            "register"  => new DateTime()
+        ];
+        $r = $obj->insertOrUpdate("user", $parans, "id");
+        $this->assertTrue($r);
+        $this->assertSame(2, $obj->countRowsFrom("user", "id"));
+
+        $parans = [
+            "firstname" => "user03",
+            "lastname"  => "ln03",
+            "email"     => "email03",
+            "active"    => false,
+            "register"  => new DateTime()
+        ];
+        $r = $obj->insertOrUpdate("user", $parans, "id");
+        $this->assertTrue($r);
+        $this->assertSame(3, $obj->countRowsFrom("user", "id"));
+
+
+        $this->assertSame(2, $obj->countRowsWith("user", "lastname", "ln01"));
+        $this->assertSame(1, $obj->countRowsWith("user", "firstname", "user02"));
+        $this->assertSame(2, $obj->countRowsWith("user", "active", true));
+        $this->assertTrue($obj->hasRowsWith("user", "email", "email03"));
+
+
         $r = $obj->deleteFrom("user", "id", $id);
+        $this->assertTrue($r);
+        $this->assertSame(2, $obj->countRowsFrom("user", "id"));
+
+        $strSQL = "DELETE FROM user;";
+        $r = $obj->executeInstruction($strSQL);
         $this->assertTrue($r);
         $this->assertSame(0, $obj->countRowsFrom("user", "id"));
     }
