@@ -35,7 +35,18 @@ Classe principal do projeto. Permite efetuar uma conexão com um banco de dados 
   - `isExecuted`            : Indica se a última instrução SQL foi executada sem erros.
   - `countAffectedRows`     : Indica a quantidade total de linhas afetadas pela última instrução SQL.
   - `getLastError`          : Retorna uma mensagem de erro para a última instrução SQL executada (se ela tiver falhado).
-  - `getLastInsertId`       : Retorna o último Id (PrimaryKey com AutoIncrement) definido apenas se a última instrução SQL foi bem sucedida.
+
+&nbsp; 
+
+**Métodos CRUD e especializados**  
+
+  - `getLastPK`             : Retorna o último Id (PrimaryKey com AutoIncrement) definido na tabela alvo.
+  - `countRowsFrom`         : Efetua a contagem de registros existentes na tabela alvo.
+  - `insertInto`            : Insere um novo registro na tabela alvo.
+  - `updateSet`             : Atualiza um novo registro na tabela alvo.
+  - `insertOrUpdate`        : Insere ou atualiza o registro passado na tabela alvo.
+  - `selectFrom`            : Seleciona as colunas definidas para o registro de PK indicada.
+  - `deleteFrom`            : Exclui um registro da tabela alvo que tenha a PK indicada.
 
 &nbsp; 
 

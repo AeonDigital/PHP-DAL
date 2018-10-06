@@ -170,6 +170,9 @@ interface iDAL
     function getCountOf(string $strSQL, ?array $parans = null) : int;
 
 
+
+
+
     /**
      * Indica se a última instrução foi corretamente
      * executada.
@@ -198,12 +201,141 @@ interface iDAL
     function getLastError() : ?string;
 
 
+
+
+
     /**
-     * Retorna o último ID inserido na última instrução.
+     * Retorna o último valor definido para o último registro
+     * inserido na tabela de dado alvo.
+     * 
+     * Tem efeito sobre chaves primárias do tipo AUTO INCREMENT.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
      *
      * @return      ?int
      */
-    function getLastInsertId() : ?int;
+    function getLastPK(string $tableName, string $pkName) : ?int;
+
+
+
+
+
+    /**
+     * Efetua a contagem de registros existentes na tabela de 
+     * dados indicada.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     *
+     * @return      int
+     */
+    function countRowsFrom(string $tableName, string $pkName) : int;
+
+
+
+    /**
+     * Efetua uma instrução "INSERT INTO" na tabela de dados alvo
+     * para cada um dos itens existentes no array associativo passado.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       array $rowData
+     *              Array associativo mapeando colunas e valores a serem
+     *              utilizados na intrução SQL.
+     * 
+     * @return      bool
+     */
+    function insertInto(string $tableName, array $rowData) : bool;
+
+
+    /**
+     * Efetua uma instrução "UPDATE SET" na tabela de dados alvo
+     * para cada um dos itens existentes no array associativo passado.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       array $rowData
+     *              Array associativo mapeando colunas e valores a serem
+     *              utilizados na intrução SQL.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     *              Seu respectivo valor deve estar entre aqueles constantes
+     *              em "$rowData".
+     * 
+     * @return      bool
+     */
+    function updateSet(string $tableName, array $rowData, string $pkName) : bool;
+
+
+    /**
+     * Efetua uma instrução "INSERT INTO" ou "UPDATE SET" conforme a existência
+     * ou não da chave primária entre os dados passados para uso na instrução SQL.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       array $rowData
+     *              Array associativo mapeando colunas e valores a serem
+     *              utilizados na intrução SQL.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     * 
+     * @return      bool
+     */
+    function insertOrUpdate(string $tableName, array $rowData, string $pkName) : bool;
+
+
+    /**
+     * Seleciona 1 unica linha de registro da tabela de dados alvo a partir
+     * da chave primária indicada e retorna um array associativo contendo cada
+     * uma das colunas de dados indicados.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     * 
+     * @param       int $pk
+     *              Valor da chave primária.
+     * 
+     * @param       ?array $columnNames
+     *              Array contendo o nome de cada uma das colunas de
+     *              dados a serem retornadas. Usando "null" todas serão
+     *              retornadas.
+     * 
+     * @return      ?array
+     */
+    function selectFrom(string $tableName, string $pkName, int $pk, ?array $columnNames = null) : ?array;
+
+
+    /**
+     * Efetua uma instrução "DELETE FROM" para a tabela de dados alvo
+     * usando o nome e valor da chave primária definida.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     * 
+     * @param       int $pk
+     *              Valor da chave primária.
+     * 
+     * @return      bool
+     */
+    function deleteFrom(string $tableName, string $pkName = null, int $pk = null) : bool;
 
 
 

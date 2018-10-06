@@ -263,7 +263,7 @@ class DAL implements iDAL
      * 
      * @return      ?mixed
      */
-    function getDataColumn(string $strSQL, ?array $parans = null, string $castTo = "string")
+    public function getDataColumn(string $strSQL, ?array $parans = null, string $castTo = "string")
     {
         $r = null;
         $dataRow = $this->getDataRow($strSQL, $parans);
@@ -382,16 +382,207 @@ class DAL implements iDAL
     }
 
 
+
+
+
+
+
+
+
+
     /**
-     * Retorna o último ID inserido na última instrução.
+     * Retorna o último valor definido para o último registro
+     * inserido na tabela de dado alvo.
+     * 
+     * Tem efeito sobre chaves primárias do tipo AUTO INCREMENT.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
      *
      * @return      ?int
      */
-    public function getLastInsertId() : ?int
+    public function getLastPK(string $tableName, string $pkName) : ?int
     {
-        return (($this->isExecuted() === true) ? (int)$this->dbConnection->lastInsertId() : null);
+        $strSQL = "SELECT $pkName FROM $tableName ORDER BY $pkName DESC;";
+        return $this->getDataColumn($strSQL, null, "int");
     }
 
+
+
+
+
+    /**
+     * Efetua a contagem de registros existentes na tabela de 
+     * dados indicada.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     *
+     * @return      int
+     */
+    public function countRowsFrom(string $tableName, string $pkName) : int
+    {
+        $strSQL = "SELECT COUNT($pkName) as count FROM $tableName;";
+        return $this->getCountOf($strSQL);
+    }
+
+
+
+
+
+    /**
+     * Efetua uma instrução "INSERT INTO" na tabela de dados alvo
+     * para cada um dos itens existentes no array associativo passado.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       array $rowData
+     *              Array associativo mapeando colunas e valores a serem
+     *              utilizados na intrução SQL.
+     * 
+     * @return      bool
+     */
+    public function insertInto(string $tableName, array $rowData) : bool
+    {
+        $columnNames    = array_keys($rowData);
+
+        $strColumns     = implode(", ", $columnNames);
+        $strValues      = ":" . implode(", :", $columnNames);
+
+        $strSQL         = "INSERT INTO $tableName ($strColumns) VALUES ($strValues);";
+        return $this->executeInstruction($strSQL, $rowData);
+    }
+
+
+
+
+
+    /**
+     * Efetua uma instrução "UPDATE SET" na tabela de dados alvo
+     * para cada um dos itens existentes no array associativo passado.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       array $rowData
+     *              Array associativo mapeando colunas e valores a serem
+     *              utilizados na intrução SQL.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     *              Seu respectivo valor deve estar entre aqueles constantes
+     *              em "$rowData".
+     * 
+     * @return      bool
+     */
+    public function updateSet(string $tableName, array $rowData, string $pkName) : bool
+    {
+        $columnNames = array_keys($rowData);
+        $strParans = [];
+        foreach ($columnNames as $key) {
+            if ($key !== $pkName) {
+                $strParans[] = $key . "=:" . $key;
+            }
+        }
+        $strParans = implode(", ", $strParans);
+
+        $strSQL = "UPDATE $tableName SET $strParans WHERE $pkName=:$pkName;";
+        return $this->executeInstruction($strSQL, $rowData);
+    }
+
+
+
+
+
+    /**
+     * Efetua uma instrução "INSERT INTO" ou "UPDATE SET" conforme a existência
+     * ou não da chave primária entre os dados passados para uso na instrução SQL.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       array $rowData
+     *              Array associativo mapeando colunas e valores a serem
+     *              utilizados na intrução SQL.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     * 
+     * @return      bool
+     * 
+     * @codeCoverageIgnore
+     */
+    public function insertOrUpdate(string $tableName, array $rowData, string $pkName) : bool
+    {
+        if (key_exists($pkName, $rowData) === false) {
+            return $this->insertInto($tableName, $rowData);
+        } else {
+            return $this->updateSet($tableName, $rowData, $pkName);
+        }
+    }
+
+
+
+
+
+    /**
+     * Seleciona 1 unica linha de registro da tabela de dados alvo a partir
+     * da chave primária indicada e retorna um array associativo contendo cada
+     * uma das colunas de dados indicados.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     * 
+     * @param       int $pk
+     *              Valor da chave primária.
+     * 
+     * @param       ?array $columnNames
+     *              Array contendo o nome de cada uma das colunas de
+     *              dados a serem retornadas. Usando "null" todas serão
+     *              retornadas.
+     * 
+     * @return      ?array
+     */
+    public function selectFrom(string $tableName, string $pkName, int $pk, ?array $columnNames = null) : ?array
+    {
+        $strColumns = ((is_array($columnNames) === true) ? implode(", ", $columnNames) : "*");
+        $strSQL = "SELECT $strColumns FROM $tableName WHERE $pkName=:$pkName;";
+        return $this->getDataRow($strSQL, ["$pkName" => $pk]);
+    }
+
+
+
+
+    /**
+     * Efetua uma instrução "DELETE FROM" para a tabela de dados alvo
+     * usando o nome e valor da chave primária definida.
+     *
+     * @param       string $tableName
+     *              Nome da tabela de dados.
+     * 
+     * @param       string $pkName
+     *              Nome da chave primária a ser usada.
+     * 
+     * @param       int $pk
+     *              Valor da chave primária.
+     * 
+     * @return      bool
+     */
+    public function deleteFrom(string $tableName, string $pkName = null, int $pk = null) : bool
+    {
+        $strSQL = "DELETE FROM $tableName WHERE $pkName=:$pkName;";
+        return $this->executeInstruction($strSQL, ["$pkName" => $pk]);
+    }
 
 
 
@@ -527,7 +718,9 @@ class DAL implements iDAL
                 $this->dbConnection->exec($sttm);
             }
         } else {
+            // @codeCoverageIgnoreStart  
             $this->replaceConnection($oConnection);
+            // @codeCoverageIgnoreEnd
         }
     }
 }

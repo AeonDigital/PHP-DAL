@@ -56,10 +56,12 @@ class DALTest extends TestCase
         $rset = $obj->getDataTable($strSQL);
 
         if ($rset !== null) {
+            $obj->executeInstruction("SET FOREIGN_KEY_CHECKS=0;");
             foreach ($rset as $row) {
                 $dbName = $row["Tables_in_test"];
                 $obj->executeInstruction("DROP TABLE $dbName;");
             }
+            $obj->executeInstruction("SET FOREIGN_KEY_CHECKS=1;");
         }
 
         $strSQL = "SHOW TABLES;";
@@ -89,7 +91,7 @@ class DALTest extends TestCase
 
 
 
-    public function test_constructor_fails()
+    public function test_constructor_fails_invalid_database()
     {
         $fail = false;
         try {
@@ -104,6 +106,26 @@ class DALTest extends TestCase
         } catch (\Exception $ex) {
             $fail = true;
             $this->assertSame("SQLSTATE[HY000] [1049] Unknown database 'invaliddatabase'", $ex->getMessage());
+        }
+        $this->assertTrue($fail, "Test must fail");
+    }
+
+
+    public function test_constructor_fails_invalid_dbtype()
+    {
+        $fail = false;
+        try {
+            $con = $this->provider_connection_credentials();
+
+            $obj = new DAL(
+                "invalidDbType",
+                $con["dbHost"],
+                $con["dbName"],
+                $con["dbUserName"],
+                $con["dbUserPassword"]);
+        } catch (\Exception $ex) {
+            $fail = true;
+            $this->assertSame("Invalid DataBase Type [\"invalidDbType\"].", $ex->getMessage());
         }
         $this->assertTrue($fail, "Test must fail");
     }
@@ -187,7 +209,7 @@ class DALTest extends TestCase
         $this->assertTrue($obj->isExecuted());
         $this->assertNull($obj->getLastError());
         $this->assertSame(1, $obj->countAffectedRows());
-        $this->assertSame(500, $obj->getLastInsertId());
+        $this->assertSame(500, $obj->getLastPK("user", "Id"));
 
 
 
@@ -271,7 +293,7 @@ class DALTest extends TestCase
         $this->assertTrue($obj->isExecuted());
         $this->assertNull($obj->getLastError());
         $this->assertSame(1, $obj->countAffectedRows());
-        $this->assertSame(500, $obj->getLastInsertId());
+        $this->assertSame(500, $obj->getLastPK("user", "Id"));
 
 
         $strSQL = "SELECT firstname, email, active FROM user WHERE id=500;";
@@ -320,7 +342,7 @@ class DALTest extends TestCase
         $this->assertTrue($obj->isExecuted());
         $this->assertNull($obj->getLastError());
         $this->assertSame(1, $obj->countAffectedRows());
-        $this->assertSame(500, $obj->getLastInsertId());
+        $this->assertSame(500, $obj->getLastPK("user", "Id"));
 
 
         $strSQL = "SELECT register FROM user WHERE id=500;";
@@ -337,6 +359,69 @@ class DALTest extends TestCase
         $r = $obj->getDataColumn($strSQL, null, "int");
         $this->assertTrue(is_int($r));
         $this->assertSame(500, $r);
+    }
+
+
+
+
+    //
+    //  countRowsFrom | insertInto | updateSet | insertOrUpdate | selectFrom | deleteFrom
+    //
+
+    public function test_methods_for_crud() 
+    {
+        $obj = $this->provider_connection();
+
+
+        $strSQL = "DELETE FROM user;";
+        $r = $obj->executeInstruction($strSQL);
+        $this->assertTrue($r);
+
+        $strSQL = "ALTER TABLE user AUTO_INCREMENT = 500;";
+        $r = $obj->executeInstruction($strSQL);
+        $this->assertTrue($r);
+        $this->assertSame(0, $obj->countRowsFrom("user", "id"));
+
+
+        $parans = [
+            "firstname" => "user01",
+            "lastname"  => "ln01",
+            "email"     => "email01",
+            "active"    => true,
+            "register"  => new DateTime()
+        ];
+        $r = $obj->insertOrUpdate("user", $parans, "id");
+        $this->assertTrue($r);
+        $this->assertSame(1, $obj->countRowsFrom("user", "id"));
+
+
+        $id = $obj->getLastPK("user", "id");
+        $this->assertSame(500, $id);
+
+        $parans["id"] = $id;
+        $parans["firstname"] = "user01 alter name";
+        $parans["email"] = "emailalter";
+        $r = $obj->insertOrUpdate("user", $parans, "id");
+        $this->assertTrue($r);
+        $this->assertSame(1, $obj->countRowsFrom("user", "id"));
+
+        $rowData = $obj->selectFrom("user", "id", $id);
+        $this->assertTrue(key_exists("id", $rowData));
+        $this->assertTrue(key_exists("lastname", $rowData));
+        $this->assertTrue(key_exists("email", $rowData));
+        $this->assertTrue(key_exists("active", $rowData));
+        $this->assertTrue(key_exists("register", $rowData));
+        
+        $this->assertSame($id, (int)$rowData["id"]);
+        $this->assertSame($parans["firstname"], $rowData["firstname"]);
+        $this->assertSame($parans["email"], $rowData["email"]);
+        $this->assertSame((int)$parans["active"], (int)$rowData["active"]);
+        $this->assertSame($parans["register"]->format("Y-m-d H:i:s"), $rowData["register"]);
+
+
+        $r = $obj->deleteFrom("user", "id", $id);
+        $this->assertTrue($r);
+        $this->assertSame(0, $obj->countRowsFrom("user", "id"));
     }
 
 
@@ -380,7 +465,7 @@ class DALTest extends TestCase
         ];
         $r = $obj->executeInstruction($strSQL, $parans);
         $this->assertTrue($r);
-        $this->assertSame(500, $obj->getLastInsertId());
+        $this->assertSame(500, $obj->getLastPK("user", "Id"));
 
 
 
@@ -393,7 +478,7 @@ class DALTest extends TestCase
         ];
         $r = $obj->executeInstruction($strSQL, $parans);
         $this->assertTrue($r);
-        $this->assertSame(501, $obj->getLastInsertId());
+        $this->assertSame(501, $obj->getLastPK("user", "Id"));
 
 
 
@@ -431,7 +516,7 @@ class DALTest extends TestCase
         ];
         $r = $obj->executeInstruction($strSQL, $parans);
         $this->assertTrue($r);
-        $this->assertSame(502, $obj->getLastInsertId());
+        $this->assertSame(502, $obj->getLastPK("user", "Id"));
 
 
 
@@ -444,7 +529,7 @@ class DALTest extends TestCase
         ];
         $r = $obj->executeInstruction($strSQL, $parans);
         $this->assertTrue($r);
-        $this->assertSame(503, $obj->getLastInsertId());
+        $this->assertSame(503, $obj->getLastPK("user", "Id"));
 
 
         $obj->commit();
