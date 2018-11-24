@@ -12,7 +12,7 @@
     -->
 
     <testsuites>
-        <testsuite name="AeonDigital-DAL">
+        <testsuite name="AeonDigital-PHP-DAL">
             <!--
                 Defina aqui cada arquivo de testes que será utilizado.
             -->

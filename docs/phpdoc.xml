@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <phpdoc>
-    <title><![CDATA[PHP DAL]]></title>
+    <title><![CDATA[AeonDigital-PHP-DAL]]></title>
     <parser>
         <target>.</target>
         <encoding>utf8</encoding>
