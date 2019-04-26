@@ -16,7 +16,7 @@ namespace AeonDigital\DAL\Interfaces;
  * Interface básica para conexões.
  * 
  * @package     AeonDigital\DAL
- * @version     0.9.0 [alpha]
+ * @version     v0.2.1-alpha
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
  * @copyright   GNUv3
  */
@@ -252,7 +252,7 @@ interface iDAL
      * @param       mixed $colValue
      *              Valor a ser pesquisado.
      * 
-     * @return      bool
+     * @return      int
      */
     function countRowsWith(string $tablename, string $colName, $colValue) : int;
 

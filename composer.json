@@ -1,8 +1,8 @@
 {
     "name": "aeondigital/phpdal",
     "description": "Provê uma camada de acesso à bancos de dados.",
-    "version": "v0.2.0-alpha",
-    "time": "2019-03-05",
+    "version": "v0.2.1-alpha",
+    "time": "2019-04-25",
     "type": "library",
     "license": "GPL-3.0-or-later",
     "authors": [

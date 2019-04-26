@@ -17,7 +17,7 @@ use AeonDigital\DAL\Interfaces\iDAL as iDAL;
  * o PDO do PHP.
  * 
  * @package     AeonDigital\DAL
- * @version     0.9.0 [alpha]
+ * @version     v0.2.1-alpha
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
  * @copyright   GNUv3
  */
@@ -176,11 +176,11 @@ class DAL implements iDAL
                 $val = $value;
 
                 // Trata dados de tipos especiais
-                if(is_bool($value)) { 
+                if(is_bool($value) === true) { 
                     if($value === true) { $val = 1; }
                     else { $val = 0; }
                 }
-                else if(is_a($value, "\DateTime")) {
+                else if(is_a($value, "\DateTime") === true) {
                     $val = $value->format("Y-m-d H:i:s");
                 }
 
@@ -454,7 +454,7 @@ class DAL implements iDAL
      * @param       mixed $colValue
      *              Valor a ser pesquisado.
      * 
-     * @return      bool
+     * @return      int
      */
     function countRowsWith(string $tablename, string $colName, $colValue) : int
     {
