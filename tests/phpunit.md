@@ -98,14 +98,3 @@ Se você é novato no uso do PHPUnit pode ser importante estar ciente das sequin
   > // @codeCoverageIgnoreStart  
   >  ...  
   > // @codeCoverageIgnoreEnd
-
-
-&nbsp;  
-&nbsp;  
-
-_______________________________________________________________________________________________________________________
-
-# Menu
-  - [README](../README.md)
-  - [PHPUnit](../tests/phpunit.md)
-  - [PHPDoc](../docs/phpdoc.md)
