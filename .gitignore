@@ -1,9 +1,6 @@
-# Arquivos e Locais que devem ser ignorados pelo git
-docs/*
-!docs/phpdoc.md
-!docs/phpdoc.xml
-!docs/phpDocModel.php
+# Arquivos e Diretórios que devem ser ignorados pelo git
+docs/rest
 vendor
 tests/cover
-_config.yml
 composer.lock
+apphost.config

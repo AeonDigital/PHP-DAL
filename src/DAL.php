@@ -17,9 +17,9 @@ use AeonDigital\DAL\Interfaces\iDAL as iDAL;
  * o PDO do PHP.
  * 
  * @package     AeonDigital\DAL
- * @version     v0.2.1-alpha
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
- * @copyright   GNUv3
+ * @license     GNUv3
+ * @copyright   Aeon Digital
  */
 class DAL implements iDAL
 {

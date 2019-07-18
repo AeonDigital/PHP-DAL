@@ -1,8 +1,8 @@
 {
     "name": "aeondigital/phpdal",
     "description": "Provê uma camada de acesso à bancos de dados.",
-    "version": "v0.2.1-alpha",
-    "time": "2019-04-25",
+    "version": "v0.2.3-alpha",
+    "time": "2019-07-17",
     "type": "library",
     "license": "GPL-3.0-or-later",
     "authors": [
@@ -19,14 +19,17 @@
         "aeondigital/phpnumbers": ">=v0.2.0-alpha"
     },
     "require-dev": {
-        "php": ">=7.1.14",
-        "aeondigital/phpnumbers": ">=v0.2.0-alpha"
+        "aeondigital/phpdoc-to-rst": "dev-master"
     },
     "autoload": {
-        "psr-4": {
-            "AeonDigital\\DAL\\": "/src",
-            "AeonDigital\\DAL\\Interfaces\\": "/src/Interfaces"
-        }
+        "classmap": [
+            "src/"
+        ]
+    },
+    "autoload-dev": {
+        "classmap": [
+            "src/"
+        ]
     },
     "keywords": [
         "data",

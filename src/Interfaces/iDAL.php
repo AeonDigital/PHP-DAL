@@ -16,9 +16,9 @@ namespace AeonDigital\DAL\Interfaces;
  * Interface básica para conexões.
  * 
  * @package     AeonDigital\DAL
- * @version     v0.2.1-alpha
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
- * @copyright   GNUv3
+ * @license     GNUv3
+ * @copyright   Aeon Digital
  */
 interface iDAL
 {
