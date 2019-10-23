@@ -183,6 +183,9 @@ class DAL implements iDAL
                 else if(is_a($value, "\DateTime") === true) {
                     $val = $value->format("Y-m-d H:i:s");
                 }
+                else if(is_a($value, RealNumber::class) === true) {
+                    $val = $value->format(4, ".", "");
+                }
 
                 $this->dbPreparedStatment->bindValue(":" . $key, $val);
             }
