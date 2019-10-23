@@ -292,6 +292,7 @@ class DAL implements iDAL
                     case "real":
                     case "decimal":
                         $r = new RealNumber($r);
+                        break;
 
                     case "datetime":
                         $r = \DateTime::createFromFormat("Y-m-d H:i:s", $r);
