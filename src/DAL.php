@@ -13,13 +13,12 @@ use AeonDigital\DAL\Interfaces\iDAL as iDAL;
 
 
 /**
- * Classe que permite o acesso a um banco de dados utilizando
- * o PDO do PHP.
+ * Classe que permite o acesso a um banco de dados utilizando o PDO do PHP.
  * 
  * @package     AeonDigital\DAL
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
- * @license     GNUv3
- * @copyright   Aeon Digital
+ * @copyright   2020, Rianna Cantarelli
+ * @license     ADPL-v1.0
  */
 class DAL implements iDAL
 {
@@ -31,14 +30,13 @@ class DAL implements iDAL
     /**
      * Conexão com o banco de dados.
      * 
-     * @type        ?PDO
+     * @type        ?\PDO
      */
     private $dbConnection = null;
     /**
-     * Retorna um objeto clone do 
-     * "dbConnection" desta instância.
+     * Retorna um objeto clone do ``dbConnection`` desta instância.
      *
-     * @return       PDO
+     * @return       \PDO
      */
     public function getCloneConnection() : \PDO
     {
@@ -50,8 +48,8 @@ class DAL implements iDAL
 
 
     /**
-     * Objeto que carrega uma instrução SQL a ser
-     * executada conforme os parametros indicados.
+     * Objeto que carrega uma instrução SQL a ser executada conforme os parametros 
+     * indicados.
      * 
      * @type        PDOStatement
      */
@@ -63,7 +61,7 @@ class DAL implements iDAL
 
     /**
      * Tipo do banco de dados utilizado.
-     * Suporta os tipos : "mysql", "mssqlserver", "oracle", "postgree".
+     * Suporta os tipos : ``mysql``, ``mssqlserver``, ``oracle``, ``postgree``.
      * 
      * @type        string
      */
@@ -104,8 +102,7 @@ class DAL implements iDAL
      */
     private $dbName = null;
     /**
-     * Retorna o nome do banco de dados que esta conexão 
-     * está apta a acessar.
+     * Retorna o nome do banco de dados que esta conexão está apta a acessar.
      *
      * @return      string
      */
@@ -124,15 +121,13 @@ class DAL implements iDAL
 
 
     /**
-     * Substitui a conexão desta instância pela
-     * do objeto passado.
+     * Substitui a conexão desta instância pela do objeto passado.
      *
      * @param       iDAL $oConnection
-     *              Objeto que contêm a conexão que passará a ser
-     *              usada por esta instância.
+     *              Objeto que contêm a conexão que passará a ser usada por esta instância.
      * 
      * @return      void
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function replaceConnection(iDAL $oConnection) : void
@@ -160,8 +155,8 @@ class DAL implements iDAL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @return      bool
      */
@@ -209,8 +204,8 @@ class DAL implements iDAL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @return      ?array
      */
@@ -226,15 +221,14 @@ class DAL implements iDAL
 
 
     /**
-     * Executa uma instrução SQL e retorna apenas a primeira linha
-     * de dados obtidos.
+     * Executa uma instrução SQL e retorna apenas a primeira linha de dados obtidos.
      *
      * @param       string $strSQL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @return      ?array
      */
@@ -249,20 +243,19 @@ class DAL implements iDAL
 
 
     /**
-     * Executa uma instrução SQL e retorna apenas a coluna da primeira linha
-     * de dados obtidos.
-     * O valor "null" será retornado caso a consulta não traga resultados.
+     * Executa uma instrução SQL e retorna apenas a coluna da primeira linha de dados 
+     * obtidos. O valor ``null`` será retornado caso a consulta não traga resultados.
      *
      * @param       string $strSQL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @param       string $castTo
-     *              Indica o tipo que o valor resgatado deve ser retornado
-     *              Esperado: "bool", "int", "float", "real", "datetime", "string".
+     *              Indica o tipo que o valor resgatado deve ser retornado.
+     *              Esperado: ``bool``, ``int``, ``float``, ``real``, ``datetime``, ``string``.
      * 
      * @return      ?mixed
      */
@@ -314,22 +307,22 @@ class DAL implements iDAL
 
 
     /**
-     * Efetua uma consulta SQL do tipo "COUNT" e retorna seu resultado.
-     * A consulta passada deve sempre trazer o resultado da contagem em 
-     * um "alias" chamado "count".
+     * Efetua uma consulta SQL do tipo ``COUNT`` e retorna seu resultado.
+     * A consulta passada deve sempre trazer o resultado da contagem em um ``alias`` chamado ``count``.
      * 
-     * @example
-     * > SELECT COUNT(id) as count FROM TargetTable WHERE column=:column;
+     * ``` sql
+     *      SELECT COUNT(id) as count FROM TargetTable WHERE column=:column;
+     * ```
      *
      * @param       string $strSQL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @return      int
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function getCountOf(string $strSQL, ?array $parans = null) : int
@@ -340,8 +333,7 @@ class DAL implements iDAL
 
 
     /**
-     * Indica se a última instrução foi corretamente
-     * executada.
+     * Indica se a última instrução foi corretamente executada.
      *
      * @return      bool
      */
@@ -353,9 +345,8 @@ class DAL implements iDAL
 
 
     /**
-     * Retorna a quantidade de linhas afetadas pela
-     * última instrução SQL executada ou a quantidade
-     * de linhas retornadas pela mesma
+     * Retorna a quantidade de linhas afetadas pela última instrução SQL executada ou a 
+     * quantidade de linhas retornadas pela mesma.
      *
      * @return      int
      */
@@ -366,15 +357,14 @@ class DAL implements iDAL
 
 
     /**
-     * Armazena o último erro ocorrido após uma instrução
-     * SQL ter falhado.
+     * Armazena o último erro ocorrido após uma instrução SQL ter falhado.
      *
      * @var         ?string
      */
     private $pdoLastError = null;
     /**
-     * Retorna a mensagem de erro referente a última instrução 
-     * SQL executada. Não havendo erro, retorna NULL.
+     * Retorna a mensagem de erro referente a última instrução SQL executada. Não 
+     * havendo erro, retorna ``null``.
      *
      * @return      ?string
      */
@@ -395,10 +385,9 @@ class DAL implements iDAL
 
 
     /**
-     * Retorna o último valor definido para o último registro
-     * inserido na tabela de dado alvo.
-     * 
-     * Tem efeito sobre chaves primárias do tipo AUTO INCREMENT.
+     * Retorna o último valor definido para o último registro inserido na tabela de dado 
+     * alvo.
+     * Tem efeito sobre chaves primárias do tipo ``AUTO INCREMENT``.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -424,8 +413,7 @@ class DAL implements iDAL
 
 
     /**
-     * Efetua a contagem da totalidade de registros existentes 
-     * na tabela de dados indicada.
+     * Efetua a contagem da totalidade de registros existentes na tabela de dados indicada.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -446,8 +434,8 @@ class DAL implements iDAL
 
 
     /**
-     * Efetua a contagem de registros existentes na tabela de dados indicada
-     * que corresponda com o valor passado para a coluna indicada.
+     * Efetua a contagem de registros existentes na tabela de dados indicada que 
+     * corresponda com o valor passado para a coluna indicada.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -471,8 +459,8 @@ class DAL implements iDAL
 
 
     /**
-     * Verifica se existe na tabela de dados indicada um ou mais registros
-     * que possua na coluna indicada o valor passado.
+     * Verifica se existe na tabela de dados indicada um ou mais registros que possua na 
+     * coluna indicada o valor passado.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -494,15 +482,15 @@ class DAL implements iDAL
 
 
     /**
-     * Efetua uma instrução "INSERT INTO" na tabela de dados alvo
-     * para cada um dos itens existentes no array associativo passado.
+     * Efetua uma instrução ``INSERT INTO`` na tabela de dados alvo para cada um dos 
+     * itens existentes no array associativo passado.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
      * 
      * @param       array $rowData
-     *              Array associativo mapeando colunas e valores a serem
-     *              utilizados na intrução SQL.
+     *              Array associativo mapeando colunas e valores a serem utilizados na 
+     *              intrução SQL.
      * 
      * @return      bool
      */
@@ -522,20 +510,19 @@ class DAL implements iDAL
 
 
     /**
-     * Efetua uma instrução "UPDATE SET" na tabela de dados alvo
-     * para cada um dos itens existentes no array associativo passado.
+     * Efetua uma instrução ``UPDATE SET`` na tabela de dados alvo para cada um dos 
+     * itens existentes no array associativo passado.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
      * 
      * @param       array $rowData
-     *              Array associativo mapeando colunas e valores a serem
-     *              utilizados na intrução SQL.
+     *              Array associativo mapeando colunas e valores a serem utilizados na 
+     *              intrução SQL.
      * 
      * @param       string $pkName
      *              Nome da chave primária a ser usada.
-     *              Seu respectivo valor deve estar entre aqueles constantes
-     *              em "$rowData".
+     *              Seu respectivo valor deve estar entre aqueles constantes em ``$rowData``.
      * 
      * @return      bool
      */
@@ -559,21 +546,21 @@ class DAL implements iDAL
 
 
     /**
-     * Efetua uma instrução "INSERT INTO" ou "UPDATE SET" conforme a existência
-     * ou não da chave primária entre os dados passados para uso na instrução SQL.
+     * Efetua uma instrução ``INSERT INTO`` ou ``UPDATE SET`` conforme a existência ou não 
+     * da chave primária entre os dados passados para uso na instrução SQL.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
      * 
      * @param       array $rowData
-     *              Array associativo mapeando colunas e valores a serem
-     *              utilizados na intrução SQL.
+     *              Array associativo mapeando colunas e valores a serem utilizados na 
+     *              intrução SQL.
      * 
      * @param       string $pkName
      *              Nome da chave primária a ser usada.
      * 
      * @return      bool
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function insertOrUpdate(string $tableName, array $rowData, string $pkName) : bool
@@ -590,9 +577,9 @@ class DAL implements iDAL
 
 
     /**
-     * Seleciona 1 unica linha de registro da tabela de dados alvo a partir
-     * da chave primária indicada e retorna um array associativo contendo cada
-     * uma das colunas de dados indicados.
+     * Seleciona 1 única linha de registro da tabela de dados alvo a partir da chave 
+     * primária indicada e retorna um array associativo contendo cada uma das colunas 
+     * de dados indicados.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -604,9 +591,8 @@ class DAL implements iDAL
      *              Valor da chave primária.
      * 
      * @param       ?array $columnNames
-     *              Array contendo o nome de cada uma das colunas de
-     *              dados a serem retornadas. Usando "null" todas serão
-     *              retornadas.
+     *              Array contendo o nome de cada uma das colunas de dados a serem retornadas. 
+     *              Usando ``null`` todas serão retornadas.
      * 
      * @return      ?array
      */
@@ -621,8 +607,8 @@ class DAL implements iDAL
 
 
     /**
-     * Efetua uma instrução "DELETE FROM" para a tabela de dados alvo
-     * usando o nome e valor da chave primária definida.
+     * Efetua uma instrução ``DELETE FROM`` para a tabela de dados alvo usando o nome e 
+     * valor da chave primária definida.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -661,9 +647,8 @@ class DAL implements iDAL
 
 
     /**
-     * Inicia o modo de transação, dando ao desenvolvedor
-     * a responsabilidade de efetuar o commit ou rollback conforme
-     * a necessidade.
+     * Inicia o modo de transação, dando ao desenvolvedor a responsabilidade de efetuar 
+     * o commit ou rollback conforme a necessidade.
      *
      * @return      bool
      */
@@ -674,8 +659,7 @@ class DAL implements iDAL
 
 
     /**
-     * Efetiva as transações realizadas desde que o modo 
-     * de transação foi aberto.
+     * Efetiva as transações realizadas desde que o modo de transação foi aberto.
      *
      * @return      bool
      */
@@ -686,8 +670,7 @@ class DAL implements iDAL
 
 
     /**
-     * Efetua o rollback das transações feitas desde que o 
-     * modo de transação foi aberto.
+     * Efetua o rollback das transações feitas desde que o modo de transação foi aberto.
      *
      * @return      bool
      */
@@ -710,7 +693,7 @@ class DAL implements iDAL
      *
      * @param       string $dbType
      *              Tipo do banco de dados.
-     *              Esperao um dos tipos: "mysql", "mssqlserver", "oracle", "postgree".
+     *              Esperao um dos tipos: ``mysql``, ``mssqlserver``, ``oracle``, ``postgree``.
      * 
      * @param       string $dbHost
      *              Host da conexão com o banco de dados.
@@ -719,15 +702,14 @@ class DAL implements iDAL
      *              Nome da base de dados à qual a conexão será feita.
      * 
      * @param       string $dbUserName
-     *              Credencial "user" para a efetuar a conexão.
+     *              Credencial ``user`` para a efetuar a conexão.
      *              
      * @param       string $dbUserPassword
-     *              Credencial "password" para efetuar a conexão.
+     *              Credencial ``password`` para efetuar a conexão.
      * 
      * @param       ?string $dbConnectionString
      *              String de conexão a ser usada.
-     *              Se não for definida, usará as regras internas para contruir
-     *              uma.
+     *              Se não for definida, usará as regras internas para contruir uma.
      * 
      * @param       ?iConnection $oConnection
      *              Instância de um objeto que terá sua conexão compartilhada

@@ -13,12 +13,12 @@ namespace AeonDigital\DAL\Interfaces;
 
 
 /**
- * Interface básica para conexões.
+ * Interface básica para conexões com bancos de dados.
  * 
  * @package     AeonDigital\DAL
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
- * @license     GNUv3
- * @copyright   Aeon Digital
+ * @copyright   2020, Rianna Cantarelli
+ * @license     ADPL-v1.0
  */
 interface iDAL
 {
@@ -28,10 +28,9 @@ interface iDAL
 
 
     /**
-     * Retorna um objeto clone do 
-     * "dbConnection" desta instância.
+     * Retorna um objeto clone do ``dbConnection`` desta instância.
      *
-     * @return       PDO
+     * @return       \PDO
      */
     function getCloneConnection() : \PDO;
 
@@ -56,8 +55,7 @@ interface iDAL
 
 
     /**
-     * Retorna o nome do banco de dados que esta conexão 
-     * está apta a acessar.
+     * Retorna o nome do banco de dados que esta conexão está apta a acessar.
      *
      * @return      string
      */
@@ -68,12 +66,10 @@ interface iDAL
 
 
     /**
-     * Substitui a conexão desta instância pela
-     * do objeto passado.
+     * Substitui a conexão desta instância pela do objeto passado.
      *
      * @param       iDAL $oConnection
-     *              Objeto que contêm a conexão que passará a ser
-     *              usada por esta instância.
+     *              Objeto que contêm a conexão que passará a ser usada por esta instância.
      * 
      * @return      void
      */
@@ -90,8 +86,8 @@ interface iDAL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @return      bool
      */
@@ -105,8 +101,8 @@ interface iDAL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @return      ?array
      */
@@ -114,15 +110,14 @@ interface iDAL
 
 
     /**
-     * Executa uma instrução SQL e retorna apenas a primeira linha
-     * de dados obtidos.
+     * Executa uma instrução SQL e retorna apenas a primeira linha de dados obtidos.
      *
      * @param       string $strSQL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @return      ?array
      */
@@ -130,20 +125,19 @@ interface iDAL
 
 
     /**
-     * Executa uma instrução SQL e retorna apenas a coluna da primeira linha
-     * de dados obtidos.
-     * O valor "null" será retornado caso a consulta não traga resultados.
+     * Executa uma instrução SQL e retorna apenas a coluna da primeira linha de dados 
+     * obtidos. O valor ``null`` será retornado caso a consulta não traga resultados.
      *
      * @param       string $strSQL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @param       string $castTo
-     *              Indica o tipo que o valor resgatado deve ser retornado
-     *              Esperado: "bool", "int", "float", "real", "datetime", "string".
+     *              Indica o tipo que o valor resgatado deve ser retornado.
+     *              Esperado: ``bool``, ``int``, ``float``, ``real``, ``datetime``, ``string``.
      * 
      * @return      ?mixed
      */
@@ -151,19 +145,19 @@ interface iDAL
 
 
     /**
-     * Efetua uma consulta SQL do tipo "COUNT" e retorna seu resultado.
-     * A consulta passada deve sempre trazer o resultado da contagem em 
-     * um "alias" chamado "count".
+     * Efetua uma consulta SQL do tipo ``COUNT`` e retorna seu resultado.
+     * A consulta passada deve sempre trazer o resultado da contagem em um ``alias`` chamado ``count``.
      * 
-     * @example
-     * > SELECT COUNT(id) as count FROM TargetTable WHERE column=:column;
+     * ``` sql
+     *      SELECT COUNT(id) as count FROM TargetTable WHERE column=:column;
+     * ```
      *
      * @param       string $strSQL
      *              Instrução a ser executada.
      * 
      * @param       ?array $parans
-     *              Array associativo contendo as chaves e respectivos
-     *              valores que serão substituídos na instrução SQL.
+     *              Array associativo contendo as chaves e respectivos valores que serão 
+     *              substituídos na instrução SQL.
      * 
      * @return      int
      */
@@ -174,8 +168,7 @@ interface iDAL
 
 
     /**
-     * Indica se a última instrução foi corretamente
-     * executada.
+     * Indica se a última instrução foi corretamente executada.
      *
      * @return      bool
      */
@@ -183,9 +176,8 @@ interface iDAL
 
 
     /**
-     * Retorna a quantidade de linhas afetadas pela
-     * última instrução SQL executada ou a quantidade
-     * de linhas retornadas pela mesma
+     * Retorna a quantidade de linhas afetadas pela última instrução SQL executada ou a 
+     * quantidade de linhas retornadas pela mesma.
      *
      * @return      int
      */
@@ -193,8 +185,8 @@ interface iDAL
 
 
     /**
-     * Retorna a mensagem de erro referente a última instrução 
-     * SQL executada. Não havendo erro, retorna NULL.
+     * Retorna a mensagem de erro referente a última instrução SQL executada. Não 
+     * havendo erro, retorna ``null``.
      *
      * @return      ?string
      */
@@ -205,10 +197,9 @@ interface iDAL
 
 
     /**
-     * Retorna o último valor definido para o último registro
-     * inserido na tabela de dado alvo.
-     * 
-     * Tem efeito sobre chaves primárias do tipo AUTO INCREMENT.
+     * Retorna o último valor definido para o último registro inserido na tabela de dado 
+     * alvo.
+     * Tem efeito sobre chaves primárias do tipo ``AUTO INCREMENT``.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -225,8 +216,7 @@ interface iDAL
 
 
     /**
-     * Efetua a contagem da totalidade de registros existentes 
-     * na tabela de dados indicada.
+     * Efetua a contagem da totalidade de registros existentes na tabela de dados indicada.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -240,8 +230,8 @@ interface iDAL
 
 
     /**
-     * Efetua a contagem de registros existentes na tabela de dados indicada
-     * que corresponda com o valor passado para a coluna indicada.
+     * Efetua a contagem de registros existentes na tabela de dados indicada que 
+     * corresponda com o valor passado para a coluna indicada.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -258,8 +248,8 @@ interface iDAL
 
 
     /**
-     * Verifica se existe na tabela de dados indicada um ou mais registros
-     * que possua na coluna indicada o valor passado.
+     * Verifica se existe na tabela de dados indicada um ou mais registros que possua na 
+     * coluna indicada o valor passado.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -276,15 +266,15 @@ interface iDAL
 
 
     /**
-     * Efetua uma instrução "INSERT INTO" na tabela de dados alvo
-     * para cada um dos itens existentes no array associativo passado.
+     * Efetua uma instrução ``INSERT INTO`` na tabela de dados alvo para cada um dos 
+     * itens existentes no array associativo passado.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
      * 
      * @param       array $rowData
-     *              Array associativo mapeando colunas e valores a serem
-     *              utilizados na intrução SQL.
+     *              Array associativo mapeando colunas e valores a serem utilizados na 
+     *              intrução SQL.
      * 
      * @return      bool
      */
@@ -292,20 +282,19 @@ interface iDAL
 
 
     /**
-     * Efetua uma instrução "UPDATE SET" na tabela de dados alvo
-     * para cada um dos itens existentes no array associativo passado.
+     * Efetua uma instrução ``UPDATE SET`` na tabela de dados alvo para cada um dos 
+     * itens existentes no array associativo passado.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
      * 
      * @param       array $rowData
-     *              Array associativo mapeando colunas e valores a serem
-     *              utilizados na intrução SQL.
+     *              Array associativo mapeando colunas e valores a serem utilizados na 
+     *              intrução SQL.
      * 
      * @param       string $pkName
      *              Nome da chave primária a ser usada.
-     *              Seu respectivo valor deve estar entre aqueles constantes
-     *              em "$rowData".
+     *              Seu respectivo valor deve estar entre aqueles constantes em ``$rowData``.
      * 
      * @return      bool
      */
@@ -313,15 +302,15 @@ interface iDAL
 
 
     /**
-     * Efetua uma instrução "INSERT INTO" ou "UPDATE SET" conforme a existência
-     * ou não da chave primária entre os dados passados para uso na instrução SQL.
+     * Efetua uma instrução ``INSERT INTO`` ou ``UPDATE SET`` conforme a existência ou não 
+     * da chave primária entre os dados passados para uso na instrução SQL.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
      * 
      * @param       array $rowData
-     *              Array associativo mapeando colunas e valores a serem
-     *              utilizados na intrução SQL.
+     *              Array associativo mapeando colunas e valores a serem utilizados na 
+     *              intrução SQL.
      * 
      * @param       string $pkName
      *              Nome da chave primária a ser usada.
@@ -332,9 +321,9 @@ interface iDAL
 
 
     /**
-     * Seleciona 1 unica linha de registro da tabela de dados alvo a partir
-     * da chave primária indicada e retorna um array associativo contendo cada
-     * uma das colunas de dados indicados.
+     * Seleciona 1 única linha de registro da tabela de dados alvo a partir da chave 
+     * primária indicada e retorna um array associativo contendo cada uma das colunas 
+     * de dados indicados.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -346,9 +335,8 @@ interface iDAL
      *              Valor da chave primária.
      * 
      * @param       ?array $columnNames
-     *              Array contendo o nome de cada uma das colunas de
-     *              dados a serem retornadas. Usando "null" todas serão
-     *              retornadas.
+     *              Array contendo o nome de cada uma das colunas de dados a serem retornadas. 
+     *              Usando ``null`` todas serão retornadas.
      * 
      * @return      ?array
      */
@@ -356,8 +344,8 @@ interface iDAL
 
 
     /**
-     * Efetua uma instrução "DELETE FROM" para a tabela de dados alvo
-     * usando o nome e valor da chave primária definida.
+     * Efetua uma instrução ``DELETE FROM`` para a tabela de dados alvo usando o nome e 
+     * valor da chave primária definida.
      *
      * @param       string $tableName
      *              Nome da tabela de dados.
@@ -385,9 +373,8 @@ interface iDAL
 
 
     /**
-     * Inicia o modo de transação, dando ao desenvolvedor
-     * a responsabilidade de efetuar o commit ou rollback conforme
-     * a necessidade.
+     * Inicia o modo de transação, dando ao desenvolvedor a responsabilidade de efetuar 
+     * o commit ou rollback conforme a necessidade.
      *
      * @return      bool
      */
@@ -395,8 +382,7 @@ interface iDAL
 
 
     /**
-     * Efetiva as transações realizadas desde que o modo 
-     * de transação foi aberto.
+     * Efetiva as transações realizadas desde que o modo de transação foi aberto.
      *
      * @return      bool
      */
@@ -404,8 +390,7 @@ interface iDAL
 
 
     /**
-     * Efetua o rollback das transações feitas desde que o 
-     * modo de transação foi aberto.
+     * Efetua o rollback das transações feitas desde que o modo de transação foi aberto.
      *
      * @return      bool
      */
