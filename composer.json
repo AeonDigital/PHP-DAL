@@ -1,10 +1,9 @@
 {
     "name": "aeondigital/phpdal",
     "description": "Provê uma camada de acesso à bancos de dados.",
-    "version": "v0.2.3-alpha",
-    "time": "2019-07-17",
+    "version": "v0.3.0-alpha",
+    "time": "2020-01-11",
     "type": "library",
-    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Rianna Cantarelli",
