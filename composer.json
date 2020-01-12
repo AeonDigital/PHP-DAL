@@ -15,7 +15,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.1.14",
-        "aeondigital/phpnumbers": ">=v0.2.0-alpha"
+        "aeondigital/phpnumbers": ">=v0.3.0-alpha"
     },
     "require-dev": {
         "aeondigital/phpdoc-to-rst": "dev-master"
