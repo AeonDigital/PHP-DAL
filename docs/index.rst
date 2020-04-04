@@ -41,28 +41,12 @@ Instale em seu projeto usando o composer:
 
 _______________________________________________________________________________
 
-Guia de Uso
------------
-
-.. toctree::
-	:maxdepth: 6
-	
-    Guia de uso <guia/Inicio>
-	
-	
-Namespaces
-----------
-
-.. toctree::
-	:maxdepth: 6
-	
-	Interfaces <Interfaces/index>
-
-
-Classes 
+Classes
 -------
 
 .. toctree::
 	:maxdepth: 6
-	
-	DAL <DAL>
+
+	DAL <AeonDigital/DAL/index>
+	DataModel <AeonDigital/DataModel/index>
+	ORM <AeonDigital/ORM/index>

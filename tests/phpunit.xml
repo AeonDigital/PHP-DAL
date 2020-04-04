@@ -6,7 +6,7 @@
     bootstrap="phpunit.php">
 
     <!--
-        Todos os endereços de arquivos e diretórios são relativos ao 
+        Todos os endereços de arquivos e diretórios são relativos ao
         diretório no qual o PHP unit foi iniciado, ou aquele onde está
         o arquivo de configuração "phpunit.xml".
     -->
@@ -17,6 +17,21 @@
                 Defina aqui cada arquivo de testes que será utilizado.
             -->
             <file>src/DALTest.php</file>
+
+            <file>src/DataModel/t01FieldTest.php</file>
+            <file>src/DataModel/t02FieldCollectionTest.php</file>
+            <file>src/DataModel/t03ModelTest.php</file>
+            <file>src/DataModel/t04ModelFactory_SimpleFieldsTest.php</file>
+            <file>src/DataModel/t05FieldModelTest.php</file>
+            <file>src/DataModel/t06FieldModelCollectionTest.php</file>
+            <file>src/DataModel/t07ComplexFieldModelCollectionTest.php</file>
+
+            <file>src/ORM/t01DataColumnTest.php</file>
+            <file>src/ORM/t02DataTableTest.php</file>
+            <file>src/ORM/t03DataTableFactoryTest.php</file>
+            <file>src/ORM/t04DataColumnFKTest.php</file>
+            <file>src/ORM/t05DataTableFactoryFKTest.php</file>
+            <file>src/ORM/t06SchemaMySqlTest.php</file>
         </testsuite>
     </testsuites>
     <filter>

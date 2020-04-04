@@ -12,7 +12,7 @@ import sphinx_rtd_theme
 # -- Informações do Projeto --------------------------------------------------
 
 project = 'PHP-DAL'
-project_description = 'Prove uma camada de acesso a bancos de dados.'
+project_description = 'Prove uma camada de acesso a banco de dados.'
 project_year = '2020'
 project_company = 'Aeon Digital'
 project_publisher = 'Aeon Digital'
@@ -20,8 +20,8 @@ project_author = 'Rianna Cantarelli'
 project_contributor = ''
 project_locale = 'pt-BR'
 project_language = 'pt'
-project_short_version = '0.3.0'
-project_full_version = 'v0.3.0-alpha'
+project_short_version = '0.5.0'
+project_full_version = 'v0.5.0-beta'
 
 
 

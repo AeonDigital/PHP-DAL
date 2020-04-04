@@ -4,31 +4,37 @@
 	:language: php
 
 
-iDAL
-====
+DAL
+===
 
 
-.. php:namespace:: AeonDigital\DAL\Interfaces
+.. php:namespace:: AeonDigital\DAL
 
-.. php:interface:: iDAL
+.. php:class:: DAL
 
 
 	.. rst-class:: phpdoc-description
 	
-		| Interface básica para conexões com bancos de dados.
+		| Classe que permite o acesso a um banco de dados utilizando o PDO do PHP.
 		
 	
+	:Implements:
+		:php:interface:`AeonDigital\\Interfaces\\DAL\\iDAL` 
+	
+
+Properties
+----------
 
 Methods
 -------
 
 .. rst-class:: public
 
-	.. php:method:: public getCloneConnection()
+	.. php:method:: public getConnection()
 	
 		.. rst-class:: phpdoc-description
 		
-			| Retorna um objeto clone do ``dbConnection`` desta instância.
+			| Retorna o objeto ``dbConnection`` desta instância.
 			
 		
 		
@@ -97,7 +103,7 @@ Methods
 		
 		
 		:Parameters:
-			- ‹ AeonDigital\\DAL\\Interfaces\\iDAL › **$oConnection** |br|
+			- ‹ AeonDigital\\Interfaces\\DAL\\iDAL › **$oConnection** |br|
 			  Objeto que contêm a conexão que passará a ser usada por esta instância.
 
 		
@@ -181,7 +187,7 @@ Methods
 
 .. rst-class:: public
 
-	.. php:method:: public getDataColumn( $strSQL, $parans=null, $castTo=string)
+	.. php:method:: public getDataColumn( $strSQL, $parans=null, $castTo=&#34;string&#34;)
 	
 		.. rst-class:: phpdoc-description
 		
@@ -581,6 +587,45 @@ Methods
 		
 		:Returns: ‹ bool ›|br|
 			  
+		
+	
+	
+
+.. rst-class:: public
+
+	.. php:method:: public __construct( $dbType, $dbHost, $dbName, $dbUserName, $dbUserPassword, $dbSSLCA=null, $dbConnectionString=null, $oConnection=null)
+	
+		.. rst-class:: phpdoc-description
+		
+			| Inicia uma nova instância de conexão com um banco de dados.
+			
+		
+		
+		:Parameters:
+			- ‹ string › **$dbType** |br|
+			  Tipo do banco de dados.
+			  Esperao um dos tipos: ``mysql``, ``mssqlserver``, ``oracle``, ``postgree``.
+			- ‹ string › **$dbHost** |br|
+			  Host da conexão com o banco de dados.
+			- ‹ string › **$dbName** |br|
+			  Nome da base de dados à qual a conexão será feita.
+			- ‹ string › **$dbUserName** |br|
+			  Credencial ``user`` para a efetuar a conexão.
+			- ‹ string › **$dbUserPassword** |br|
+			  Credencial ``password`` para efetuar a conexão.
+			- ‹ ?string › **$dbSSLCA** |br|
+			  Caminho para o certificado que deve ser usado no caso de uma
+			  conexão usando ``ssl``.
+			- ‹ ?string › **$dbConnectionString** |br|
+			  String de conexão a ser usada.
+			  Se não for definida, usará as regras internas para contruir uma.
+			- ‹ ?\\AeonDigital\\DAL\\iConnection › **$oConnection** |br|
+			  Instância de um objeto que terá sua conexão compartilhada
+			  com a nova instância que está sendo criada.
+
+		
+		:Throws: ‹ \InvalidArgumentException ›|br|
+			  Caso algum valor passado não seja válido.
 		
 	
 	

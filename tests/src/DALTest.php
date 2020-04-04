@@ -1,5 +1,5 @@
 <?php
-declare (strict_types = 1);
+declare (strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ class DALTest extends TestCase
 
 
 
-    private function provider_connection_credentials() 
+    private function provider_connection_credentials()
     {
         return [
             "dbType"            => "mysql",
@@ -33,7 +33,7 @@ class DALTest extends TestCase
         ];
     }
 
-    private function provider_connection() 
+    private function provider_connection()
     {
         if ($this->useConnection === null) {
             $con = $this->provider_connection_credentials();
@@ -43,7 +43,7 @@ class DALTest extends TestCase
                 $con["dbName"],
                 $con["dbUserName"],
                 $con["dbUserPassword"]);
-        } 
+        }
         return $this->useConnection;
     }
 
@@ -66,7 +66,9 @@ class DALTest extends TestCase
 
         $strSQL = "SHOW TABLES;";
         $rset = $obj->getDataTable($strSQL);
-        $this->assertSame(0, count($rset));
+        if ($rset !== null) {
+            $this->assertSame(0, count($rset));
+        }
 
 
         $strSQL = " CREATE TABLE user (
@@ -131,7 +133,7 @@ class DALTest extends TestCase
     }
 
 
-    public function test_constructor_ok() 
+    public function test_constructor_ok()
     {
         $obj = $this->provider_connection();
         $this->assertTrue(is_a($obj, DAL::class));
@@ -145,7 +147,7 @@ class DALTest extends TestCase
     public function test_method_getconnection()
     {
         $obj = $this->provider_connection();
-        $this->assertTrue(is_a($obj->getCloneConnection(), \PDO::class));
+        $this->assertTrue(is_a($obj->getConnection(), \PDO::class));
     }
 
 
@@ -192,14 +194,14 @@ class DALTest extends TestCase
         $r = $obj->executeInstruction($strSQL);
         $this->assertTrue($r);
 
-        
 
 
 
-        $strSQL = " INSERT INTO 
-                        user 
-                            (firstname, lastname, email, active, register) 
-                        VALUES 
+
+        $strSQL = " INSERT INTO
+                        user
+                            (firstname, lastname, email, active, register)
+                        VALUES
                             (:firstname, :lastname, :email, :active, :register);";
         $parans = [
             "firstname" => "user01",
@@ -228,7 +230,7 @@ class DALTest extends TestCase
         $this->assertNull($obj->getLastError());
         $this->assertSame(0, $obj->countAffectedRows());
         $this->assertNull($dataTable);
-        
+
 
 
         $parans = [
@@ -245,10 +247,10 @@ class DALTest extends TestCase
 
 
 
-        $strSQL = " INSERT INTO 
-                        user 
-                            (firstname, lastname, email, active, register) 
-                        VALUES 
+        $strSQL = " INSERT INTO
+                        user
+                            (firstname, lastname, email, active, register)
+                        VALUES
                             (:firstname, :lastname, :email, :active, :register);";
         $parans = [
             "firstname" => "user01",
@@ -281,10 +283,10 @@ class DALTest extends TestCase
 
 
 
-        $strSQL = " INSERT INTO 
-                        user 
-                            (firstname, lastname, email, active, register) 
-                        VALUES 
+        $strSQL = " INSERT INTO
+                        user
+                            (firstname, lastname, email, active, register)
+                        VALUES
                             (:firstname, :lastname, :email, :active, :register);";
         $parans = [
             "firstname" => "user01",
@@ -330,10 +332,10 @@ class DALTest extends TestCase
 
 
 
-        $strSQL = " INSERT INTO 
-                        user 
-                            (firstname, lastname, email, active, register) 
-                        VALUES 
+        $strSQL = " INSERT INTO
+                        user
+                            (firstname, lastname, email, active, register)
+                        VALUES
                             (:firstname, :lastname, :email, :active, :register);";
         $parans = [
             "firstname" => "user01",
@@ -370,11 +372,11 @@ class DALTest extends TestCase
 
 
     //
-    // getLastPK | countRowsFrom | countRowsWith | hasRowsWith 
+    // getLastPK | countRowsFrom | countRowsWith | hasRowsWith
     // insertInto | updateSet | insertOrUpdate | selectFrom | deleteFrom
     //
 
-    public function test_methods_for_crud() 
+    public function test_methods_for_crud()
     {
         $obj = $this->provider_connection();
 
@@ -417,7 +419,7 @@ class DALTest extends TestCase
         $this->assertTrue(key_exists("email", $rowData));
         $this->assertTrue(key_exists("active", $rowData));
         $this->assertTrue(key_exists("register", $rowData));
-        
+
         $this->assertSame($id, (int)$rowData["id"]);
         $this->assertSame($parans["firstname"], $rowData["firstname"]);
         $this->assertSame($parans["email"], $rowData["email"]);
@@ -492,10 +494,10 @@ class DALTest extends TestCase
         $obj->beginTransaction();
         $this->assertTrue($obj->inTransaction());
 
-        $strSQL = " INSERT INTO 
-                        user 
-                            (firstname, lastname, email, active, register) 
-                        VALUES 
+        $strSQL = " INSERT INTO
+                        user
+                            (firstname, lastname, email, active, register)
+                        VALUES
                             (:firstname, :lastname, :email, :active, :register);";
         $parans = [
             "firstname" => "user01",
@@ -537,16 +539,16 @@ class DALTest extends TestCase
         $this->assertSame("0", $dataTable[0]["count"]);
 
 
-        
+
         $obj->beginTransaction();
         $this->assertTrue($obj->inTransaction());
 
 
 
-        $strSQL = " INSERT INTO 
-                        user 
-                            (firstname, lastname, email, active, register) 
-                        VALUES 
+        $strSQL = " INSERT INTO
+                        user
+                            (firstname, lastname, email, active, register)
+                        VALUES
                             (:firstname, :lastname, :email, :active, :register);";
         $parans = [
             "firstname" => "user01",
