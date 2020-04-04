@@ -18,14 +18,6 @@
             -->
             <file>src/DALTest.php</file>
 
-            <file>src/DataModel/t01FieldTest.php</file>
-            <file>src/DataModel/t02FieldCollectionTest.php</file>
-            <file>src/DataModel/t03ModelTest.php</file>
-            <file>src/DataModel/t04ModelFactory_SimpleFieldsTest.php</file>
-            <file>src/DataModel/t05FieldModelTest.php</file>
-            <file>src/DataModel/t06FieldModelCollectionTest.php</file>
-            <file>src/DataModel/t07ComplexFieldModelCollectionTest.php</file>
-
             <file>src/ORM/t01DataColumnTest.php</file>
             <file>src/ORM/t02DataTableTest.php</file>
             <file>src/ORM/t03DataTableFactoryTest.php</file>

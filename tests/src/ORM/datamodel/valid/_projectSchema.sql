@@ -1,6 +1,6 @@
 /*
  * Main Schema definition
- * Generated in 2020-04-04-00-00-07
+ * Generated in 2020-04-04-16-28-07
 */
 
 /*--INI CREATE TABLE--*/
@@ -130,5 +130,5 @@ ALTER TABLE udd_to_gds ADD CONSTRAINT fk_udd_gds_to_udd_UsuarioDoDominio_Id FORE
 
 /*
  * End of Main Schema definition
- * Generated in 2020-04-04-00-00-07
+ * Generated in 2020-04-04-16-28-07
 */
