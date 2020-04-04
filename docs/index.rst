@@ -48,5 +48,4 @@ Classes
 	:maxdepth: 6
 
 	DAL <AeonDigital/DAL/index>
-	DataModel <AeonDigital/DataModel/index>
 	ORM <AeonDigital/ORM/index>
