@@ -18,7 +18,7 @@ use AeonDigital\ORM\Traits\DataColumnCommomMethods as DataColumnCommomMethods;
  * @package     AeonDigital\ORM
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
  * @copyright   2020, Rianna Cantarelli
- * @license     ADPL-v1.0
+ * @license     MIT
  */
 class DataColumn extends aField implements iColumn
 {

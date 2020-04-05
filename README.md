@@ -56,4 +56,4 @@ _______________________________________________________________________________
 
 ## Licença
 
-Este software está licenciado sob a [Licença ADPL-v1.0](LICENSE).
+Este software está licenciado sob a [Licença MIT](LICENSE).

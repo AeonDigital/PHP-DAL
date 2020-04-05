@@ -18,7 +18,7 @@ use AeonDigital\Interfaces\ORM\iDataTableFactory as iDataTableFactory;
  * @package     AeonDigital\ORM
  * @author      Rianna Cantarelli <rianna@aeondigital.com.br>
  * @copyright   2020, Rianna Cantarelli
- * @license     ADPL-v1.0
+ * @license     MIT
  */
 class Schema implements iSchema
 {

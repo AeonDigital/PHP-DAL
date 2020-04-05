@@ -4,6 +4,7 @@
     "version": "v0.5.0-beta",
     "time": "2020-04-03",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Rianna Cantarelli",
@@ -15,7 +16,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.1.14",
-        "aeondigital/phpinterfaces": ">=v0.1.1-alpha",
+        "aeondigital/phpinterfaces": ">=v0.5.0-beta",
         "aeondigital/phpcore": ">=v0.5.0-beta"
     },
     "autoload": {
