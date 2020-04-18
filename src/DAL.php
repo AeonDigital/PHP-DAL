@@ -5,7 +5,7 @@ namespace AeonDigital\DAL;
 
 use AeonDigital\Interfaces\DAL\iDAL as iDAL;
 use AeonDigital\Realtype as Realtype;
-
+use AeonDigital\BObject as BObject;
 
 
 
@@ -20,7 +20,7 @@ use AeonDigital\Realtype as Realtype;
  * @copyright   2020, Rianna Cantarelli
  * @license     MIT
  */
-class DAL implements iDAL
+class DAL extends BObject implements iDAL
 {
 
 
@@ -739,7 +739,7 @@ class DAL implements iDAL
         if ($oConnection === null) {
             $allowDbTypes = ["mysql", "mssqlserver", "oracle", "postgree"];
             if (\in_array($dbType, $allowDbTypes) === false) {
-                $msg = "Invalid DataBase Type [\"$dbType\"].";
+                $msg = "Invalid value defined for \"dbType\". Expected [ " . implode(", ", $allowDbTypes) . " ]. Given: [ $dbType ].";
                 throw new \InvalidArgumentException($msg);
             }
 

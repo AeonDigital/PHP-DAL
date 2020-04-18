@@ -127,7 +127,7 @@ class DALTest extends TestCase
                 $con["dbUserPassword"]);
         } catch (\Exception $ex) {
             $fail = true;
-            $this->assertSame("Invalid DataBase Type [\"invalidDbType\"].", $ex->getMessage());
+            $this->assertSame("Invalid value defined for \"dbType\". Expected [ mysql, mssqlserver, oracle, postgree ]. Given: [ invalidDbType ].", $ex->getMessage());
         }
         $this->assertTrue($fail, "Test must fail");
     }
