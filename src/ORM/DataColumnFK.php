@@ -6,9 +6,8 @@ namespace AeonDigital\ORM;
 use AeonDigital\Interfaces\ORM\iDataTableFactory as iDataTableFactory;
 use AeonDigital\Interfaces\ORM\iColumnFK as iColumnFK;
 use AeonDigital\DataModel\Abstracts\aFieldModel as aFieldModel;
-use AeonDigital\ORM\Traits\ColumnProperties as ColumnProperties;
-use AeonDigital\ORM\Traits\DataColumnCommomMethods as DataColumnCommomMethods;
-use AeonDigital\ORM\Traits\ColumnFKProperties as ColumnFKProperties;
+
+
 
 
 
@@ -24,9 +23,9 @@ use AeonDigital\ORM\Traits\ColumnFKProperties as ColumnFKProperties;
  */
 class DataColumnFK extends aFieldModel implements iColumnFK
 {
-    use ColumnProperties;
-    use DataColumnCommomMethods;
-    use ColumnFKProperties;
+    use \AeonDigital\ORM\Traits\ColumnProperties;
+    use \AeonDigital\ORM\Traits\DataColumnCommomMethods;
+    use \AeonDigital\ORM\Traits\ColumnFKProperties;
 
 
 

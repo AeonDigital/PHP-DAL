@@ -5,8 +5,8 @@ namespace AeonDigital\ORM;
 
 use AeonDigital\Interfaces\ORM\iColumn as iColumn;
 use AeonDigital\DataModel\Abstracts\aField as aField;
-use AeonDigital\ORM\Traits\ColumnProperties as ColumnProperties;
-use AeonDigital\ORM\Traits\DataColumnCommomMethods as DataColumnCommomMethods;
+
+
 
 
 
@@ -22,8 +22,8 @@ use AeonDigital\ORM\Traits\DataColumnCommomMethods as DataColumnCommomMethods;
  */
 class DataColumn extends aField implements iColumn
 {
-    use ColumnProperties;
-    use DataColumnCommomMethods;
+    use \AeonDigital\ORM\Traits\ColumnProperties;
+    use \AeonDigital\ORM\Traits\DataColumnCommomMethods;
 
 
 
