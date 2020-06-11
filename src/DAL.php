@@ -625,7 +625,7 @@ class DAL extends BObject implements iDAL
      *
      * @return      bool
      */
-    public function deleteFrom(string $tableName, string $pkName = null, int $pk = null) : bool
+    public function deleteFrom(string $tableName, string $pkName, int $pk) : bool
     {
         $strSQL = "DELETE FROM $tableName WHERE $pkName=:$pkName;";
         return $this->executeInstruction($strSQL, ["$pkName" => $pk]);
