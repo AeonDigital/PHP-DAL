@@ -1,6 +1,6 @@
 # Arquivo de configuração para a criação de documentação com o Sphinx.
 #
-# Para informações completas de como este arquivo funciona e quais suas 
+# Para informações completas de como este arquivo funciona e quais suas
 # principais configurações veja mais em:
 # http://www.sphinx-doc.org/en/master/config
 import sphinx_rtd_theme
@@ -20,8 +20,8 @@ project_author = 'Rianna Cantarelli'
 project_contributor = ''
 project_locale = 'pt-BR'
 project_language = 'pt'
-project_short_version = '0.5.0'
-project_full_version = 'v0.5.0-beta'
+project_short_version = '0.5.6'
+project_full_version = 'v0.5.6-beta'
 
 
 
@@ -41,7 +41,7 @@ master_doc = 'index'
 
 
 
-# Permite definir um trecho de marcação "reStructuredText" a ser usado para 
+# Permite definir um trecho de marcação "reStructuredText" a ser usado para
 # todos os demais arquivos que serão processados.
 # Strings literais serão adicionadas no INICIO de cada um dos documentos
 rst_epilog = """
@@ -53,17 +53,17 @@ rst_epilog = """
 
 
 
-# Permite definir um trecho de marcação "reStructuredText" a ser usado para 
+# Permite definir um trecho de marcação "reStructuredText" a ser usado para
 # todos os demais arquivos que serão processados.
 # Strings literais serão adicionadas no FINAL de cada um dos documentos
 rst_prolog = ''
 
 
 
-# Lista de padrões para identificação de arquivos e diretórios (relativos 
-# a este próprio diretório) que devem ser ignorados no processamento da 
+# Lista de padrões para identificação de arquivos e diretórios (relativos
+# a este próprio diretório) que devem ser ignorados no processamento da
 # documentação.
-# 
+#
 # Esta configuração afeta as seguintes:
 # "html_static_path" e "html_extra_path".
 exclude_patterns = []
@@ -88,7 +88,7 @@ source_suffix = {
 
 
 
-# Adicione aqui os caminhos (relativos a este próprio diretório) até os 
+# Adicione aqui os caminhos (relativos a este próprio diretório) até os
 # templates que serão utilizados.
 templates_path = ['_templates']
 
@@ -98,14 +98,14 @@ templates_path = ['_templates']
 
 # -- Linguagens --------------------------------------------------------------
 
-# Linguagem usada pelo conteúdo autogerado pelo Sphinx. 
-# 
+# Linguagem usada pelo conteúdo autogerado pelo Sphinx.
+#
 # Isto é utilizado se você usar traduções via catalogos "gettext".
 language = project_locale
 
 
 
-# Diretórios onde devem estar as definições específicas para cada lingua 
+# Diretórios onde devem estar as definições específicas para cada lingua
 # contemplada pela documentação.
 locale_dirs = ['locale/']
 
@@ -115,8 +115,8 @@ locale_dirs = ['locale/']
 
 # -- Opções para a saida HTML ------------------------------------------------
 
-# Definição do Theme que será usado para a construção da documentação no 
-# formato HTML.  
+# Definição do Theme que será usado para a construção da documentação no
+# formato HTML.
 # Veja a documentação completa em:
 # http://www.sphinx-doc.org/en/master/usage/configuration.html
 # https://pypi.org/project/sphinx-rtd-theme/
@@ -126,10 +126,10 @@ html_theme = 'sphinx_rtd_theme'
 
 # Configurações específicas para o Theme selecionado.
 # No caso de um Theme diferente de "sphinx_rtd_theme", conheça as demais
-# configurações em 
+# configurações em
 # http://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 html_theme_options = {
-    'canonical_url': '',    
+    'canonical_url': '',
     'logo_only': True,
     'display_version': True,
     'prev_next_buttons_location': 'bottom',
@@ -164,7 +164,7 @@ html_favicon = '_static/favicon.ico'
 
 
 
-# Lista de caminhos (relativos a este próprio diretório) onde estarão 
+# Lista de caminhos (relativos a este próprio diretório) onde estarão
 # alocados arquivos customizados (como folhas de estilo ou javascript).
 #
 # Estes arquivos serão copiados para o diretório onde a documentação será
@@ -252,8 +252,8 @@ epub_copyright = project_company
 
 
 
-# Definição do Theme que será usado para a construção da documentação no 
-# formato EPUB.  
+# Definição do Theme que será usado para a construção da documentação no
+# formato EPUB.
 # Veja a documentação completa em:
 # http://www.sphinx-doc.org/en/master/usage/configuration.html
 # https://pypi.org/project/sphinx-rtd-theme/
@@ -263,7 +263,7 @@ epub_theme = 'sphinx_rtd_theme'
 
 # Configurações específicas para o Theme selecionado.
 # No caso de um Theme diferente de "sphinx_rtd_theme", conheça as demais
-# configurações em 
+# configurações em
 # http://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 # epub_theme_options = {
 #    'logo_only': True,

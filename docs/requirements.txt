@@ -1,2 +1,2 @@
 sphinx_rtd_theme==0.4.3
-sphinxcontrib-phpdomain==0.5.0
+sphinxcontrib-phpdomain==0.5.6
