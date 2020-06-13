@@ -18,6 +18,9 @@ DAL
 		| Classe que permite o acesso a um banco de dados utilizando o PDO do PHP.
 		
 	
+	:Parent:
+		:php:class:`AeonDigital\\BObject`
+	
 	:Implements:
 		:php:interface:`AeonDigital\\Interfaces\\DAL\\iDAL` 
 	
@@ -502,7 +505,7 @@ Methods
 
 .. rst-class:: public
 
-	.. php:method:: public deleteFrom( $tableName, $pkName=null, $pk=null)
+	.. php:method:: public deleteFrom( $tableName, $pkName, $pk)
 	
 		.. rst-class:: phpdoc-description
 		
