@@ -71,6 +71,31 @@ trait ColumnFKProperties
 
 
     /**
+     * Quando ``true`` indica se os objetos filhos (que recebem a FK) exigem exclusividade na
+     * relação com seus respectivos objetos pai, ou seja, nenhum objeto filho pode ter o mesmo
+     * objeto pai.
+     *
+     * @var         bool
+     */
+    private bool $fkUnique = false;
+    /**
+     * Indica se os objetos filhos (que recebem a FK) exigem exclusividade na relação com
+     * seus respectivos objetos pai, ou seja, nenhum objeto filho pode ter o mesmo objeto pai.
+     *
+     * @return      bool
+     */
+    public function isFKUnique() : bool
+    {
+        return $this->fkUnique;
+    }
+
+
+
+
+
+
+
+    /**
      * Indica se o vínculo entre as 2 tabelas de dados se dá por meio de uma ``linkTable``.
      * Quando ``true``, designa que a relação é do tipo ``N-N``.
      *
@@ -83,7 +108,7 @@ trait ColumnFKProperties
      *
      * @return      bool
      */
-    function isFKLinkTable() : bool
+    public function isFKLinkTable() : bool
     {
         return $this->fkLinkTable;
     }

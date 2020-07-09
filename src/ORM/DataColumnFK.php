@@ -55,6 +55,16 @@ class DataColumnFK extends aFieldModel implements iColumnFK
      *          string          "fkTableName"
      *          Nome da tabela de dados a qual esta coluna se referencia.
      *
+     *          string          "fkDescription"
+     *          Descrição especial desta coluna enquanto FK. (opcional)
+     *
+     *          bool            "fkAllowNull"
+     *          Indica se os objetos filhos devem ser obrigados a terem uma correlação
+     *          obrigatória com o objeto pai. (opcional)
+     *
+     *          bool            "fkUnique"
+     *          Indica que cada objeto pai pode se relacionar com apenas 1 objeto filho e vice-versa.
+     *
      *          string          "fkOnUpdate"
      *          Regra para ser aplicada nesta FK quando o registro pai for alterado. (opcional)
      *          São esperados um dos seguintes valores:
@@ -91,6 +101,9 @@ class DataColumnFK extends aFieldModel implements iColumnFK
 
 
         // Propriedades específicas para um campo do tipo "reference"
+        $fkDescription          = ((isset($config["fkDescription"]))    ? $config["fkDescription"]          : null);
+        $fkAllowNull            = ((isset($config["fkAllowNull"]))      ? $config["fkAllowNull"]            : true);
+        $fkUnique               = ((isset($config["fkUnique"]))         ? $config["fkUnique"]               : false);
         $fkOnUpdate             = ((isset($config["fkOnUpdate"]))       ? \strtoupper($config["fkOnUpdate"]) : null);
         $fkOnDelete             = ((isset($config["fkOnDelete"]))       ? \strtoupper($config["fkOnDelete"]) : null);
 
@@ -109,6 +122,9 @@ class DataColumnFK extends aFieldModel implements iColumnFK
             throw new \InvalidArgumentException($msg);
         }
 
+        $this->fkDescription    = $fkDescription;
+        $this->fkAllowNull      = $fkAllowNull;
+        $this->fkUnique         = $fkUnique;
         $this->fkOnUpdate       = $fkOnUpdate;
         $this->fkOnDelete       = $fkOnDelete;
     }
