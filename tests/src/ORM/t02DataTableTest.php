@@ -184,4 +184,30 @@ class t02DataTableTest extends TestCase
         ]);
         $this->assertSame(["Instruction 1", "Instruction 2"], $obj->getExecuteAfterCreateTable());
     }
+
+
+
+
+
+    //
+    // UNIQUEMULTIPLEKEYS
+    //
+
+    public function test_property_uniqueMultipleKeys()
+    {
+        $obj = new DataTable([
+            "tableName"                 => "validModelName",
+            "alias"                     => "vmn",
+            "executeAfterCreateTable"   => ["Instruction 1", "Instruction 2"],
+            "uniqueMultipleKeys"        => [["Column01", "Column02"]],
+            "ormInstructions"           => ["select" => "", "selectChild" => ""],
+            "columns"                   => [
+                new DataColumn([
+                    "name"                      => "validFieldName",
+                    "type"                      => "String"
+                ])
+            ]
+        ]);
+        $this->assertSame([["Column01", "Column02"]], $obj->getUniqueMultipleKeys());
+    }
 }

@@ -324,6 +324,15 @@ class Schema implements iSchema
                     $constraints[] = $instruction;
                 }
             }
+
+            $uniqueMultipleKeys = $dataTable->getUniqueMultipleKeys();
+            if ($uniqueMultipleKeys !== null) {
+                foreach ($uniqueMultipleKeys as $multiKeys) {
+                    $constraints[] = $this->generateInstructionConstraintUniqueMultiKeys(
+                        $tableName, $tableAlias, $multiKeys
+                    );
+                }
+            }
         }
 
 
@@ -596,8 +605,7 @@ class Schema implements iSchema
         return $str;
     }
     /**
-     * Retorna uma instrução para inserir uma constraint para impedir que o vinculo de uma
-     * linkTable seja duplicado.
+     * Retorna uma instrução para inserir uma constraint de uma chave única composta.
      *
      * @param       string $linkTableName
      *              Nome da tabela usada como linkTable.
@@ -605,28 +613,24 @@ class Schema implements iSchema
      * @param       string $linkTableAlias
      *              Alias usado para esta linkTable.
      *
-     * @param       string $fkColumn01
-     *              Nome de uma das colunas de link.
-     *
-     * @param       string $fkColumn02
-     *              Nome de outra coluna de link.
+     * @param       array $multiKeys
+     *              Coleção de chaves que irão compor a constraint.
      *
      * @return      string
      */
-    private function generateInstructionConstraintUniqueLinkTable(
+    private function generateInstructionConstraintUniqueMultiKeys(
         string $linkTableName,
         string $linkTableAlias,
-        string $fkColumn01,
-        string $fkColumn02
+        array $multiKeys
     ) : string {
         $str = "";
 
         switch ($this->dbType) {
             case "mysql":
                 $ctName = $this->createContraintValidName(
-                    "uc_" . $linkTableAlias . "_" . $fkColumn01 . "_" . $fkColumn02
+                    "uc_" . $linkTableAlias . "_" . \implode("_", $multiKeys)
                 );
-                $str = "ALTER TABLE $linkTableName ADD CONSTRAINT $ctName UNIQUE ($fkColumn01, $fkColumn02);";
+                $str = "ALTER TABLE $linkTableName ADD CONSTRAINT $ctName UNIQUE (" . \implode(", ", $multiKeys) . ");";
                 break;
 
             case "mssqlserver":
@@ -898,11 +902,10 @@ class Schema implements iSchema
 
 
             if ($table01Column->isFKUnique() === true || $table02Column->isFKUnique() === true) {
-                $constraint[] = $this->generateInstructionConstraintUniqueLinkTable(
+                $constraint[] = $this->generateInstructionConstraintUniqueMultiKeys(
                     $linkTableName,
                     \str_replace("_to_", "_", $linkTableName),
-                    $table01Column->getModelName() . "_Id",
-                    $table02Column->getModelName() . "_Id"
+                    [$table01Column->getModelName() . "_Id", $table02Column->getModelName() . "_Id"]
                 );
             }
 
@@ -1250,7 +1253,7 @@ class Schema implements iSchema
     {
         $tgtSchemaFilePath = $this->factory->getProjectDirectory() . DS . "_projectSchema.sql";
 
-        if (\file_exists($tgtSchemaFilePath) === false) {
+        if (\file_exists($tgtSchemaFilePath) === false || $dropSchema === true) {
             $this->generateCreateSchemaFiles();
         }
 

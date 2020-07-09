@@ -94,6 +94,31 @@ class DataTable extends aModel implements iTable
 
 
 
+    /**
+     * Array de arrays contendo em cada qual uma coleção de nomes de colunas de
+     * dados desta mesma tabela. Cada conjunto de nomes irá corresponder a uma constraint
+     * do tipo unique composta.
+     *
+     * @var         ?array
+     */
+    private ?array $uniqueMultipleKeys = null;
+    /**
+     * Retorna um array de arrays contendo em cada qual uma coleção de nomes de colunas de
+     * dados desta mesma tabela. Cada conjunto de nomes irá corresponder a uma constraint
+     * do tipo unique composta.
+     *
+     * @return      ?array
+     */
+    public function getUniqueMultipleKeys() : ?array
+    {
+        return $this->uniqueMultipleKeys;
+    }
+
+
+
+
+
+
 
 
 
@@ -693,6 +718,10 @@ class DataTable extends aModel implements iTable
      *          Coleção de instruções a serem executadas após a tabela de dados
      *          ser definida.
      *
+     *          array           "uniqueMultipleKeys"
+     *          Array de arrays contendo em cada qual uma coleção de nomes de colunas de
+     *          dados desta mesma tabela.
+     *
      *          iColumn[]       "columns"
      *          Array contendo as instâncias das colunas de dados que devem
      *          compor este tabela de dados.
@@ -709,11 +738,12 @@ class DataTable extends aModel implements iTable
     function __construct(array $config)
     {
         // Resgata as propriedades definidas
-        $tableName                  = ((isset($config["tableName"]))                ? $config["tableName"]                  : null);
-        $alias                      = ((isset($config["alias"]))                    ? $config["alias"]                      : null);
-        $executeAfterCreateTable    = ((isset($config["executeAfterCreateTable"]))  ? $config["executeAfterCreateTable"]    : null);
-        $columns                    = ((isset($config["columns"]))                  ? $config["columns"]                    : false);
-        $ormInstructions            = ((isset($config["ormInstructions"]))          ? $config["ormInstructions"]            : null);
+        $tableName                  = ((isset($config["tableName"]) === true)               ? $config["tableName"]                  : null);
+        $alias                      = ((isset($config["alias"]) === true)                   ? $config["alias"]                      : null);
+        $executeAfterCreateTable    = ((isset($config["executeAfterCreateTable"]) === true) ? $config["executeAfterCreateTable"]    : null);
+        $uniqueMultipleKeys         = ((isset($config["uniqueMultipleKeys"]) === true)      ? $config["uniqueMultipleKeys"]         : null);
+        $columns                    = ((isset($config["columns"]) === true)                 ? $config["columns"]                    : false);
+        $ormInstructions            = ((isset($config["ormInstructions"]) === true)         ? $config["ormInstructions"]            : null);
 
 
         // Verifica se o "alias" é válido
@@ -744,6 +774,7 @@ class DataTable extends aModel implements iTable
 
         $this->alias                    = $alias;
         $this->executeAfterCreateTable  = $executeAfterCreateTable;
+        $this->uniqueMultipleKeys       = $uniqueMultipleKeys;
 
 
         // Renomeia as chaves usadas de acordo com as

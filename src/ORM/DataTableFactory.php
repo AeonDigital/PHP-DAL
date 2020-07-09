@@ -377,6 +377,7 @@ class DataTableFactory implements iDataTableFactory
                 $modelConfig                = include $this->getProjectDirectory() . DS . $this->projectDataFile[$idName]["modelFilePath"];
                 $useDescription             = ((isset($modelConfig["description"]) === true)                ? $modelConfig["description"]               : null);
                 $executeAfterCreateTable    = ((isset($modelConfig["executeAfterCreateTable"]) === true)    ? $modelConfig["executeAfterCreateTable"]   : null);
+                $uniqueMultipleKeys         = ((isset($modelConfig["uniqueMultipleKeys"]) === true)         ? $modelConfig["uniqueMultipleKeys"]        : null);
                 $rawColumns                 = $modelConfig["columns"];
 
                 $this->projectRawDataTables[$idName] = [
@@ -384,8 +385,9 @@ class DataTableFactory implements iDataTableFactory
                     "alias"                     => $modelConfig["alias"],
                     "description"               => $useDescription,
                     "executeAfterCreateTable"   => $executeAfterCreateTable,
-                    "columns"                   => $rawColumns,
-                    "ormInstructions"           => $this->projectDataFile[$idName]["ormInstructions"]
+                    "uniqueMultipleKeys"        => $uniqueMultipleKeys,
+                    "ormInstructions"           => $this->projectDataFile[$idName]["ormInstructions"],
+                    "columns"                   => $rawColumns
                 ];
             }
 
