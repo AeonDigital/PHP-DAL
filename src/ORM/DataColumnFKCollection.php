@@ -80,6 +80,9 @@ class DataColumnFKCollection extends aFieldModelCollection implements iColumnFK
      *          São esperados um dos seguintes valores:
      *          [ RESTRICT | NO ACTION | CASCADE | SET NULL | SET DEFAULT ]
      *
+     *          array           "fkLinkTableColumns"
+     *          Coleção de colunas especialmente definidas para figurar em uma linkTable.
+     *
      *          mixed           "value"
      *          Valor que inicia com o campo.
      *      ];
@@ -113,6 +116,8 @@ class DataColumnFKCollection extends aFieldModelCollection implements iColumnFK
         $fkUnique               = ((isset($config["fkUnique"]))         ? $config["fkUnique"]               : false);
         $fkOnUpdate             = ((isset($config["fkOnUpdate"]))       ? \strtoupper($config["fkOnUpdate"]) : null);
         $fkOnDelete             = ((isset($config["fkOnDelete"]))       ? \strtoupper($config["fkOnDelete"]) : null);
+        $fkLinkTableColumns     = ((isset($config["fkLinkTableColumns"]) && $fkLinkTable === true) ?
+                                    $config["fkLinkTableColumns"] : null);
 
 
         $validOptions = [
@@ -129,11 +134,12 @@ class DataColumnFKCollection extends aFieldModelCollection implements iColumnFK
             throw new \InvalidArgumentException($msg);
         }
 
-        $this->fkDescription    = $fkDescription;
-        $this->fkLinkTable      = $fkLinkTable;
-        $this->fkAllowNull      = $fkAllowNull;
-        $this->fkUnique         = $fkUnique;
-        $this->fkOnUpdate       = $fkOnUpdate;
-        $this->fkOnDelete       = $fkOnDelete;
+        $this->fkDescription        = $fkDescription;
+        $this->fkLinkTable          = $fkLinkTable;
+        $this->fkAllowNull          = $fkAllowNull;
+        $this->fkUnique             = $fkUnique;
+        $this->fkOnUpdate           = $fkOnUpdate;
+        $this->fkOnDelete           = $fkOnDelete;
+        $this->fkLinkTableColumns   = $fkLinkTableColumns;
     }
 }

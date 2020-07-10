@@ -50,7 +50,7 @@ class t07DataTableORMTest extends TestCase
 
     private function provider_factory() : DataTableFactory
     {
-        $tgtPath = to_system_path(realpath(__DIR__ . "/..") . "/datamodel/valid");
+        $tgtPath = to_system_path(realpath(__DIR__) . "/datamodel/valid");
         $factory = new DataTableFactory($tgtPath, $this->provider_connection());
 
         $schema = new Schema($factory);
@@ -236,6 +236,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
+            "ValorReal"     => 7.778, // verificar isto!
             "Sessao"        => [
                 "Login"             => "userlogin@email.com",
                 "Aplicacao"         => "Application",
@@ -415,6 +416,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
+            "ValorReal"     => 7.778, // verificar isto!
             "GruposDeSeguranca" => [
                 [
                     "Aplicacao"         => "Application",
@@ -511,6 +513,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
+            "ValorReal"     => 7.778, // verificar isto!
             "Sessao"        => [
                 "Login"             => "userlogin@email.com",
                 "Aplicacao"         => "Application",
@@ -715,6 +718,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "attachdetach",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
+            "ValorReal"     => 7.778, // verificar isto!
             "Sessao"        => [
                 "Login"             => "attachdetach@email.com",
                 "Aplicacao"         => "Application",
@@ -810,7 +814,7 @@ class t07DataTableORMTest extends TestCase
         $this->assertTrue($r);
 
         // A partir do objeto dono,
-        // Retoma para si o vínculo com o objeto cilho em uma relação 1-1
+        // Retoma para si o vínculo com o objeto filho em uma relação 1-1
         $Usuario = $obj->createDataTable("UsuarioDoDominio");
         $r = $Usuario->select(2);
         $this->assertTrue($r);
@@ -948,6 +952,5 @@ class t07DataTableORMTest extends TestCase
         $this->assertTrue($r);
         $this->assertSame([], $Usuario->GruposDeSeguranca());
     }
-
 
 }

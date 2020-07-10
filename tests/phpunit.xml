@@ -24,6 +24,7 @@
             <file>src/ORM/t04DataColumnFKTest.php</file>
             <file>src/ORM/t05DataTableFactoryFKTest.php</file>
             <file>src/ORM/t06SchemaMySqlTest.php</file>
+            <file>src/ORM/t07DataTableORMTest.php</file>
         </testsuite>
     </testsuites>
     <filter>

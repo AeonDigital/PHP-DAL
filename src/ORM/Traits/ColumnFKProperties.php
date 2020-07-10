@@ -153,4 +153,23 @@ trait ColumnFKProperties
         return $this->fkOnDelete;
     }
 
+
+
+
+
+    /**
+     * Coleção de colunas especialmente definidas para figurar em uma linkTable.
+     *
+     * @var         ?array
+     */
+    private ?array $fkLinkTableColumns = null;
+    /**
+     * Retorna a coleção de colunas especialmente definidas para figurar em uma linkTable.
+     *
+     * @return      ?array
+     */
+    public function getFKLinkTableColumns() : ?array
+    {
+        return $this->fkLinkTableColumns;
+    }
 }

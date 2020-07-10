@@ -195,6 +195,7 @@ class t04DataColumnFKTest extends TestCase
                 "fkUnique" => true,
                 "fkOnUpdate" => "CASCADE",
                 "fkOnDelete" => "CASCADE",
+                "fkLinkTableColumns" => ["1", "2"]
             ],
             $this->provider_factory()
         );
@@ -209,6 +210,7 @@ class t04DataColumnFKTest extends TestCase
         $this->assertTrue($obj->isFKUnique());
         $this->assertEquals("CASCADE", $obj->getFKOnUpdate());
         $this->assertEquals("CASCADE", $obj->getFKOnDelete());
+        $this->assertEquals(["1", "2"], $obj->getFKLinkTableColumns());
     }
 
 

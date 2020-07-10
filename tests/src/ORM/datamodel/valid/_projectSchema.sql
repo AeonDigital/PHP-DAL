@@ -1,6 +1,6 @@
 /*
  * Main Schema definition
- * Generated in 2020-07-09-02-26-45
+ * Generated in 2020-07-09-22-55-58
 */
 
 /*--INI CREATE TABLE--*/
@@ -84,7 +84,7 @@ CREATE TABLE UsuarioDoDominio (
     ValorInteiro INTEGER NOT NULL DEFAULT 500 COMMENT 'Valor inteiro para testes.', 
     ValorFloat FLOAT NOT NULL DEFAULT 8.556 COMMENT 'Valor float para testes.', 
     ValorReal DECIMAL(10,4) NOT NULL DEFAULT 7.778 COMMENT 'Valor real para testes.', 
-    SessaoDeAcesso_Id BIGINT NOT NULL COMMENT 'Sessão atualmente aberta.', 
+    SessaoDeAcesso_Id BIGINT COMMENT 'Sessão atualmente aberta.', 
     PRIMARY KEY (Id)
 ) COMMENT 'Conta de um usuário que pode efetuar login em aplicações do domínio.';
 /*--END CREATE TABLE--*/
@@ -94,7 +94,9 @@ CREATE TABLE UsuarioDoDominio (
 /*--INI CREATE TABLE--*/
 CREATE TABLE udd_to_gds (
     GrupoDeSeguranca_Id BIGINT NOT NULL COMMENT 'GrupoDeSeguranca em UsuarioDoDominio', 
-    UsuarioDoDominio_Id BIGINT NOT NULL COMMENT 'UsuarioDoDominio em GrupoDeSeguranca'
+    UsuarioDoDominio_Id BIGINT NOT NULL COMMENT 'UsuarioDoDominio em GrupoDeSeguranca', 
+    Padrao TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Informa se este é o Grupo de Segurança padrão para este usuário.', 
+    Descricao VARCHAR(64) NOT NULL DEFAULT 'info' COMMENT 'Descrição sobre esta relação.'
 ) COMMENT 'LinkTable : GrupoDeSeguranca <-> UsuarioDoDominio';
 /*--END CREATE TABLE--*/
 
@@ -121,7 +123,6 @@ CREATE INDEX idx_udd_Login ON UsuarioDoDominio (Login);
 ALTER TABLE UsuarioDoDominio ADD CONSTRAINT uc_udd_ShortLogin UNIQUE (ShortLogin);
 CREATE INDEX idx_udd_ShortLogin ON UsuarioDoDominio (ShortLogin);
 ALTER TABLE UsuarioDoDominio ADD CONSTRAINT fk_udd_to_sda_SessaoDeAcesso_Id FOREIGN KEY (SessaoDeAcesso_Id) REFERENCES SessaoDeAcesso(Id);
-ALTER TABLE UsuarioDoDominio ADD CONSTRAINT uc_udd_SessaoDeAcesso_Id UNIQUE (SessaoDeAcesso_Id);
 ALTER TABLE udd_to_gds ADD CONSTRAINT fk_udd_gds_to_gds_GrupoDeSeguranca_Id FOREIGN KEY (GrupoDeSeguranca_Id) REFERENCES GrupoDeSeguranca(Id) ON DELETE CASCADE;
 ALTER TABLE udd_to_gds ADD CONSTRAINT fk_udd_gds_to_udd_UsuarioDoDominio_Id FOREIGN KEY (UsuarioDoDominio_Id) REFERENCES UsuarioDoDominio(Id) ON DELETE CASCADE;
 ALTER TABLE udd_to_gds ADD CONSTRAINT uc_udd_gds_UsuarioDoDominio_Id_GrupoDeSeguranca_Id UNIQUE (UsuarioDoDominio_Id, GrupoDeSeguranca_Id);
@@ -132,5 +133,5 @@ ALTER TABLE udd_to_gds ADD CONSTRAINT uc_udd_gds_UsuarioDoDominio_Id_GrupoDeSegu
 
 /*
  * End of Main Schema definition
- * Generated in 2020-07-09-02-26-45
+ * Generated in 2020-07-09-22-55-58
 */

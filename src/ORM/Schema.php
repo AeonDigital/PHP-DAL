@@ -868,8 +868,23 @@ class Schema implements iSchema
             $arrTables = [$table01Alias, $table02Alias];
             \rsort($arrTables);
 
+
+            $linkTableColumns = [];
+            if ($table01Column->getFKLinkTableColumns() !== null) {
+                foreach ($table01Column->getFKLinkTableColumns() as $ltColumn) {
+                    $linkTableColumns[] = new DataColumn($ltColumn);
+                }
+            }
+            if ($table02Column->getFKLinkTableColumns() !== null) {
+                foreach ($table02Column->getFKLinkTableColumns() as $ltColumn) {
+                    $linkTableColumns[] = new DataColumn($ltColumn);
+                }
+            }
+
+
+
             $linkTableName  = \implode("_to_", $arrTables);
-            $createTable    = $this->generateInstructionCreateLinkTable(
+            $createTableInstructions = $this->generateInstructionCreateLinkTable(
                 $table01Name,
                 $table01Alias,
                 $table01Description,
@@ -877,10 +892,12 @@ class Schema implements iSchema
                 $table02Name,
                 $table02Alias,
                 $table02Description,
-                $table02AllowNull
+                $table02AllowNull,
+                $linkTableColumns
             );
 
-            $constraint[] = $this->generateInstructionAddFK(
+            $constraints = [];
+            $constraints[] = $this->generateInstructionAddFK(
                 $linkTableName,
                 \str_replace("_to_", "_", $linkTableName),
                 $table01Name,
@@ -890,7 +907,7 @@ class Schema implements iSchema
                 "CASCADE"
             );
 
-            $constraint[] = $this->generateInstructionAddFK(
+            $constraints[] = $this->generateInstructionAddFK(
                 $linkTableName,
                 \str_replace("_to_", "_", $linkTableName),
                 $table02Name,
@@ -902,7 +919,7 @@ class Schema implements iSchema
 
 
             if ($table01Column->isFKUnique() === true || $table02Column->isFKUnique() === true) {
-                $constraint[] = $this->generateInstructionConstraintUniqueMultiKeys(
+                $constraints[] = $this->generateInstructionConstraintUniqueMultiKeys(
                     $linkTableName,
                     \str_replace("_to_", "_", $linkTableName),
                     [$table01Column->getModelName() . "_Id", $table02Column->getModelName() . "_Id"]
@@ -911,8 +928,8 @@ class Schema implements iSchema
 
             return [
                 "linkTableName" => $linkTableName,
-                "createTable"   => $createTable,
-                "constraints"   => $constraint
+                "createTable"   => $createTableInstructions["createTable"],
+                "constraints"   => array_merge($constraints, $createTableInstructions["constraints"])
             ];
         }
 
@@ -946,7 +963,20 @@ class Schema implements iSchema
      * @param       bool $table02AllowNull
      *              Instrução ``allowNull`` referente a coluna de dados 02 da relação.
      *
-     * @return      string
+     * @param       array $linkTableColumns
+     *              Coleção de colunas especialmente definidas para complementar as informações
+     *              de intersecção entre as 2 tabelas de dados.
+     *
+     *
+     * @return      array
+     *              Retornará um array associativo conforme o modelo:
+     *
+     * ``` php
+     *      $arr => [
+     *          "createTable"       string  Instrução para criação da "linkTable".
+     *          "constraints"       string  Instruções "constraints" para a "linkTable".
+     *      ];
+     * ```
      */
     private function generateInstructionCreateLinkTable(
         string $table01Name,
@@ -956,18 +986,20 @@ class Schema implements iSchema
         string $table02Name,
         string $table02Alias,
         string $table02Description,
-        bool $table02AllowNull
-    ) : string {
+        bool $table02AllowNull,
+        array $linkTableColumns
+    ) : array {
 
         $arrTables = [$table01Alias, $table02Alias];
         \rsort($arrTables);
 
-        $linkTableName  = \implode("_to_", $arrTables);
-        $columnFK       = [];
-        $useDescription = "LinkTable : $table01Name <-> $table02Name";
+        $linkTableName      = \implode("_to_", $arrTables);
+        $linkTableNameAlias = \implode("_", $arrTables);
+        $useColumns         = [];
+        $useDescription     = "LinkTable : $table01Name <-> $table02Name";
 
         $strCreateTable = $this->generateInstructionCreateTable($linkTableName, $useDescription);
-        $columnFK[] = $this->generateInstructionAddColumn(
+        $useColumns[] = $this->generateInstructionAddColumn(
             $table01Name . "_Id",
             $table01Description,
             $this->dataTypeMap["Long"],
@@ -976,7 +1008,7 @@ class Schema implements iSchema
             undefined
         );
 
-        $columnFK[] = $this->generateInstructionAddColumn(
+        $useColumns[] = $this->generateInstructionAddColumn(
             $table02Name . "_Id",
             $table02Description,
             $this->dataTypeMap["Long"],
@@ -985,8 +1017,57 @@ class Schema implements iSchema
             undefined
         );
 
-        $strColumn = "    " . \implode(", \n    ", $columnFK);
-        return \str_replace("[[columns]]", $strColumn, $strCreateTable);
+
+        $constraints = [];
+        foreach ($linkTableColumns as $oColumn) {
+            $useType    = \str_replace("AeonDigital\\SimpleType\\st", "", $oColumn->getType());
+            $useLength  = $oColumn->getLength();
+            $useType    = (($useType === "String" && $useLength === null) ? "Text" : $useType);
+
+
+            $enum       = $oColumn->getEnumerator();
+            $isUnique   = $oColumn->isUnique();
+            $isIndex    = $oColumn->isIndex();
+
+            $useColumns[] = $this->generateInstructionAddColumn(
+                $oColumn->getName(),
+                $oColumn->getDescription(),
+                $this->dataTypeMap[$useType],
+                $useLength,
+                $oColumn->isAllowNull(),
+                $oColumn->getDefault(true)
+            );
+
+
+            if ($isUnique === true) {
+                $constraints[] = $this->generateInstructionConstraintUnique(
+                    $linkTableName, $linkTableNameAlias, $oColumn->getName()
+                );
+            }
+
+            if ($isIndex === true) {
+                $constraints[] = $this->generateInstructionDefineIndex(
+                    $linkTableName, $linkTableNameAlias, $oColumn->getName()
+                );
+            }
+
+            if ($enum !== null) {
+                $constraints[] = $this->generateInstructionConstraintEnumerator(
+                    $linkTableName, $linkTableNameAlias, $oColumn->getName(), $enum
+                );
+            }
+
+        }
+
+
+        $strColumn = "    " . \implode(", \n    ", $useColumns);
+        $strCreateTable = \str_replace("[[columns]]", $strColumn, $strCreateTable);
+
+
+        return  [
+            "createTable" => $strCreateTable,
+            "constraints" => $constraints
+        ];
     }
 
 
