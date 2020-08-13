@@ -64,7 +64,7 @@ class t06SchemaMySqlTest extends TestCase
 
 
 
-
+    /*
     //
     // CONSTRUCTOR
     //
@@ -323,4 +323,107 @@ class t06SchemaMySqlTest extends TestCase
             $this->assertTrue(in_array($cName, $constraintNameList));
         }
     }
-}
+    */
+
+
+
+
+
+    //
+    // CREATEDATABASEDUMP e CREATEDATABASEFROMDUMP
+    //
+    /*
+    public function test_method_createdatabasedump_createdatabasefromdump()
+    {
+        // Recria todo o schema original
+        $factory = $this->provider_factory();
+        $dataBaseName = $factory->getProjectName();
+
+
+        $fullPathToBackupDirectory = to_system_path(realpath(__DIR__) . "/datamodel/backup");
+        $fullPathToDataBaseDumpFile = $fullPathToBackupDirectory . DS . $dataBaseName . ".sql";
+
+        if (is_file($fullPathToDataBaseDumpFile) === true) {
+            unlink($fullPathToDataBaseDumpFile);
+        }
+        $this->assertFalse(is_file($fullPathToDataBaseDumpFile));
+
+        $obj = $this->provider_schema();
+        $obj->executeCreateDataBaseDump(
+            "root",
+            "admin",
+            $fullPathToDataBaseDumpFile
+        );
+
+        $this->assertTrue(is_file($fullPathToDataBaseDumpFile));
+
+
+
+        $DAL = $this->provider_connection();
+        $newDataBaseName = $dataBaseName . "_new";
+        $strSQL = " SELECT
+                        COUNT(SCHEMA_NAME ) as count
+                    FROM
+                        INFORMATION_SCHEMA.SCHEMATA
+                    WHERE
+                        SCHEMA_NAME='$newDataBaseName';";
+        if ($DAL->getCountOf($strSQL) > 0) {
+            $DAL->executeInstruction("DROP DATABASE $newDataBaseName;");
+        }
+        $this->assertEquals(0, $DAL->getCountOf($strSQL));
+
+        $obj->executeCreateDataBaseFromDump(
+            "root",
+            "admin",
+            $newDataBaseName,
+            $fullPathToDataBaseDumpFile
+        );
+
+        $this->assertEquals(1, $DAL->getCountOf($strSQL));
+        $DAL->executeInstruction("DROP DATABASE $newDataBaseName;");
+        $this->assertEquals(0, $DAL->getCountOf($strSQL));
+    }
+    */
+
+
+
+
+    //
+    // UPDATEPROJECTSCHEMA
+    //
+
+    public function test_method_updateprojectschema()
+    {
+        $DAL = $this->provider_connection();
+        $factory = $this->provider_factory();
+        $dataBaseName = $factory->getProjectName();
+
+
+        $fullPathToBackupDirectory = to_system_path(realpath(__DIR__) . "/datamodel/backup");
+        $fullPathToAtualDataBaseDumpFile = $fullPathToBackupDirectory . DS . $dataBaseName . "_1-0.sql";
+
+        if (is_file($fullPathToAtualDataBaseDumpFile) === true) {
+            unlink($fullPathToAtualDataBaseDumpFile);
+        }
+        $this->assertFalse(is_file($fullPathToAtualDataBaseDumpFile));
+
+        $obj = $this->provider_schema();
+        $obj->executeUpdateProjectSchema(
+            "root",
+            "admin",
+            "1-0",
+            $fullPathToBackupDirectory
+        );
+
+        $this->assertTrue(is_file($fullPathToAtualDataBaseDumpFile));
+
+
+        $newDataBaseName = $dataBaseName . "_tmp";
+        $strSQL = " SELECT
+                        COUNT(SCHEMA_NAME ) as count
+                    FROM
+                        INFORMATION_SCHEMA.SCHEMATA
+                    WHERE
+                        SCHEMA_NAME='$newDataBaseName';";
+        $this->assertEquals(1, $DAL->getCountOf($strSQL));
+    }}

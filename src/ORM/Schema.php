@@ -1416,4 +1416,424 @@ class Schema implements iSchema
         $this->dbType       = $this->factory->getDAL()->getDBType();
         $this->dataTypeMap  = $this->dataTypeMap[$this->dbType];
     }
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Gera um arquivo dump do banco de dados atual.
+     *
+     * @param       string $userName
+     *              Nome de usuário com permissão de criar dumps do banco de dados.
+     *
+     * @param       string $password
+     *              Senha para o usuário indicado.
+     *
+     * @param       string $fullPathToDataBaseDumpFile
+     *              Caminho completo até o local onde o arquivo dump deve ser criado.
+     *
+     * @return      bool
+     */
+    public function executeCreateDataBaseDump(
+        string $userName,
+        string $password,
+        string $fullPathToDataBaseDumpFile
+    ) : bool {
+        $r = false;
+
+        $execPassword = \addslashes($password);
+        $dataBaseName = $this->factory->getDAL()->getDBName();
+
+        if (\is_file($fullPathToDataBaseDumpFile) === true) {
+            \unlink($fullPathToDataBaseDumpFile);
+        }
+
+        if (\is_file($fullPathToDataBaseDumpFile) === false) {
+            \exec(
+                "mysqldump -u$userName -p$execPassword $dataBaseName > \"$fullPathToDataBaseDumpFile\"",
+                $cliOutput,
+                $cliReturn
+            );
+
+            $r = \is_file($fullPathToDataBaseDumpFile);
+        }
+
+        return $r;
+    }
+    /**
+     * Cria uma nova base de dados utilizando um arquivo dump definido.
+     *
+     * @param       string $userName
+     *              Nome de usuário com permissão de criar novas bases de dados.
+     *
+     * @param       string $password
+     *              Senha para o usuário indicado.
+     *
+     * @param       string $newDataBaseName
+     *              Nome da nova base de dados.
+     *
+     * @param       string $fullPathToDataBaseDumpFile
+     *              Caminho completo até o dump a ser usado.
+     *
+     * @return      bool
+     */
+    public function executeCreateDataBaseFromDump(
+        string $userName,
+        string $password,
+        string $newDataBaseName,
+        string $fullPathToDataBaseDumpFile
+    ) : bool {
+        $r = false;
+
+        if (\is_file($fullPathToDataBaseDumpFile) === true) {
+            $execPassword = \addslashes($password);
+            $dataBaseName = $this->factory->getDAL()->getDBName();
+            $DAL = $this->factory->getDAL();
+
+            $strSQL = "DROP DATABASE IF EXISTS $newDataBaseName;";
+            $DAL->executeInstruction($strSQL);
+
+
+            $strSQLCheckIfDBExists = "  SELECT
+                                            COUNT(SCHEMA_NAME) as count
+                                        FROM
+                                            INFORMATION_SCHEMA.SCHEMATA
+                                        WHERE
+                                            SCHEMA_NAME='$newDataBaseName';";
+
+            if ($DAL->getCountOf($strSQLCheckIfDBExists) === 0) {
+                $strSQL = "CREATE DATABASE $newDataBaseName;";
+                if ($DAL->executeInstruction($strSQL) === true && $DAL->getCountOf($strSQLCheckIfDBExists) === 1) {
+                    \exec(
+                        "mysql -u$userName -p$execPassword $newDataBaseName < \"$fullPathToDataBaseDumpFile\"",
+                        $cliOutput,
+                        $cliReturn
+                    );
+
+                    $r = ($cliReturn === 0 && count($cliOutput) === 0);
+                }
+            }
+        }
+
+        return $r;
+    }
+
+
+
+
+
+
+
+
+    public function executeUpdateProjectSchema(
+        string $userName,
+        string $password,
+        string $versionOfAtualDataBase,
+        string $fullPathToBackupAtualDataBase,
+        string $fullPathToUpdateDataBaseFiles
+    ) : bool {
+        $r = false;
+        $isOK = \is_dir($fullPathToUpdateDataBaseFiles);
+        $DAL = $this->factory->getDAL();
+
+
+        $dataBaseName = $this->factory->getDAL()->getDBName();
+        $tempNewDataBaseName = $dataBaseName . "_tmp";
+        $instructionsToUpdateColumns = [];
+        $instructionsToUpdateTables = [];
+
+
+
+        // PASSO 1
+        // Gera uma cópia do estado atual do banco de dados.
+        if ($isOK === true && \is_dir($fullPathToBackupAtualDataBase) === true) {
+            $atualDataBaseDumpFileName = $dataBaseName . "_" . $versionOfAtualDataBase . ".sql";
+            $fullPathToDataBaseDumpFile = $fullPathToBackupAtualDataBase . DS . $atualDataBaseDumpFileName;
+
+            $isOK = $this->executeCreateDataBaseDump(
+                $userName,
+                $password,
+                $fullPathToDataBaseDumpFile
+            );
+
+            if ($isOK === true) {
+                $isOK = $this->executeCreateDataBaseFromDump(
+                    $userName,
+                    $password,
+                    $tempNewDataBaseName,
+                    $fullPathToDataBaseDumpFile
+                );
+
+
+                if ($isOK === true) {
+                    $listOfConstraints = $this->listSchemaConstraint();
+                    if ($listOfConstraints !== null) {
+                        foreach ($listOfConstraints as $constraints) {
+                            if ($isOK === true) {
+                                $conTable = $constraints["tableName"];
+                                $conType = $constraints["constraintType"];
+                                $conName = $constraints["constraintName"];
+                                $strSQL = "ALTER TABLE $conTable DROP $conType $conName;";
+
+                                $isOK = $DAL->executeInstruction($strSQL);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+        // PASSO 2
+        // Inicia a definir as alterações no novo banco de dados.
+        if ($isOK === true) {
+            $isOK = false;
+
+            $updateFiles = \scandir($fullPathToUpdateDataBaseFiles);
+            if (is_array($updateFiles) === true && count($updateFiles) > 0) {
+                foreach ($updateFiles as $fileUpdate) {
+                    $tableUpdateRules = include $fullPathToUpdateDataBaseFiles . DS . $fileUpdate;
+
+                    // Identifica se há alterações sobre a tabela em si.
+                    if (isset($tableUpdateRules["updateSet"]) === true) {
+                        $tableUpdateSet = $tableUpdateRules["updateSet"];
+                    }
+
+                    // Identifica se há alterações sobre as colunas da tabela.
+                    if ($tableUpdateSet === null || $tableUpdateSet["type"] !== "create") {
+                        if (isset($tableUpdateRules["columns"]) === true) {
+                            foreach ($tableUpdateRules["columns"] as $columnUpdateRule) {
+                                $instructionsToUpdateColumns = \array_merge(
+                                    $instructionsToUpdateColumns,
+                                    $this->compileInstructionsToUpdateColumn(
+                                        $tableUpdateRules["tableName"],
+                                        $columnUpdateRule
+                                    )
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        //}
+        // PASSO 2
+        // Iniciar alterações no novo banco de dados.
+        // - Efetuar as mudanças na mesma ordem de declaração das mesmas (mesma ordem em que os arquivos
+        //   estão declarados no sistema de arquivos).
+        //
+        // - O Array associativo 'updateSet' sempre deve estar presente em todos os objetos que serão alterados.
+        //   Nele, DEVE SEMPRE possuir a chave 'type' que informará qual o tipo de alteração está sendo feita.
+        //   Os valores esperados para esta chave são:
+        //      - 'create'/'add' ['create' para tabelas, 'add' para colunas]
+        //      - 'alter'
+        //      - 'drop'
+        //
+        // - As chaves 'executeBefore' e 'executeAfter' tem sempre como valores arrays cujos valores são
+        //   instruções SQL a serem executadas respectivamente ANTES e DEPOIS da atualização onde as mesmas estão
+        //   definidas.
+        //
+        // - A chave 'currentObjectName' é obrigatória quando trata-se de uma ação 'alter' para o nome dos objetos.
+
+        // PASSO 3
+        // Gerar um script SQL de alterações conforme as regras especificadas e então executa-lo.
+
+        // PASSO 4
+        // Não havendo qualquer erro deve então ser efetuado a mesclagem da versão atual com a nova versão
+        // e então obter uma nova coleção de descrição de Entidades de dados que representa o novo estado
+        // do banco de dados.
+
+        // PASSO 5
+        // Um novo script do tipo 'projectSchema' deve ser gerado e apenas suas constraints devem ser executadas
+        // no novo banco de dados... desta forma ele fica totalmente atualizado.
+
+        // PASSO 6 -- Isto provavelmente será uma nova função.
+        // O banco de dados ATUAL deve ter seu nome mudado para identificar seu status de 'descontinuado'.
+        // O novo banco de dados deve tomar o lugar do atual.
+
+
+        return $r;
+    }
+
+
+
+
+    private function compileInstructionsToUpdateColumn(
+        string $tableName,
+        array $columnUpdateRule
+    ) : array {
+        $r = [];
+        $allowedTypes = ["add", "alter", "drop"];
+
+        if (\key_exists("updateSet", $columnUpdateRule) === true &&
+            \key_exists("type", $columnUpdateRule["updateSet"]) === true &&
+            \in_array($columnUpdateRule["updateSet"]["type"], $allowedTypes) === true)
+        {
+            $updateSet = $columnUpdateRule["updateSet"];
+
+            $type = $updateSet["type"];
+            $currentName = ((isset($updateSet["currentName"]) === true) ?
+                $updateSet["currentName"] : $columnUpdateRule["name"]
+            );
+            $executeBefore = ((isset($updateSet["executeBefore"]) === true) ? $updateSet["executeBefore"] : []);
+            $executeAfter = ((isset($updateSet["executeAfter"]) === true) ? $updateSet["executeAfter"] : []);
+            $setAfter = ((isset($updateSet["setAfter"]) === true) ? $updateSet["setAfter"] : null);
+
+
+            $r = $executeBefore;
+            if ($type === "drop") {
+                $r[] = "ALTER TABLE $tableName DROP COLUMN $currentName;";
+            }
+            else {
+                if ($type === "alter") {
+                    $oColumn = new \AeonDigital\ORM\DataColumn($columnUpdateRule);
+                    $alterInstruction = $this->generateInstructionAlterTableAlterColumn(
+                        $tableName,
+                        $currentName,
+                        $oColumn->getDescription(),
+                        $oColumn->getType(),
+                        $oColumn->getLength(),
+                        $oColumn->isAllowNull()
+                    );
+
+                    if ($currentName !== $columnUpdateRule["name"]) {
+                        $alterInstruction = \str_replace(
+                            "ALTER TABLE $tableName MODIFY COLUMN $currentName",
+                            "ALTER TABLE $tableName CHANGE $currentName " . $columnUpdateRule["name"],
+                            $alterInstruction
+                        );
+                    }
+
+                    $r[] = $alterInstruction;
+                }
+            }
+
+            $r = array_merge($r, $executeAfter);
+        }
+
+        return $r;
+    }
+
+
+
+
+    /**
+     * Retorna uma instrução para alterar uma coluna de dados existente dentro de uma tabela de
+     * dados também existente.
+     *
+     * @param       string $tableName
+     *              Nome da tabela dona da coluna que será alterada.
+     *
+     * @param       string $name
+     *              Nome da coluna.
+     *
+     * @param       ?string $description
+     *              Descrição para a coluna de dados.
+     *
+     * @param       string $type
+     *              Tipo de dados da coluna.
+     *
+     * @param       ?int $length
+     *              Quantidade de caracteres suportados por uma coluna de dados que armazena
+     *              strings.
+     *
+     * @param       bool $allowNull
+     *              Indica quando é ou não permitido definir ``null`` como um valor válido para
+     *              esta coluna.
+     *
+     * @param       mixed $default
+     *              Valor padrão a ser definido para a coluna de dados.
+     *
+     * @param       string $after
+     *              Nome da coluna de dados em que esta deva ser posicionada APÓS.
+     *
+     * @return      string
+     */
+    private function generateInstructionAlterTableAlterColumn(
+        string $tableName,
+        string $currentName,
+        string $newName,
+        ?string $description,
+        string $type,
+        ?int $length,
+        bool $allowNull,
+        $default = undefined,
+        string $after
+    ) : string {
+
+
+        switch ($this->dbType) {
+            case "mysql":
+                $allowNull = (($allowNull === true) ? "" : " NOT NULL");
+
+                if ($default === undefined) {
+                    $default = null;
+                } else {
+                    $useDefault = " DEFAULT ";
+
+                    switch ($type) {
+                        case "TINYINT(1)":
+                            $useDefault .= (($default === true) ? "1" : "0");
+                            break;
+
+                        case "TINYINT":
+                        case "SMALLINT":
+                        case "INTEGER":
+                        case "BIGINT":
+                        case "FLOAT":
+                        case "DOUBLE":
+                        case "DECIMAL(10,4)":
+                            $useDefault .= $default;
+                            break;
+
+                        case "VARCHAR(x)":
+                        case "LONGTEXT":
+                            $useDefault .= "'$default'";
+                            break;
+
+                        case "DATETIME":
+                            $useDefault .= (($default === "NOW()") ? "NOW()" : $default->format("Y-m-d H-i-s"));
+                            break;
+                    }
+                    $default = $useDefault;
+                }
+
+                $type = (($type === "VARCHAR(x)") ? \str_replace("x", $length, $type) : $type);
+
+                if ($after !== "") {
+                    $after = " AFTER $after";
+                }
+
+                $str = "ALTER TABLE $tableName CHANGE COLUMN $currentName $newName $type" .
+                        $allowNull . $default . $after;
+
+                if ($description !== null && $description !== "") {
+                    $str .= " COMMENT '$description'";
+                }
+                break;
+
+            case "mssqlserver":
+                break;
+
+            case "oracle":
+                break;
+
+            case "postgree":
+                break;
+        }
+
+        return $str;
+    }
 }
