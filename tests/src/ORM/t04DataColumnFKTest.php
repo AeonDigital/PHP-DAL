@@ -161,7 +161,12 @@ class t04DataColumnFKTest extends TestCase
         $obj = new DataColumnFK(
             [
                 "name" => "validName",
-                "fkTableName" => "Cidade"
+                "fkTableName" => "Cidade",
+                "fkDescription" => "Descrição desta FK",
+                "fkAllowNull" => false,
+                "fkUnique" => true,
+                "fkOnUpdate" => "CASCADE",
+                "fkOnDelete" => "CASCADE",
             ],
             $this->provider_factory()
         );
@@ -169,6 +174,12 @@ class t04DataColumnFKTest extends TestCase
         $this->assertSame("Cidade", $obj->getModelName());
         $this->assertTrue($obj->isReference());
         $this->assertFalse($obj->isCollection());
+
+        $this->assertEquals("Descrição desta FK", $obj->getFKDescription());
+        $this->assertFalse($obj->isFKAllowNull());
+        $this->assertTrue($obj->isFKUnique());
+        $this->assertEquals("CASCADE", $obj->getFKOnUpdate());
+        $this->assertEquals("CASCADE", $obj->getFKOnDelete());
     }
 
 
@@ -179,7 +190,11 @@ class t04DataColumnFKTest extends TestCase
                 "name" => "validName",
                 "fkTableName" => "Cidade",
                 "fkLinkTable" => true,
-                "fkDescription" => "Descrição desta FK"
+                "fkDescription" => "Descrição desta FK",
+                "fkAllowNull" => false,
+                "fkUnique" => true,
+                "fkOnUpdate" => "CASCADE",
+                "fkOnDelete" => "CASCADE",
             ],
             $this->provider_factory()
         );
@@ -188,7 +203,12 @@ class t04DataColumnFKTest extends TestCase
         $this->assertTrue($obj->isReference());
         $this->assertTrue($obj->isCollection());
         $this->assertTrue($obj->isFKLinkTable());
-        $this->assertSame("Descrição desta FK", $obj->getFKDescription());
+
+        $this->assertEquals("Descrição desta FK", $obj->getFKDescription());
+        $this->assertFalse($obj->isFKAllowNull());
+        $this->assertTrue($obj->isFKUnique());
+        $this->assertEquals("CASCADE", $obj->getFKOnUpdate());
+        $this->assertEquals("CASCADE", $obj->getFKOnDelete());
     }
 
 

@@ -291,8 +291,8 @@ class t06SchemaMySqlTest extends TestCase
 
         $expected = [
             "uc_cid_Nome_Estado_Capital", "fk_ep_to_cid_Cidade_Id", "uc_sda_SessionID",
-            "fk_udd_gds_to_gds_GrupoDeSeguranca_Id", "fk_udd_gds_to_udd_UsuarioDoDominio_Id", "idx_udd_Login",
-            "uc_udd_Login", "fk_udd_to_sda_SessaoDeAcesso_Id", "idx_udd_ShortLogin", "uc_udd_ShortLogin"
+            "fk_udd_gds_to_gds_GrupoDeSeguranca_Id", "uc_udd_gds_UsuarioDoDominio_Id_GrupoDeSeguranca_Id",
+            "idx_udd_Login", "uc_udd_Login", "uc_udd_SessaoDeAcesso_Id", "idx_udd_ShortLogin", "uc_udd_ShortLogin"
         ];
         $completeConstraintList = $obj->listSchemaConstraint();
         $this->assertNotNull($completeConstraintList);
@@ -301,7 +301,6 @@ class t06SchemaMySqlTest extends TestCase
             $constraintNameList[] = $cRule["constraintName"];
         }
 
-
         foreach ($expected as $cName) {
             $this->assertTrue(in_array($cName, $constraintNameList));
         }
@@ -309,7 +308,8 @@ class t06SchemaMySqlTest extends TestCase
 
 
         $expected = [
-            "PRIMARY", "idx_udd_Login", "uc_udd_Login", "idx_udd_ShortLogin", "uc_udd_ShortLogin"
+            "PRIMARY", "idx_udd_Login", "uc_udd_Login", "idx_udd_ShortLogin",
+            "uc_udd_ShortLogin", "uc_udd_SessaoDeAcesso_Id"
         ];
         $tgtTableConstraintList = $obj->listSchemaConstraint("UsuarioDoDominio");
         $this->assertNotNull($tgtTableConstraintList);

@@ -79,6 +79,39 @@ class Schema implements iSchema
 
 
 
+    /**
+     * Padroniza o nome das constraints mantendo-as dentro do limite de 60 caracteres.
+     * O tratamento consiste em manter no nome apenas os caracters em uppercase.
+     * Se ainda assim o resultado for maior que 60 caracteres será criado um hash usando sha1
+     * para ser usado no lugar.
+     *
+     * @param       string $str
+     *              Nome ideal da constraint.
+     *
+     * @return      string
+     */
+    private function createContraintValidName(string $str) : string
+    {
+        if (\strlen($str) > 60) {
+            $regex = "/(?<=\s|^)[A-Z]/";
+            \preg_match_all($regex, $str, $matches);
+            $str = \implode("", $matches[0]);
+
+            if (\strlen($str) > 60) {
+                $str = sha1($str);
+            }
+        }
+        return $str;
+    }
+
+
+
+
+
+
+
+
+
 
     /**
      * A partir das informações contidas na fábrica de tabelas de dados para o projeto em
@@ -161,7 +194,7 @@ class Schema implements iSchema
                         }
                     }
                 }
-                // Tratando-se de uma chave estrangeira simples (cardinalidade 1-1)
+                // Tratando-se de uma chave estrangeira
                 else {
 
                     // Sendo uma referência 1-1
@@ -171,10 +204,10 @@ class Schema implements iSchema
 
                         $columns[] = $this->generateInstructionAddColumn(
                             $oColumn->getModelName() . "_Id",
-                            $oColumn->getDescription(),
+                            $oColumn->getFKDescription(),
                             $this->dataTypeMap["Long"],
                             null,
-                            $oColumn->isAllowNull(),
+                            $oColumn->isFKAllowNull(),
                             undefined
                         );
 
@@ -192,6 +225,12 @@ class Schema implements iSchema
                             $oColumn->getFKOnUpdate(),
                             $oColumn->getFKOnDelete()
                         );
+
+                        if ($oColumn->isFKUnique() === true) {
+                            $constraints[] = $this->generateInstructionConstraintUnique(
+                                $tableName, $tableAlias, $oColumn->getModelName() . "_Id"
+                            );
+                        }
                     }
                     // Senão, tratando-se de uma linktable.
                     else {
@@ -283,6 +322,15 @@ class Schema implements iSchema
             if ($executeAfterCreateTable !== null) {
                 foreach ($executeAfterCreateTable as $instruction) {
                     $constraints[] = $instruction;
+                }
+            }
+
+            $uniqueMultipleKeys = $dataTable->getUniqueMultipleKeys();
+            if ($uniqueMultipleKeys !== null) {
+                foreach ($uniqueMultipleKeys as $multiKeys) {
+                    $constraints[] = $this->generateInstructionConstraintUniqueMultiKeys(
+                        $tableName, $tableAlias, $multiKeys
+                    );
                 }
             }
         }
@@ -540,8 +588,49 @@ class Schema implements iSchema
 
         switch ($this->dbType) {
             case "mysql":
-                $ctName = "uc_" . $tableAlias . "_" . $colName;
+                $ctName = $this->createContraintValidName("uc_" . $tableAlias . "_" . $colName);
                 $str = "ALTER TABLE $tableName ADD CONSTRAINT $ctName UNIQUE ($colName);";
+                break;
+
+            case "mssqlserver":
+                break;
+
+            case "oracle":
+                break;
+
+            case "postgree":
+                break;
+        }
+
+        return $str;
+    }
+    /**
+     * Retorna uma instrução para inserir uma constraint de uma chave única composta.
+     *
+     * @param       string $linkTableName
+     *              Nome da tabela usada como linkTable.
+     *
+     * @param       string $linkTableAlias
+     *              Alias usado para esta linkTable.
+     *
+     * @param       array $multiKeys
+     *              Coleção de chaves que irão compor a constraint.
+     *
+     * @return      string
+     */
+    private function generateInstructionConstraintUniqueMultiKeys(
+        string $linkTableName,
+        string $linkTableAlias,
+        array $multiKeys
+    ) : string {
+        $str = "";
+
+        switch ($this->dbType) {
+            case "mysql":
+                $ctName = $this->createContraintValidName(
+                    "uc_" . $linkTableAlias . "_" . \implode("_", $multiKeys)
+                );
+                $str = "ALTER TABLE $linkTableName ADD CONSTRAINT $ctName UNIQUE (" . \implode(", ", $multiKeys) . ");";
                 break;
 
             case "mssqlserver":
@@ -642,7 +731,7 @@ class Schema implements iSchema
         switch ($this->dbType) {
             case "mysql":
                 $enum = \implode("', '", $useEnum);
-                $ctName = "enum_" . $tableAlias . "_" . $colName;
+                $ctName = $this->createContraintValidName("enum_" . $tableAlias . "_" . $colName);
                 $str = "ALTER TABLE $tableName ADD CONSTRAINT $ctName CHECK ($colName IN ('$enum'));";
                 break;
 
@@ -698,7 +787,9 @@ class Schema implements iSchema
 
         switch ($this->dbType) {
             case "mysql":
-                $ctName     = "fk_" . $tableAlias . "_to_" . $tableAliasFK . "_". $colName;
+                $ctName     = $this->createContraintValidName(
+                    "fk_" . $tableAlias . "_to_" . $tableAliasFK . "_". $colName
+                );
                 $onUpdate   = ($fkOnUpdate === null) ? "" : " ON UPDATE $fkOnUpdate";
                 $onDelete   = ($fkOnDelete === null) ? "" : " ON DELETE $fkOnDelete";
                 $str = "ALTER TABLE $tableName ADD CONSTRAINT $ctName FOREIGN KEY ($colName) REFERENCES $tableNameFK(Id)$onUpdate$onDelete;";
@@ -808,6 +899,15 @@ class Schema implements iSchema
                 null,
                 "CASCADE"
             );
+
+
+            if ($table01Column->isFKUnique() === true || $table02Column->isFKUnique() === true) {
+                $constraint[] = $this->generateInstructionConstraintUniqueMultiKeys(
+                    $linkTableName,
+                    \str_replace("_to_", "_", $linkTableName),
+                    [$table01Column->getModelName() . "_Id", $table02Column->getModelName() . "_Id"]
+                );
+            }
 
             return [
                 "linkTableName" => $linkTableName,
@@ -1153,7 +1253,7 @@ class Schema implements iSchema
     {
         $tgtSchemaFilePath = $this->factory->getProjectDirectory() . DS . "_projectSchema.sql";
 
-        if (\file_exists($tgtSchemaFilePath) === false) {
+        if (\file_exists($tgtSchemaFilePath) === false || $dropSchema === true) {
             $this->generateCreateSchemaFiles();
         }
 

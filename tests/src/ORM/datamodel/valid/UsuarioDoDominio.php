@@ -2,9 +2,9 @@
   'tableName' => 'UsuarioDoDominio',
   'alias' => 'udd',
   'description' => 'Conta de um usuário que pode efetuar login em aplicações do domínio.',
-  'columns' => 
+  'columns' =>
   array (
-    0 => 
+    0 =>
     array (
       'name' => 'Ativo',
       'description' => 'Indica se a conta do usuário está ativa para o domínio.',
@@ -12,7 +12,7 @@
       'default' => true,
       'allowNull' => false,
     ),
-    1 => 
+    1 =>
     array (
       'name' => 'Locale',
       'description' => 'Locale padrão para o usuário.',
@@ -23,7 +23,7 @@
       'enumerator' => '/enum/Locale.php',
       'allowNull' => false,
     ),
-    2 => 
+    2 =>
     array (
       'name' => 'DataDeRegistro',
       'description' => 'Data e hora deste registro.',
@@ -32,7 +32,7 @@
       'default' => 'NOW()',
       'allowNull' => false,
     ),
-    3 => 
+    3 =>
     array (
       'name' => 'Nome',
       'description' => 'Nome do usuário.',
@@ -41,7 +41,7 @@
       'allowNull' => false,
       'allowEmpty' => false,
     ),
-    4 => 
+    4 =>
     array (
       'name' => 'Genero',
       'description' => 'Gênero do usuário.',
@@ -50,7 +50,7 @@
       'enumerator' => '/enum/Gender.php',
       'allowNull' => false,
     ),
-    5 => 
+    5 =>
     array (
       'name' => 'Login',
       'description' => 'Login do usuário.',
@@ -62,7 +62,7 @@
       'allowNull' => false,
       'index' => true,
     ),
-    6 => 
+    6 =>
     array (
       'name' => 'ShortLogin',
       'description' => 'Login curto.',
@@ -73,7 +73,7 @@
       'allowNull' => false,
       'index' => true,
     ),
-    7 => 
+    7 =>
     array (
       'name' => 'Senha',
       'description' => 'Senha de acesso.',
@@ -82,7 +82,7 @@
       'length' => 255,
       'allowNull' => false,
     ),
-    8 => 
+    8 =>
     array (
       'name' => 'DataDeDefinicaoDeSenha',
       'description' => 'Data e hora da definição da senha atual.',
@@ -90,13 +90,13 @@
       'default' => 'NOW()',
       'allowNull' => false,
     ),
-    9 => 
+    9 =>
     array (
       'name' => 'Apresentacao',
       'description' => 'Texto de apresentação do usuário.',
       'type' => 'String'
     ),
-    10 => 
+    10 =>
     array (
       'name' => 'EmailContato',
       'description' => 'Email para contato.',
@@ -105,7 +105,7 @@
       'length' => 64,
       'allowNull' => false,
     ),
-    11 => 
+    11 =>
     array (
       'name' => 'ValorInteiro',
       'description' => 'Valor inteiro para testes.',
@@ -115,7 +115,7 @@
       'default' => 500,
       'allowNull' => false,
     ),
-    12 => 
+    12 =>
     array (
       'name' => 'ValorFloat',
       'description' => 'Valor float para testes.',
@@ -125,7 +125,7 @@
       'default' => 8.556,
       'allowNull' => false,
     ),
-    13 => 
+    13 =>
     array (
       'name' => 'ValorReal',
       'description' => 'Valor real para testes.',
@@ -135,13 +135,15 @@
       'default' => 7.778,
       'allowNull' => false,
     ),
-    14 => 
+    14 =>
     array (
       'name' => 'Sessao',
-      'description' => 'Sessão atualmente aberta.',
       'fkTableName' => 'SessaoDeAcesso',
+      'fkDescription' => 'Sessão atualmente aberta.',
+      'fkAllowNull' => false,
+      'fkUnique' => true
     ),
-    15 => 
+    15 =>
     array (
       'name' => 'GruposDeSeguranca',
       'description' => 'Coleção dos grupos de segurança que este usuário está apto a utilizar.',
@@ -149,6 +151,7 @@
       'fkDescription' => 'UsuarioDoDominio em GrupoDeSeguranca',
       'fkLinkTable' => true,
       'fkAllowNull' => false,
+      'fkUnique' => true
     ),
   ),
 );

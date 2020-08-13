@@ -13,7 +13,7 @@ use AeonDigital\DataModel\Abstracts\aFieldModelCollection as aFieldModelCollecti
 
 
 /**
- * Representação de uma coluna de dados que armazena uma coleção de referências para um
+ * Representação de uma coluna de dados que armazena uma coleção de referências para
  * outros registros de uma outra tabela de dados.
  *
  * @package     AeonDigital\ORM
@@ -67,6 +67,9 @@ class DataColumnFKCollection extends aFieldModelCollection implements iColumnFK
      *          Indica se os objetos filhos devem ser obrigados a terem uma correlação
      *          obrigatória com o objeto pai. (opcional)
      *
+     *          bool            "fkUnique"
+     *          Indica que cada objeto pai pode se relacionar com apenas 1 objeto filho e vice-versa.
+     *
      *          string          "fkOnUpdate"
      *          Regra para ser aplicada nesta FK quando o registro pai for alterado. (opcional)
      *          São esperados um dos seguintes valores:
@@ -107,6 +110,7 @@ class DataColumnFKCollection extends aFieldModelCollection implements iColumnFK
         $fkDescription          = ((isset($config["fkDescription"]))    ? $config["fkDescription"]          : null);
         $fkLinkTable            = ((isset($config["fkLinkTable"]))      ? $config["fkLinkTable"]            : false);
         $fkAllowNull            = ((isset($config["fkAllowNull"]))      ? $config["fkAllowNull"]            : true);
+        $fkUnique               = ((isset($config["fkUnique"]))         ? $config["fkUnique"]               : false);
         $fkOnUpdate             = ((isset($config["fkOnUpdate"]))       ? \strtoupper($config["fkOnUpdate"]) : null);
         $fkOnDelete             = ((isset($config["fkOnDelete"]))       ? \strtoupper($config["fkOnDelete"]) : null);
 
@@ -128,6 +132,7 @@ class DataColumnFKCollection extends aFieldModelCollection implements iColumnFK
         $this->fkDescription    = $fkDescription;
         $this->fkLinkTable      = $fkLinkTable;
         $this->fkAllowNull      = $fkAllowNull;
+        $this->fkUnique         = $fkUnique;
         $this->fkOnUpdate       = $fkOnUpdate;
         $this->fkOnDelete       = $fkOnDelete;
     }
