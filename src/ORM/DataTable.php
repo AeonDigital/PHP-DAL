@@ -607,17 +607,17 @@ class DataTable extends aModel implements iTable
      *
      * @return      bool
      */
-    public function attatchWith(string $tableName, int $tgtId) : bool
+    public function attachWith(string $tableName, int $tgtId) : bool
     {
         $r = false;
 
-        if ($this->Id !== 0 && isset($this->ormInstructions["attatchWith"][$tableName]) === true) {
+        if ($this->Id !== 0 && isset($this->ormInstructions["attachWith"][$tableName]) === true) {
             $execData = [
                 "thisId"    => $this->Id,
                 "tgtId"     => $tgtId
             ];
 
-            $strSQL = $this->ormInstructions["attatchWith"][$tableName];
+            $strSQL = $this->ormInstructions["attachWith"][$tableName];
             $r = $this->DAL->executeInstruction($strSQL, $execData);
         }
 

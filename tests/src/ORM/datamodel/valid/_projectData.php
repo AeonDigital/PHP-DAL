@@ -18,7 +18,7 @@
       'selectParentId' => 
       array (
       ),
-      'attatchWith' => 
+      'attachWith' => 
       array (
         'EnderecoPostal' => 'UPDATE EnderecoPostal SET Cidade_Id=:thisId WHERE Id=:tgtId;',
       ),
@@ -54,7 +54,7 @@
       array (
         'Cidade' => 'SELECT Cidade_Id FROM EnderecoPostal WHERE Id=:thisId;',
       ),
-      'attatchWith' => 
+      'attachWith' => 
       array (
         'Cidade' => 'UPDATE EnderecoPostal SET Cidade_Id=:tgtId WHERE Id=:thisId;',
       ),
@@ -100,7 +100,7 @@
       'selectParentId' => 
       array (
       ),
-      'attatchWith' => 
+      'attachWith' => 
       array (
         'UsuarioDoDominio' => 'INSERT INTO udd_to_gds (GrupoDeSeguranca_Id, UsuarioDoDominio_Id) VALUES (:thisId, :tgtId);',
       ),
@@ -136,7 +136,7 @@
       array (
         'UsuarioDoDominio' => 'SELECT Id FROM UsuarioDoDominio WHERE SessaoDeAcesso_Id=:thisId;',
       ),
-      'attatchWith' => 
+      'attachWith' => 
       array (
         'UsuarioDoDominio' => 'UPDATE UsuarioDoDominio SET SessaoDeAcesso_Id=:thisId WHERE Id=:tgtId;',
       ),
@@ -189,7 +189,7 @@
       'selectParentId' => 
       array (
       ),
-      'attatchWith' => 
+      'attachWith' => 
       array (
         'SessaoDeAcesso' => 'UPDATE UsuarioDoDominio SET SessaoDeAcesso_Id=:tgtId WHERE Id=:thisId;',
         'GrupoDeSeguranca' => 'INSERT INTO udd_to_gds (UsuarioDoDominio_Id, GrupoDeSeguranca_Id) VALUES (:thisId, :tgtId);',

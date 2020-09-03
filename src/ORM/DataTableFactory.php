@@ -150,7 +150,7 @@ class DataTableFactory implements iDataTableFactory
                             "select"            => null,
                             "selectChild"       => null,
                             "selectParentId"    => [],
-                            "attatchWith"       => [],
+                            "attachWith"        => [],
                             "detachWith"        => [],
                             "detachWithAll"     => [],
                             "oColumn"           => [],
@@ -197,10 +197,10 @@ class DataTableFactory implements iDataTableFactory
 
                         // Define as instruções para anexar e desanexar vínculos 1-1
                         // a partir do proprietário (objeto que possui o outro).
-                        $strSQLAttatch      = "UPDATE $tableName SET $fkName=:tgtId WHERE Id=:thisId;";
+                        $strSQLAttach       = "UPDATE $tableName SET $fkName=:tgtId WHERE Id=:thisId;";
                         $strSQLDetach       = "UPDATE $tableName SET $fkName=null WHERE Id=:thisId;";
                         $strSQLDetachAll    = "UPDATE $tableName SET $fkName=null WHERE Id=:thisId;";
-                        $projectDataFile[$tableName]["ormInstructions"]["attatchWith"][$fkTableName]    = $strSQLAttatch;
+                        $projectDataFile[$tableName]["ormInstructions"]["attachWith"][$fkTableName]     = $strSQLAttach;
                         $projectDataFile[$tableName]["ormInstructions"]["detachWith"][$fkTableName]     = $strSQLDetach;
                         $projectDataFile[$tableName]["ormInstructions"]["detachWithAll"][$fkTableName]  = $strSQLDetachAll;
 
@@ -208,11 +208,11 @@ class DataTableFactory implements iDataTableFactory
                         // Define as instruções para anexar e desanexar vínculos 1-1
                         // no lado do objeto possuído.
                         $strSQLParentId     = "SELECT Id FROM $tableName WHERE $fkName=:thisId;";
-                        $strSQLAttatch      = "UPDATE $tableName SET $fkName=:thisId WHERE Id=:tgtId;";
+                        $strSQLAttach       = "UPDATE $tableName SET $fkName=:thisId WHERE Id=:tgtId;";
                         $strSQLDetach       = "UPDATE $tableName SET $fkName=null WHERE Id=:tgtId;";
                         $strSQLDetachAll    = "UPDATE $tableName SET $fkName=null WHERE $fkName=:thisId;";
                         $projectDataFile[$fkTableName]["ormInstructions"]["selectParentId"][$tableName] = $strSQLParentId;
-                        $projectDataFile[$fkTableName]["ormInstructions"]["attatchWith"][$tableName]    = $strSQLAttatch;
+                        $projectDataFile[$fkTableName]["ormInstructions"]["attachWith"][$tableName]     = $strSQLAttach;
                         $projectDataFile[$fkTableName]["ormInstructions"]["detachWith"][$tableName]     = $strSQLDetach;
                         $projectDataFile[$fkTableName]["ormInstructions"]["detachWithAll"][$tableName]  = $strSQLDetachAll;
                     }
@@ -225,21 +225,21 @@ class DataTableFactory implements iDataTableFactory
 
                             // Define as instruções para anexar e desanexar vínculos 1-N
                             // a partir do proprietário (objeto que possui o outro).
-                            $strSQLAttatch      = "UPDATE $fkTableName SET $fkName=:thisId WHERE Id=:tgtId;";
+                            $strSQLAttach      = "UPDATE $fkTableName SET $fkName=:thisId WHERE Id=:tgtId;";
                             $strSQLDetach       = "UPDATE $fkTableName SET $fkName=null WHERE Id=:tgtId;";
                             $strSQLDetachAll    = "UPDATE $fkTableName SET $fkName=null WHERE $fkName=:thisId;";
-                            $projectDataFile[$tableName]["ormInstructions"]["attatchWith"][$fkTableName]    = $strSQLAttatch;
+                            $projectDataFile[$tableName]["ormInstructions"]["attachWith"][$fkTableName]     = $strSQLAttach;
                             $projectDataFile[$tableName]["ormInstructions"]["detachWith"][$fkTableName]     = $strSQLDetach;
                             $projectDataFile[$tableName]["ormInstructions"]["detachWithAll"][$fkTableName]  = $strSQLDetachAll;
 
                             // Define as instruções para anexar e desanexar vínculos 1-N
                             // no lado do objeto possuído.
                             $strSQLParentId     = "SELECT $fkName FROM $fkTableName WHERE Id=:thisId;";
-                            $strSQLAttatch      = "UPDATE $fkTableName SET $fkName=:tgtId WHERE Id=:thisId;";
+                            $strSQLAttach      = "UPDATE $fkTableName SET $fkName=:tgtId WHERE Id=:thisId;";
                             $strSQLDetach       = "UPDATE $fkTableName SET $fkName=null WHERE Id=:thisId;";
                             $strSQLDetachAll    = "UPDATE $fkTableName SET $fkName=null WHERE Id=:thisId;";
                             $projectDataFile[$fkTableName]["ormInstructions"]["selectParentId"][$tableName] = $strSQLParentId;
-                            $projectDataFile[$fkTableName]["ormInstructions"]["attatchWith"][$tableName]    = $strSQLAttatch;
+                            $projectDataFile[$fkTableName]["ormInstructions"]["attachWith"][$tableName]     = $strSQLAttach;
                             $projectDataFile[$fkTableName]["ormInstructions"]["detachWith"][$tableName]     = $strSQLDetach;
                             $projectDataFile[$fkTableName]["ormInstructions"]["detachWithAll"][$tableName]  = $strSQLDetachAll;
                         }
@@ -261,10 +261,10 @@ class DataTableFactory implements iDataTableFactory
 
                             // Define as instruções para anexar e desanexar vínculos N-N
                             // a partir do proprietário (objeto que possui o outro).
-                            $strSQLAttatch      = "INSERT INTO $linkTableName ($pkName, $fkName) VALUES (:thisId, :tgtId);";
+                            $strSQLAttach      = "INSERT INTO $linkTableName ($pkName, $fkName) VALUES (:thisId, :tgtId);";
                             $strSQLDetach       = "DELETE FROM $linkTableName WHERE $pkName=:thisId AND $fkName=:tgtId;";
                             $strSQLDetachAll    = "DELETE FROM $linkTableName WHERE $pkName=:thisId;";
-                            $projectDataFile[$tableName]["ormInstructions"]["attatchWith"][$fkTableName]    = $strSQLAttatch;
+                            $projectDataFile[$tableName]["ormInstructions"]["attachWith"][$fkTableName]    = $strSQLAttach;
                             $projectDataFile[$tableName]["ormInstructions"]["detachWith"][$fkTableName]     = $strSQLDetach;
                             $projectDataFile[$tableName]["ormInstructions"]["detachWithAll"][$fkTableName]  = $strSQLDetachAll;
                         }
