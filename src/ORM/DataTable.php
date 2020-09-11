@@ -153,6 +153,8 @@ class DataTable extends aModel implements iTable
     }
     /**
      * Executa o ``rollback`` de uma transação em aberto e encerra a mesma.
+     * Esta ação será executada apenas se esta própria instância for a dona da
+     * transaction.
      *
      * @codeCoverageIgnore
      *
@@ -165,7 +167,7 @@ class DataTable extends aModel implements iTable
     private function executeRollBackAndCloseTransaction() : bool
     {
         $r = $this->DAL->inTransaction();
-        if ($r === true) {
+        if ($r === true && $this->isTransactionOwner === true) {
             $r = $this->DAL->rollBack();
             $this->isTransactionOwner = false;
             if ($r === false) {
@@ -177,6 +179,8 @@ class DataTable extends aModel implements iTable
     }
     /**
      * Executa o ``commit`` das transações realizadas e encerra a mesma.
+     * Esta ação será executada apenas se esta própria instância for a dona da
+     * transaction.
      *
      * @codeCoverageIgnore
      *
@@ -193,11 +197,13 @@ class DataTable extends aModel implements iTable
             $msg = "There is no open transaction to be closed.";
             throw new \Exception($msg);
         } else {
-            $r = $this->DAL->commit();
-            $this->isTransactionOwner = false;
-            if ($r === false) {
-                $msg = "Data commit can not be executed.";
-                throw new \Exception($msg);
+            if ($this->isTransactionOwner === true) {
+                $r = $this->DAL->commit();
+                $this->isTransactionOwner = false;
+                if ($r === false) {
+                    $msg = "Data commit can not be executed.";
+                    throw new \Exception($msg);
+                }
             }
         }
         return $r;
@@ -417,9 +423,7 @@ class DataTable extends aModel implements iTable
             if ($r === false) {
                 $this->executeRollBackAndCloseTransaction();
             } else {
-                if ($this->isTransactionOwner === true) {
-                    $this->executeCommitAndCloseTransaction();
-                }
+                $this->executeCommitAndCloseTransaction();
             }
         }
 
