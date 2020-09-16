@@ -61,7 +61,7 @@ class Schema implements iSchema
                         "Long"          =>  "BIGINT",
                         "Float"         =>  "FLOAT",
                         "Double"        =>  "DOUBLE",
-                        "Real"          =>  "DECIMAL(10,4)",
+                        "Real"          =>  "DECIMAL(14,4)",
                         "DateTime"      =>  "DATETIME",
                         "String"        =>  "VARCHAR(x)",
                         "Text"          =>  "LONGTEXT"
@@ -527,7 +527,7 @@ class Schema implements iSchema
                         case "BIGINT":
                         case "FLOAT":
                         case "DOUBLE":
-                        case "DECIMAL(10,4)":
+                        case "DECIMAL(14,4)":
                             $useDefault .= $default;
                             break;
 
