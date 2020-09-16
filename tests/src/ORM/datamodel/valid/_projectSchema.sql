@@ -1,6 +1,6 @@
 /*
  * Main Schema definition
- * Generated in 2020-09-11-10-12-34
+ * Generated in 2020-09-16-11-02-00
 */
 
 /*--INI CREATE TABLE--*/
@@ -83,7 +83,7 @@ CREATE TABLE UsuarioDoDominio (
     EmailContato VARCHAR(64) NOT NULL COMMENT 'Email para contato.', 
     ValorInteiro INTEGER NOT NULL DEFAULT 500 COMMENT 'Valor inteiro para testes.', 
     ValorFloat FLOAT NOT NULL DEFAULT 8.556 COMMENT 'Valor float para testes.', 
-    ValorReal DECIMAL(10,4) NOT NULL DEFAULT 7.778 COMMENT 'Valor real para testes.', 
+    ValorReal DECIMAL(14,4) NOT NULL DEFAULT 7.778 COMMENT 'Valor real para testes.', 
     SessaoDeAcesso_Id BIGINT NOT NULL COMMENT 'Sessão atualmente aberta.', 
     PRIMARY KEY (Id)
 ) COMMENT 'Conta de um usuário que pode efetuar login em aplicações do domínio.';
@@ -132,5 +132,5 @@ ALTER TABLE udd_to_gds ADD CONSTRAINT uc_udd_gds_UsuarioDoDominio_Id_GrupoDeSegu
 
 /*
  * End of Main Schema definition
- * Generated in 2020-09-11-10-12-34
+ * Generated in 2020-09-16-11-02-00
 */
