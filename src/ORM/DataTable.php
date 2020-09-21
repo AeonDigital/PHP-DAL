@@ -237,17 +237,24 @@ class DataTable extends aModel implements iTable
      * @param       ?int $parentId
      *              Id do objeto pai ao qual este registro deve estar associado.
      *
+     * @param       bool $isNew
+     *              Indica quando trata-se de um objeto novo ou de um pré-existente.
+     *
      * @return      array
      */
     private function retrieveRowData(
         ?string $parentTableName = null,
-        ?int $parentId = null
+        ?int $parentId = null,
+        bool $isNew = true
     ) : array {
         $arr = [];
 
         // Resgata os dados comuns.
+        // Exceto os campos readonly de registros pré-existentes
         foreach ($this->ormInstructions["oColumn"] as $cName => $oColumn) {
-            $arr[$cName] = $oColumn->getStorageValue();
+            if ($isNew === true || ($isNew === false && $oColumn->isReadOnly() === false)) {
+                $arr[$cName] = $oColumn->getStorageValue();
+            }
         }
 
         // Adiciona os dados do objeto Parent
@@ -325,7 +332,7 @@ class DataTable extends aModel implements iTable
 
         // Apenas se a instância atual estiver validada.
         if ($r === true) {
-            $rowData = $this->retrieveRowData($parentTableName, $parentId);
+            $rowData = $this->retrieveRowData($parentTableName, $parentId, ($this->Id === 0));
 
             // Inicía um bloco transaction se ele ainda não foi aberto.
             $this->openTransactionIfClosed();
