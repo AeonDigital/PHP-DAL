@@ -248,4 +248,24 @@ class t01DataColumnTest extends TestCase
         $this->assertSame($exp, $obj->getValue(true));
         $this->assertSame($exp, $obj->getValue());
     }
+
+
+    public function test_constructor_ok_inputformat_numeric_str()
+    {
+        $testValue = "NUMERIC_STR";
+
+        $obj = new DataColumn([
+            "name"                      => "validName",
+            "type"                      => "String",
+            "inputFormat"               => $testValue
+        ]);
+        $this->assertSame($testValue, $obj->getInputFormat());
+
+        $val = "teste com 0 alguns 3 números 9aleatórios";
+        $exp = "039";
+        $r = $obj->setValue($val);
+        $this->assertTrue($r);
+        $this->assertSame($exp, $obj->getValue(true));
+        $this->assertSame($exp, $obj->getValue());
+    }
 }
