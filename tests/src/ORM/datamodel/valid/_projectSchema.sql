@@ -1,6 +1,6 @@
 /*
  * Main Schema definition
- * Generated in 2020-09-22-22-31-37
+ * Generated in 2021-03-17-15-13-05
 */
 
 /*--INI CREATE TABLE--*/
@@ -132,5 +132,5 @@ ALTER TABLE udd_to_gds ADD CONSTRAINT uc_udd_gds_UsuarioDoDominio_Id_GrupoDeSegu
 
 /*
  * End of Main Schema definition
- * Generated in 2020-09-22-22-31-37
+ * Generated in 2021-03-17-15-13-05
 */

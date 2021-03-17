@@ -537,7 +537,18 @@ class Schema implements iSchema
                             break;
 
                         case "DATETIME":
-                            $useDefault .= (($default === "NOW()") ? "NOW()" : $default->format("Y-m-d H-i-s"));
+                            $use = null;
+                            if (\is_a($default, "\DateTime") === true) {
+                                $use = "'" . $default->format("Y-m-d H-i-s") . "'";
+                            }
+                            elseif (\mb_strtoupper($default) === "NOW()") {
+                                $use = "NOW()";
+                            }
+                            else {
+                                $use = "'$default'";
+                            }
+
+                            $useDefault .= $use;
                             break;
                     }
                     $default = $useDefault;
