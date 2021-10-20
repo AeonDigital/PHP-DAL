@@ -751,7 +751,7 @@ class DAL extends BObject implements iDAL
             switch ($dbType) {
                 case "mysql" :
                     $initialInstructions[] = "SET NAMES utf8;";
-                    $initialInstructions[] = "USE $dbName;";
+                    $initialInstructions[] = "USE `$dbName`;";
 
                     if ($dbConnectionString === null) {
                         $dbConnectionString = "mysql:host=$dbHost;dbname=$dbName;charset=utf8";
