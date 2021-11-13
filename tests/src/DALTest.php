@@ -25,11 +25,11 @@ class DALTest extends TestCase
     private function provider_connection_credentials()
     {
         return [
-            "dbType"            => "mysql",
-            "dbHost"            => "localhost",
-            "dbName"            => "test",
-            "dbUserName"        => "root",
-            "dbUserPassword"    => "admin"
+            "dbType"            => getenv("DATABASE_TYPE"), // export DATABASE_TYPE=mysql
+            "dbHost"            => getenv("DATABASE_HOST"), // export DATABASE_HOST=localhost
+            "dbName"            => getenv("DATABASE_NAME"), // export DATABASE_NAME=test
+            "dbUserName"        => getenv("DATABASE_USER"), // export DATABASE_USER=root
+            "dbUserPassword"    => getenv("DATABASE_PASS"), // export DATABASE_PASS=root
         ];
     }
 
@@ -154,21 +154,21 @@ class DALTest extends TestCase
     public function test_method_dbtype()
     {
         $obj = $this->provider_connection();
-        $this->assertSame("mysql", $obj->getDBType());
+        $this->assertSame(getenv("DATABASE_TYPE"), $obj->getDBType());
     }
 
 
     public function test_method_dbhost()
     {
         $obj = $this->provider_connection();
-        $this->assertSame("localhost", $obj->getDBHost());
+        $this->assertSame(getenv("DATABASE_HOST"), $obj->getDBHost());
     }
 
 
     public function test_method_dbname()
     {
         $obj = $this->provider_connection();
-        $this->assertSame("test", $obj->getDBName());
+        $this->assertSame(getenv("DATABASE_NAME"), $obj->getDBName());
     }
 
 
