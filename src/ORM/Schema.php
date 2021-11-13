@@ -1224,7 +1224,8 @@ class Schema implements iSchema
                                 iss.TABLE_NAME,
                                 iss.COLUMN_NAME,
                                 iss.INDEX_NAME,
-                                istc.CONSTRAINT_TYPE
+                                istc.CONSTRAINT_TYPE,
+                                iss.CARDINALITY
                             ORDER BY
                                 iss.TABLE_NAME ASC,
                                 iss.COLUMN_NAME ASC,
