@@ -107,7 +107,7 @@ class DALTest extends TestCase
                 $con["dbUserPassword"]);
         } catch (\Exception $ex) {
             $fail = true;
-            $this->assertSame("SQLSTATE[HY000] [1049] Unknown database 'invalidDatabase'", $ex->getMessage());
+            $this->assertSame("SQLSTATE[HY000] [1049] Unknown database 'invalidDataBase'", $ex->getMessage());
         }
         $this->assertTrue($fail, "Test must fail");
     }
