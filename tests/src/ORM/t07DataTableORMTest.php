@@ -22,11 +22,11 @@ class t07DataTableORMTest extends TestCase
     private function provider_connection_credentials()
     {
         return [
-            "dbType"            => "mysql",
-            "dbHost"            => "localhost",
-            "dbName"            => "test",
-            "dbUserName"        => "root",
-            "dbUserPassword"    => "admin"
+            "dbType"            => getenv("DATABASE_TYPE"), // export DATABASE_TYPE=mysql
+            "dbHost"            => getenv("DATABASE_HOST"), // export DATABASE_HOST=localhost
+            "dbName"            => getenv("DATABASE_NAME"), // export DATABASE_NAME=test
+            "dbUserName"        => getenv("DATABASE_USER"), // export DATABASE_USER=root
+            "dbUserPassword"    => getenv("DATABASE_PASS"), // export DATABASE_PASS=root
         ];
     }
 
