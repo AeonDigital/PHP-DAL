@@ -1,8 +1,6 @@
 {
     "name": "aeondigital/phpdal",
     "description": "Provê uma camada de acesso à bancos de dados.",
-    "version": "v0.5.9-beta",
-    "time": "2021-07-26",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -16,8 +14,12 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.4",
-        "aeondigital/phpinterfaces": ">=v0.5.9-beta",
-        "aeondigital/phpcore": ">=v0.5.9-beta"
+        "aeondigital/phpinterfaces": ">=v0.6.0-beta",
+        "aeondigital/phpcore": ">=v0.6.0-beta"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9",
+        "aeondigital/phpdoc-to-rst": "master"
     },
     "autoload": {
         "classmap": [

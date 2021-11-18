@@ -50,7 +50,7 @@ class t07DataTableORMTest extends TestCase
 
     private function provider_factory() : DataTableFactory
     {
-        $tgtPath = to_system_path(realpath(__DIR__ . "/..") . "/datamodel/valid");
+        $tgtPath = to_system_path(realpath(__DIR__) . "/datamodel/valid");
         $factory = new DataTableFactory($tgtPath, $this->provider_connection());
 
         $schema = new Schema($factory);

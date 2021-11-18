@@ -37,15 +37,14 @@ _______________________________________________________________________________
 
 ## Outras Informações
 
+Confira o [Makefile](Makefile) para conhecer sobre as formas de executar, 
+testar, versionar e expor a documentação.
+
 Este e outros projetos **Aeon Digital** utilizam o sistema de [Versionamento
 Semântico](https://semver.org/) proposto por Tom Preston-Werner.
 
-O diretório `tests` contendo os testes em `PHPUnit` não está disponível por
-padrão para pacotes instalados usando o composer mas o mesmo pode ser obtido no
-repositório oficial.
-
 A documentação completa pode ser vista em
-[ReadTheDocs](https://aeondigital-php-dal.readthedocs.io/en/latest/).
+[ReadTheDocs](https://aeondigital-php-dal.readthedocs.io/).
 
 
 &nbsp;
