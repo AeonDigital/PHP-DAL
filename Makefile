@@ -65,28 +65,29 @@ get-ip:
 
 
 
+
 #
 # Executa a bateria de testes
+#
+# Opcionais
+# Use o parametro 'file' para indicar que os testes devem percorrer apenas 
+# os testes do arquivo especificado.
+# Use o parametro 'method' (em adição ao parametro 'file') para indicar que 
+# apenas este método do referido arquivo deve ser executado.
+#
+# > make test
+# > make test file="path/to/tgtFile.php"
+# > make test file="path/to/tgtFile.php" method="tgtMethodName"
 test:
-	docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --configuration "tests/phpunit.xml" --colors=always --verbose --debug
-
-#
-# Executa os testes de apenas 1 classe de testes.
-# Use o parametro 'file' para indicar qual arquivo contém a respectiva classe.
-# O nome do arquivo e da classe de testes devem ser idênticos.
-#
-# > make test-file file="path/to/tgtFile.php"
-test-file:
-	docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit "tests/src/${file}" --colors=always --verbose --debug
-
-#
-# Executa os testes de apenas 1 método em 1 classe de testes.
-# Use o parametro 'file' para indicar qual arquivo contém a respectiva classe.
-# Use o parametro 'method' para indicar qual método da classe de testes deve ser executado
-#
-# > make test-method file="path/to/tgtFile.php" method="tgtMethodName"
-test-method:
-	docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --filter "${method}" "tests/src/${file}" --colors=always --verbose --debug
+	if [ -z "${file}" ]; then \
+		docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --configuration "tests/phpunit.xml" --colors=always --verbose --debug; \
+	else \
+		if [ -z "${method}" ]; then \
+			docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit "tests/src/${file}" --colors=always --verbose --debug; \
+		else \
+			docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --filter "::${method}$$" "tests/src/${file}" --colors=always --verbose --debug; \
+		fi; \
+	fi
 
 
 
