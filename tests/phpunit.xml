@@ -17,7 +17,16 @@
         <testsuite name="default">
             <file>src/DALTest.php</file>
 
-            <directory>src/ORM</directory>
+            <!-- 
+                Neste caso especial, e, por hora, é necessário que os testes sejam feitos em ordem.
+            -->
+            <file>src/ORM/t01DataColumnTest.php</file>
+            <file>src/ORM/t02DataTableTest.php</file>
+            <file>src/ORM/t03DataTableFactoryTest.php</file>
+            <file>src/ORM/t04DataColumnFKTest.php</file>
+            <file>src/ORM/t05DataTableFactoryFKTest.php</file>
+            <file>src/ORM/t06SchemaMySqlTest.php</file>
+            <file>src/ORM/t07DataTableORMTest.php</file>
         </testsuite>
     </testsuites>
 

@@ -160,6 +160,7 @@ class t07DataTableORMTest extends TestCase
 
         $this->assertTrue($r);
         $this->assertTrue($v);
+        $this->assertEquals("valid", $Cidade->getState());
 
         return $Cidade;
     }
@@ -236,6 +237,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
+            "ValorReal"     => 10,  
             "Sessao"        => [
                 "Login"             => "userlogin@email.com",
                 "Aplicacao"         => "Application",
@@ -251,6 +253,7 @@ class t07DataTableORMTest extends TestCase
 
         $this->assertTrue($r);
         $this->assertTrue($v);
+        $this->assertEquals("valid", $Usuario->getState());
 
         return $Usuario;
     }
@@ -342,6 +345,7 @@ class t07DataTableORMTest extends TestCase
 
         $this->assertTrue($r);
         $this->assertTrue($v);
+        $this->assertEquals("valid", $Cidade->getState());
 
         return $Cidade;
     }
@@ -402,6 +406,9 @@ class t07DataTableORMTest extends TestCase
         $this->assertSame(0, $c);
 
 
+        $this->provider_truncateTable($obj, "SessaoDeAcesso");
+
+
         $this->provider_truncateTable($obj, "GrupoDeSeguranca");
         $GrupoDeSeguranca   = $obj->createDataTable("GrupoDeSeguranca");
         $c                  = $GrupoDeSeguranca->countRows();
@@ -415,6 +422,16 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
+            "ValorReal"     => 10,  
+            "Sessao"        => [
+                "Login"             => "userlogin@email.com",
+                "Aplicacao"         => "Application",
+                "ProfileInUse"      => "admin",
+                "SessionTimeOut"    => new DateTime(),
+                "Ip"                => "1.1.1.1",
+                "Browser"           => "test",
+                "SessionID"         => "uniqueIDSession"
+            ],
             "GruposDeSeguranca" => [
                 [
                     "Aplicacao"         => "Application",
@@ -433,6 +450,7 @@ class t07DataTableORMTest extends TestCase
 
         $this->assertTrue($r);
         $this->assertTrue($v);
+        $this->assertEquals("valid", $Usuario->getState());
 
         return $Usuario;
     }
@@ -511,6 +529,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
+            "ValorReal"     => 10,  
             "Sessao"        => [
                 "Login"             => "userlogin@email.com",
                 "Aplicacao"         => "Application",
@@ -538,6 +557,7 @@ class t07DataTableORMTest extends TestCase
 
         $this->assertTrue($r);
         $this->assertTrue($v);
+        $this->assertEquals("valid", $Usuario->getState());
 
         $r = $Usuario->insert();
         $this->assertTrue($r);
@@ -592,6 +612,7 @@ class t07DataTableORMTest extends TestCase
 
         $this->assertTrue($r);
         $this->assertTrue($v);
+        $this->assertEquals("valid", $Cidade->getState());
 
         $r = $Cidade->insert();
         $this->assertTrue($r);
@@ -715,6 +736,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "attachdetach",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
+            "ValorReal"     => 10,  
             "Sessao"        => [
                 "Login"             => "attachdetach@email.com",
                 "Aplicacao"         => "Application",
@@ -742,6 +764,7 @@ class t07DataTableORMTest extends TestCase
 
         $this->assertTrue($r);
         $this->assertTrue($v);
+        $this->assertEquals("valid", $Usuario->getState());
 
         $r = $Usuario->insert();
         $this->assertTrue($r);
@@ -788,6 +811,7 @@ class t07DataTableORMTest extends TestCase
 
         $this->assertTrue($r);
         $this->assertTrue($v);
+        $this->assertEquals("valid", $Cidade->getState());
 
         $r = $Cidade->insert();
         $this->assertTrue($r);
@@ -800,40 +824,67 @@ class t07DataTableORMTest extends TestCase
     public function test_method_attatch_detach()
     {
         $obj = $this->provider_prepare_attachdetach_to_test();
+        
+        // Gera uma nova sessão de acesso desvinculada de qualquer usuário
+        $SessaoDeAcesso = $obj->createDataTable("SessaoDeAcesso");
+        $newSession = [
+            "Login"             => "userlogin@email.com",
+            "Aplicacao"         => "Application",
+            "ProfileInUse"      => "adminSelect",
+            "SessionTimeOut"    => new DateTime(),
+            "Ip"                => "1.1.1.1",
+            "Browser"           => "test",
+            "SessionID"         => "oneMoreSession"
+        ];
+        $r = $SessaoDeAcesso->setValues($newSession);
+        $v = $SessaoDeAcesso->isValid();
+
+        $this->assertTrue($r);
+        $this->assertTrue($v);
+        $this->assertEquals("valid", $SessaoDeAcesso->getState());
+
+        $r = $SessaoDeAcesso->insert();
+        $this->assertTrue($r);
+
+
+
+
 
         // A partir do objeto filho,
         // Modifica seu dono em uma relação 1-1
         $SessaoDeAcesso = $obj->createDataTable("SessaoDeAcesso");
         $r = $SessaoDeAcesso->select(1);
         $this->assertTrue($r);
-        $r = $SessaoDeAcesso->attatchWith("UsuarioDoDominio", 2);
+        $r = $SessaoDeAcesso->attachWith("UsuarioDoDominio", $SessaoDeAcesso->Id);
         $this->assertTrue($r);
-
+        
         // A partir do objeto dono,
-        // Retoma para si o vínculo com o objeto cilho em uma relação 1-1
+        // Retoma para si o vínculo com o objeto filho em uma relação 1-1
         $Usuario = $obj->createDataTable("UsuarioDoDominio");
         $r = $Usuario->select(2);
         $this->assertTrue($r);
-        $r = $Usuario->attatchWith("SessaoDeAcesso", 2);
+        $r = $Usuario->attachWith("SessaoDeAcesso", 2);
         $this->assertTrue($r);
 
         // Desfaz o vinculo totalmente
         // Não precisa denominar o Id pois é uma relação 1-1
+        // Neste caso, a exclusão não ocorre por força da constraint que exige que
+        // os registros de 'UsuarioDoDominio' possuam um registro do tipo 'SessaoDeAcesso'
         $r = $Usuario->detachWith("SessaoDeAcesso");
-        $this->assertTrue($r);
+        $this->assertFalse($r);
 
 
 
 
-
+        
         // A partir de um objeto dono,
         // Adiciona novos itens em sua coleção
         $Cidade = $obj->createDataTable("Cidade");
         $r = $Cidade->select(1);
         $this->assertTrue($r);
-        $r = $Cidade->attatchWith("EnderecoPostal", 3);
+        $r = $Cidade->attachWith("EnderecoPostal", 3);
         $this->assertTrue($r);
-        $r = $Cidade->attatchWith("EnderecoPostal", 4);
+        $r = $Cidade->attachWith("EnderecoPostal", 4);
         $this->assertTrue($r);
 
         // A partir de um objeto filho
@@ -841,7 +892,7 @@ class t07DataTableORMTest extends TestCase
         $EnderecoPostal = $obj->createDataTable("EnderecoPostal");
         $r = $EnderecoPostal->select(1);
         $this->assertTrue($r);
-        $r = $EnderecoPostal->attatchWith("Cidade", 2);
+        $r = $EnderecoPostal->attachWith("Cidade", 2);
         $this->assertTrue($r);
 
         // A partir de um objeto filho
@@ -865,7 +916,7 @@ class t07DataTableORMTest extends TestCase
 
         // A partir de 1 dos lados de uma relação N-N,
         // Adiciona novo item para a coleção
-        $r = $Usuario->attatchWith("GrupoDeSeguranca", 1);
+        $r = $Usuario->attachWith("GrupoDeSeguranca", 1);
         $this->assertTrue($r);
 
         // A partir do outro lado da relação N-N,
@@ -873,7 +924,7 @@ class t07DataTableORMTest extends TestCase
         $GrupoDeSeguranca = $obj->createDataTable("GrupoDeSeguranca");
         $r = $GrupoDeSeguranca->select(2);
         $this->assertTrue($r);
-        $r = $GrupoDeSeguranca->attatchWith("UsuarioDoDominio", 2);
+        $r = $GrupoDeSeguranca->attachWith("UsuarioDoDominio", 2);
         $this->assertTrue($r);
 
         // Remove AMBOS relacionamentos recentemente criados.
@@ -940,14 +991,17 @@ class t07DataTableORMTest extends TestCase
         $this->assertSame(2, $Usuario->Sessao()->Id);
         $this->assertSame(2, count($Usuario->GruposDeSeguranca()));
 
-        $r = $Usuario->deleteSessao();
-        $this->assertTrue($r);
-        $this->assertSame(0, $Usuario->Sessao()->Id);
-
         $r = $Usuario->deleteGruposDeSeguranca();
         $this->assertTrue($r);
         $this->assertSame([], $Usuario->GruposDeSeguranca());
+
+        // Não é possível excluir este regstro por que a tabela  
+        // 'UsuarioDoDominio' exige referencia a um registro do tipo 'SessaoDeAcesso'
+        $r = $Usuario->deleteSessao();
+        $this->assertFalse($r);
+        $this->assertSame(2, $Usuario->Sessao()->Id);
     }
+
 
 
 }
