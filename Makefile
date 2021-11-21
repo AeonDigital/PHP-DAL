@@ -95,37 +95,42 @@ test:
 
 #
 # Executa a verificação total de cobertura dos testes unitários
+#
+# Opcionais
+# Use o parametro 'file' para efetuar o teste de cobertura sobre apenas 1
+# classe de testes.
+#
+# Use o parametro 'output' para selecionar o tipo de saida que o teste de 
+# cobertura deve ter. As opções são:
+#  - 'text' (padrão) : printa o resultado na tela.
+#  - 'html' : Monta a saída dos testes em formato HTML.
+#
+# > make test-cover
+# > make test-cover file="path/to/tgtFile.php"
+# > make test-cover output="html"
+# > make test-cover file="path/to/tgtFile.php" output="html"
 test-cover:
-	docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --configuration "tests/phpunit.xml" --colors=always --coverage-text
-
-#
-# Executa a cobertura dos testes unitários em apenas 1 classe de testes.
-# Use o parametro 'file' para indicar qual arquivo contém a respectiva classe.
-# O nome do arquivo e da classe de testes devem ser idênticos.
-#
-# > make test-cover-html file="path/to/tgtFile.php"
-test-cover-file:
-	docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit "tests/src/${file}" --whitelist="tests/src/${file}" --colors=always --coverage-text 
-
-
-
-
-
-#
-# Executa a verificação total de cobertura dos testes unitários
-# e exporta o resultado em formato HTML
-test-cover-html:
-	docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --configuration "tests/phpunit.xml" --colors=always --coverage-html "tests/cover"
-
-#
-# Executa a cobertura dos testes unitários em apenas 1 classe de testes
-# e exporta o resultado em formato HTML
-# Use o parametro 'file' para indicar qual arquivo contém a respectiva classe.
-# O nome do arquivo e da classe de testes devem ser idênticos.
-#
-# > make test-cover-file-html file="path/to/tgtFile.php"
-test-cover-file-html:
-	docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit "tests/src/${file}" --whitelist="tests/src/${file}" --coverage-html "tests/cover-file"
+	if [ -z "${file}" ] && [ -z "${output}" ]; then \
+		docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --configuration "tests/phpunit.xml" --colors=always --coverage-text; \
+	else \
+		if [ -z "${file}" ]; then \
+			if [ -z "${output}" ] || [ "${output}" = "text" ]; then \
+				docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --configuration "tests/phpunit.xml" --colors=always --coverage-text; \
+			elif [ "${output}" = "html" ]; then \
+				docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit --configuration "tests/phpunit.xml" --colors=always --coverage-html "tests/cover"; \
+			else \
+				echo "Parametro 'output' inválido. Use apenas 'text' ou 'html'."; \
+			fi; \
+		else \
+			if [ -z "${output}" ] || [ "${output}" = "text" ]; then \
+				docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit "tests/src/${file}" --whitelist="tests/src/${file}" --colors=always --coverage-text; \
+			elif [ "${output}" = "html" ]; then \
+				docker exec -it ${CONTAINER_WEB_NAME} vendor/bin/phpunit "tests/src/${file}" --whitelist="tests/src/${file}" --coverage-html "tests/cover-file"; \
+			else \
+				echo "Parametro 'output' inválido. Use apenas 'text' ou 'html'."; \
+			fi; \
+		fi; \
+	fi
 
 
 
