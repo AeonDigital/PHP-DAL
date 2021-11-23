@@ -23,6 +23,11 @@ up:
 	docker exec -it ${CONTAINER_WEB_NAME} composer install
 
 #
+# Inicia o projeto e prepara o container alvo para a extração da
+# documentação técnica
+up-docs: up docs-prepare-extraction
+
+#
 # Encerra o projeto
 down:
 	docker-compose down --remove-orphans
@@ -140,22 +145,17 @@ test-cover:
 # Prepara o container para que seja possível exportar a documentação técnica
 # do código fonte para ser compatível com os requisitos do 'ReadTheDocs'.
 # Este comando precisa ser rodado apenas 1 vez para cada novo container.
-# use esta opção como 'sudo'
-docs-prepare-container:
-	apt-get update
-	apt-get install -y python3 python3-pip
-	pip install -U sphinx
-	pip install -U sphinx_rtd_theme
-	pip install -U sphinxcontrib-phpdomain
-	pip install -U recommonmark
-	./vendor/bin/phpdoc-to-rst config
+docs-prepare-extraction:
+	docker exec -it ${CONTAINER_WEB_NAME} apt-get update
+	docker exec -it ${CONTAINER_WEB_NAME} apt-get install -y python3 python3-pip
+	docker exec -it ${CONTAINER_WEB_NAME} pip install -U sphinx sphinx_rtd_theme sphinxcontrib-phpdomain recommonmark
+	docker exec -it ${CONTAINER_WEB_NAME} mkdir -p docs
+	docker exec -it ${CONTAINER_WEB_NAME} ./vendor/bin/phpdoc-to-rst config
 
 #
 # Efetua a extração da documentação técnica para o formato 'rst'.
 docs-extract:
-	./vendor/bin/phpdoc-to-rst config
-	./vendor/bin/phpdoc-to-rst generate docs src --public-only
-	chmod -R 777 docs
+	docker exec -it ${CONTAINER_WEB_NAME} ./vendor/bin/phpdoc-to-rst generate docs src --public-only
 
 
 
