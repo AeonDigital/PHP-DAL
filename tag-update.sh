@@ -34,25 +34,31 @@ else
 
     ISOK=1;
 
-    if [ "$1" == "version" ]; then
-      if [ "$2" == "patch" ]; then
-        PROJECT_VERSION_PATCH=$((PROJECT_VERSION_PATCH+1))
-      else
-        if [ "$2" == "minor" ]; then
-          PROJECT_VERSION_MINOR=$((PROJECT_VERSION_MINOR+1))
-          PROJECT_VERSION_PATCH=0
+
+    if [ "$1" == "remark" ]; then
+      git tag -d "${GIT_ATUAL_TAG}"
+      git push --delete origin "${GIT_ATUAL_TAG}"
+      git tag "${GIT_ATUAL_TAG}"
+      git push --tags origin
+    else
+      if [ "$1" == "version" ]; then
+        if [ "$2" == "patch" ]; then
+          PROJECT_VERSION_PATCH=$((PROJECT_VERSION_PATCH+1))
         else
-          if [ "$2" == "major" ]; then
-            PROJECT_VERSION_MAJOR=$((PROJECT_VERSION_MAJOR+1))
-            PROJECT_VERSION_MINOR=0
+          if [ "$2" == "minor" ]; then
+            PROJECT_VERSION_MINOR=$((PROJECT_VERSION_MINOR+1))
             PROJECT_VERSION_PATCH=0
           else
-            ISOK=0;
+            if [ "$2" == "major" ]; then
+              PROJECT_VERSION_MAJOR=$((PROJECT_VERSION_MAJOR+1))
+              PROJECT_VERSION_MINOR=0
+              PROJECT_VERSION_PATCH=0
+            else
+              ISOK=0
+            fi
           fi
         fi
-      fi
-    else
-      if [ "$1" == "stability" ]; then
+      elif [ "$1" == "stability" ]; then
         if [ "$2" == "alpha" ] || [ "$2" == "beta" ] || [ "$2" == "cr" ] || [ "$2" == "r" ]; then
           if [ "$2" == "r" ]; then
             PROJECT_VERSION_STABILITY=""
@@ -60,43 +66,43 @@ else
             PROJECT_VERSION_STABILITY="-$2"
           fi
         else
-          ISOK=0;
+          ISOK=0
         fi
       else
-        ISOK=0;
+        ISOK=0
       fi
-    fi
 
 
 
-    if [ "${ISOK}" == "0" ]; then
-      echo "Parametros incorretos: [ ${1}; ${2} ]."
-      echo "Nenhuma ação foi realizada."
-    else
-      USE_VERSION="${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
-      NEW_VERSION="v${USE_VERSION}${PROJECT_VERSION_STABILITY}"
+      if [ "${ISOK}" == "0" ]; then
+        echo "Parametros incorretos: [ ${1}; ${2} ]."
+        echo "Nenhuma ação foi realizada."
+      else
+        USE_VERSION="${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+        NEW_VERSION="v${USE_VERSION}${PROJECT_VERSION_STABILITY}"
 
-      #
-      # Verifica se é necessário atualizar o versionamento da documentação exportada
-      CONF="docs/conf.py"
-      if [ -f "${CONF}" ]; then
-        OLD_SHORT_VERSION="project_short_version = '.*'"
-        NEW_SHORT_VERSION="project_short_version = '${USE_VERSION}'"
-        sed -i "s/${OLD_SHORT_VERSION}/${NEW_SHORT_VERSION}/" "${CONF}"
+        #
+        # Verifica se é necessário atualizar o versionamento da documentação exportada
+        CONF="docs/conf.py"
+        if [ -f "${CONF}" ]; then
+          OLD_SHORT_VERSION="project_short_version = '.*'"
+          NEW_SHORT_VERSION="project_short_version = '${USE_VERSION}'"
+          sed -i "s/${OLD_SHORT_VERSION}/${NEW_SHORT_VERSION}/" "${CONF}"
 
-        OLD_FULL_VERSION="project_full_version = '.*'"
-        NEW_FULL_VERSION="project_full_version = '${NEW_VERSION}'"
-        sed -i "s/${OLD_FULL_VERSION}/${NEW_FULL_VERSION}/" "${CONF}"
+          OLD_FULL_VERSION="project_full_version = '.*'"
+          NEW_FULL_VERSION="project_full_version = '${NEW_VERSION}'"
+          sed -i "s/${OLD_FULL_VERSION}/${NEW_FULL_VERSION}/" "${CONF}"
 
-        if [ $(git status --porcelain | wc -l) -gt "0" ]; then
-          git add .
-          git commit -m "Atualizado para a versão ${NEW_VERSION}"
-          git push origin main
+          if [ $(git status --porcelain | wc -l) -gt "0" ]; then
+            git add .
+            git commit -m "Atualizado para a versão ${NEW_VERSION}"
+            git push origin main
+          fi
         fi
-      fi
 
-      git tag ${NEW_VERSION}
-      git push --tags origin
+        git tag ${NEW_VERSION}
+        git push --tags origin
+      fi
     fi
   fi
 fi 
