@@ -92,7 +92,7 @@ class DALTest extends TestCase
 
 
 
-    
+
     public function test_constructor_fails_invalid_database()
     {
         $fail = false;

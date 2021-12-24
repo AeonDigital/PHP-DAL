@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 
 
@@ -10,8 +10,10 @@ services:
   #
   # Servidor Web
   web-server:
-    container_name: dev-php-webserver
     image: aeondigital/apache-php-7.4:dev
+    container_name: dev-php-webserver
+    env_file:
+      - ./container-config/apache-php-7.4/etc/.env
     volumes:
       #
       # Diretórios de arquivos de configuração.
@@ -22,11 +24,9 @@ services:
       - .:/var/www/html
     ports:
       - 8080:80
-    links:
-      - db-server
 
   #
   # Servidor de banco de dados
   db-server:
-    container_name: dev-php-dbserver
     image: aeondigital/mysql-8.0:dev
+    container_name: dev-php-dbserver
