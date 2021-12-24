@@ -2,6 +2,8 @@
 # Configuração de EOL para arquivos de texto
 # use os comandos abaixo para forçar a normalização dos documentos
 # em seu repositório local
+# > git add --renormalize .
+# > git commit -m "EOL"
 # > git rm --cached -r .
 # > git reset --hard
 * text=auto eol=lf
