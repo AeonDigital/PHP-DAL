@@ -20,8 +20,8 @@ project_author = 'Rianna Cantarelli'
 project_contributor = ''
 project_locale = 'pt-BR'
 project_language = 'pt'
-project_short_version = '0.6.0'
-project_full_version = 'v0.6.0-beta'
+project_short_version = '0.6.1'
+project_full_version = 'v0.6.1-beta'
 
 
 
