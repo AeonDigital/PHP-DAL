@@ -1,5 +1,5 @@
- PHP-DAL
-=========
+PHP-DAL
+=======
 
 > [Aeon Digital](http://aeondigital.com.br)
 > rianna@aeondigital.com.br
@@ -11,7 +11,7 @@ Camada de acesso a bancos de dados.
 &nbsp;
 
 
-_______________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 ## Instalação
 
@@ -24,8 +24,33 @@ Instale em seu projeto usando o composer:
 **Via composer.json**
 ```json
 "require": {
-    "aeondigital/phpdal": "dev-master"
+    "aeondigital/phpdal": "dev-main"
 }
+```
+
+
+________________________________________________________________________________________________________________________
+
+## Shell-Make
+
+Instale também o módulo ``Shell-Make`` para ter acesso a macros que auxiliam no desenvolvimento individual deste
+projeto. Use os comandos abaixo:
+
+```shell
+  git submodule init
+  git submodule update --remote
+```
+
+Após a instalação instalar, crie/edite o ``Makefile`` na raiz do seu projeto adicionando o seguinte:
+
+```Makefile
+  include Shell-Make/Makefile
+```
+
+Conheça os macros disponíveis pelo ``Shell-Make`` use o seguinte comando:
+
+```shell
+  make help
 ```
 
 
@@ -33,25 +58,19 @@ Instale em seu projeto usando o composer:
 &nbsp;
 
 
-_______________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 ## Outras Informações
 
-Confira o [Makefile](Makefile) para conhecer sobre as formas de executar, 
-testar, versionar e expor a documentação.
-
-Este e outros projetos **Aeon Digital** utilizam o sistema de [Versionamento
-Semântico](https://semver.org/) proposto por Tom Preston-Werner.
-
-A documentação completa pode ser vista em
-[ReadTheDocs](https://aeondigital-php-dal.readthedocs.io/).
+Este e outros projetos **Aeon Digital** utilizam o sistema de [Versionamento Semântico](https://semver.org/) proposto 
+por Tom Preston-Werner.
 
 
 &nbsp;
 &nbsp;
 
 
-_______________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 ## Licença
 
