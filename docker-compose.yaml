@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 
 
@@ -10,15 +10,15 @@ services:
   #
   # Servidor Web
   web-server:
-    image: aeondigital/apache-php-7.4:dev
+    image: aeondigital/apache-php-8.2:dev
     container_name: dev-php-webserver
     env_file:
-      - ./container-config/apache-php-7.4/etc/.env
+      - ./container-config/apache-php-8.2/etc/.env
     volumes:
       #
       # Diretórios de arquivos de configuração.
       # Variáveis de ambiente
-      - ./container-config/apache-php-7.4/etc/.env:/etc/.env
+      - ./container-config/apache-php-8.2/etc/.env:/etc/.env
       #
       # Diretórios e arquivos para desenvolvimento
       # de projetos do tipo 'biblioteca'
