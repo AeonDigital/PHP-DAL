@@ -1,23 +1,17 @@
-#!/bin/bash -eu
+#!/usr/bin/env bash
+# myShellEnv v 1.0 [aeondigital.com.br]
+
+
+
+
+
+
 
 #
-# Carrega dependencias
-source "${PWD}/make/modules/makeEnvironment.sh"
-source "${MK_ROOT_PATH}/make/modules/makeTools.sh"
-source "${MK_ROOT_PATH}/make/mseStandAlone/loadScripts.sh";
-
-#
-# Se quiser,
-# defina um arquivo em 'make/makeEnvironment.sh' e use-o para
-# suas configurações personalizadas.
-if [ -f "${MK_MY_ENVIRONMENT_FILE}" ]; then
-  source "${MK_MY_ENVIRONMENT_FILE}"
-fi;
-
-
-
-
-
+# Carrega as ferramentas de uso geral
+. "${PWD}/make/makeEnvironment.sh"
+. "${PWD}/Shell-Make/assets/standalone.sh"
+. "${PWD}/Shell-Make/assets/makeTools.sh"
 
 
 
@@ -27,10 +21,12 @@ fi;
 # Ação executada imediatamente ANTES cada comando 'make'.
 #
 # @param string $1
-#       Recebe o nome do comando que está sendo executado.
+# Recebe o nome do comando que está sendo executado.
 #
 makeExecuteBefore() {
-  local tmp="";
+  if [ "$1" == "up" ] && [ ! -f "./composer.lock" ]; then
+    echo "{}" > "./composer.lock"
+  fi
 }
 
 
@@ -41,16 +37,11 @@ makeExecuteBefore() {
 # Ação executada imediatamente ANTES cada comando 'make'.
 #
 # @param string $1
-#       Recebe o nome do comando que está sendo executado.
+# Recebe o nome do comando que está sendo executado.
 #
 makeExecuteAfter() {
-  local tmp="";
+  local doNothing=""
 }
-
-
-
-
-
 
 
 
