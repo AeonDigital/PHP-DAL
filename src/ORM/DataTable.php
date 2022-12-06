@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace AeonDigital\ORM;
 
-use AeonDigital\Interfaces\DAL\iDAL as iDAL;
 use AeonDigital\Interfaces\ORM\iTable as iTable;
+use AeonDigital\Interfaces\DAL\iDAL as iDAL;
+use AeonDigital\Interfaces\ORM\iColumnFK as iColumnFK;
 use AeonDigital\DataModel\Abstracts\aModel as aModel;
-
 
 
 
@@ -852,18 +852,18 @@ class DataTable extends aModel implements iTable
             isset($this->ormInstructions["selectChild"][$columnName]) === true
         ) {
             $strSQL = $this->ormInstructions["selectChild"][$columnName]["select"];
-            $field = $this->getField($columnName);
+            $fieldFK = $this->getColumnFK($columnName);
 
             // Sendo uma relação 1-1
-            if ($field->isCollection() === false) {
+            if ($fieldFK->isCollection() === false) {
                 $fkId  = $this->DAL->getDataColumn($strSQL, ["Id" => $this->Id], "int");
 
                 // Encontrando o Id, carrega-o
                 if ($fkId !== null) {
-                    $childInstance = $field->getModel();
+                    $childInstance = $fieldFK->getTable();
                     $r = $childInstance->select($fkId);
                     if ($r === true) {
-                        $r = $field->setValue($childInstance);
+                        $r = $fieldFK->setValue($childInstance);
                     }
                 }
             }
@@ -878,14 +878,14 @@ class DataTable extends aModel implements iTable
 
                     foreach ($fkIds as $row) {
                         if ($r === true) {
-                            $childInstance = $field->getModel();
+                            $childInstance = $fieldFK->getTable();
                             $r = $childInstance->select((int)$row["fkId"]);
                             $childInstances[] = $childInstance;
                         }
                     }
 
                     if ($r === true) {
-                        $r = $field->setValue($childInstances);
+                        $r = $fieldFK->setValue($childInstances);
                     }
                 }
             }
@@ -907,15 +907,16 @@ class DataTable extends aModel implements iTable
         $r = false;
 
         if (isset($this->ormInstructions["selectChild"][$columnName]) === true) {
-            $field = $this->getField($columnName);
+            $fieldFK = $this->getColumnFK($columnName);
 
             // Sendo uma relação 1-1
-            if ($field->isCollection() === false) {
-                $inst = $field->getInstanceValue();
+            if ($fieldFK->isCollection() === false) {
+                $inst = $fieldFK->getInstanceValue();
 
                 if (\is_object($inst) === true && $inst->Id !== 0) {
+                    $inst = $fieldFK->getTable();
                     $this->openTransactionIfClosed();
-                    $r = $this->detachWith($field->getModelName(), $inst->Id);
+                    $r = $this->detachWith($fieldFK->getModelName(), $inst->Id);
 
                     if ($r === false) {
                         $this->executeRollBackAndCloseTransaction();
@@ -929,19 +930,19 @@ class DataTable extends aModel implements iTable
                         // Excluindo com êxito, efetua o commit e reseta o campo
                         else {
                             $this->executeCommitAndCloseTransaction();
-                            $nval = (($field->isAllowNull() === true) ? null : $field->getModel());
-                            $field->setValue($nval);
+                            $nval = (($fieldFK->isAllowNull() === true) ? null : $fieldFK->getModel());
+                            $fieldFK->setValue($nval);
                         }
                     }
                 }
             }
             // Sendo uma relação 1-N ou N-N
             else {
-                $collection = $field->getInstanceValue();
+                $collection = $fieldFK->getInstanceValue();
 
                 if (count($collection) > 0) {
                     $this->openTransactionIfClosed();
-                    $r = $this->detachWith($field->getModelName());
+                    $r = $this->detachWith($fieldFK->getModelName());
 
                     if ($r === true) {
                         foreach ($collection as $inst) {
@@ -957,7 +958,7 @@ class DataTable extends aModel implements iTable
                             $this->executeRollBackAndCloseTransaction();
                         } else {
                             $this->executeCommitAndCloseTransaction();
-                            $field->setValue([]);
+                            $fieldFK->setValue([]);
                         }
                     }
                 }
@@ -1004,5 +1005,25 @@ class DataTable extends aModel implements iTable
             $this->useMainCall = true;
             return true;
         }
+    }
+
+
+
+    /**
+     * Retorna o objeto ``iColumnFK`` referente ao campo de nome indicado.
+     *
+     * @param string $f
+     * Nome do campo que será retornado.
+     *
+     * @return ?iColumnFK
+     */
+    protected function getColumnFK(string $f): ?iColumnFK
+    {
+        $r = null;
+        $field = $this->getField($f);
+        if ($field !== null && $field->isReference() === true) {
+            $r = $field;
+        }
+        return $r;
     }
 }

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace AeonDigital\ORM;
 
-use AeonDigital\Interfaces\ORM\iDataTableFactory as iDataTableFactory;
 use AeonDigital\Interfaces\ORM\iColumnFK as iColumnFK;
+use AeonDigital\Interfaces\ORM\iTable as iTable;
+use AeonDigital\Interfaces\ORM\iDataTableFactory as iDataTableFactory;
 use AeonDigital\DataModel\Abstracts\aFieldModelCollection as aFieldModelCollection;
-
 
 
 
@@ -135,5 +135,19 @@ class DataColumnFKCollection extends aFieldModelCollection implements iColumnFK
         $this->fkUnique         = $fkUnique;
         $this->fkOnUpdate       = $fkOnUpdate;
         $this->fkOnDelete       = $fkOnDelete;
+    }
+
+
+
+
+
+    /**
+     * Retorna uma instância do modelo de dados usada por este campo.
+     *
+     * @return iTable
+     */
+    public function getTable(): iTable
+    {
+        return $this->getModel();
     }
 }

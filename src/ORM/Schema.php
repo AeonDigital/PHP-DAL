@@ -855,7 +855,7 @@ class Schema implements iSchema
 
         // Procura na tabela de dados secundária a coluna que
         // faz referência à primeira tabela da relação.
-        $fkTable            = $table01Column->getModel();
+        $fkTable            = $table01Column->getTable();
         $fieldNames         = $fkTable->getFieldNames();
         $table02Column      = null;
         foreach ($fieldNames as $colName) {
