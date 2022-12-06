@@ -1,5 +1,6 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 namespace AeonDigital\ORM;
 
@@ -11,7 +12,6 @@ use AeonDigital\ORM\DataColumn as DataColumn;
 use AeonDigital\ORM\DataColumnFK as DataColumnFK;
 use AeonDigital\ORM\DataColumnFKCollection as DataColumnFKCollection;
 use AeonDigital\ORM\DataTable as DataTable;
-
 
 
 
@@ -35,15 +35,15 @@ class DataTableFactory implements iDataTableFactory
     /**
      * Objeto de conexão com o banco de dados alvo.
      *
-     * @var         iDAL
+     * @var iDAL
      */
     private ?iDAL $DAL = null;
     /**
      * Retorna o objeto ``DAL`` que está sendo usado por esta instância.
      *
-     * @return      iDAL
+     * @return iDAL
      */
-    public function getDAL() : iDAL
+    public function getDAL(): iDAL
     {
         return $this->DAL;
     }
@@ -56,16 +56,16 @@ class DataTableFactory implements iDataTableFactory
      * Nome do projeto que está sendo usado.
      * É sempre igual ao nome do banco de dados.
      *
-     * @var         string
+     * @var string
      */
     private string $projectName = "";
     /**
      * Nome do projeto.
      * Geralmente é o mesmo nome do banco de dados definido na instância ``iDAL`` usada.
      *
-     * @return      string
+     * @return string
      */
-    public function getProjectName() : string
+    public function getProjectName(): string
     {
         return $this->projectName;
     }
@@ -78,7 +78,7 @@ class DataTableFactory implements iDataTableFactory
      * Caminho completo até o diretório onde estão os arquivos que descrevem os
      * modelos de dados utilizado por este projeto.
      *
-     * @var         string
+     * @var string
      */
     private string $projectDirectory = "";
     /**
@@ -88,9 +88,9 @@ class DataTableFactory implements iDataTableFactory
      * Dentro do mesmo diretório deve haver um outro chamado ``enum`` contendo os
      * enumeradores usados pelo projeto.
      *
-     * @return      string
+     * @return string
      */
-    public function getProjectDirectory() : string
+    public function getProjectDirectory(): string
     {
         return $this->projectDirectory;
     }
@@ -106,9 +106,9 @@ class DataTableFactory implements iDataTableFactory
      *
      * Caso o arquivo já exista, será substituído por um novo.
      *
-     * @return      void
+     * @return void
      */
-    public function recreateProjectDataFile() : void
+    public function recreateProjectDataFile(): void
     {
         $tgtFile = $this->projectDirectory . DS . "_projectData.php";
         $projectDataFile = [];
@@ -119,16 +119,16 @@ class DataTableFactory implements iDataTableFactory
         $tableAlias = [];
 
 
-        foreach($dirContent as $originalFileName) {
-            if (\in_array($originalFileName, [".", ".."]) === false &&
-                \mb_str_starts_with($originalFileName, "_") === false &&
-                \mb_str_ends_with($originalFileName, ".php") === true)
-            {
+        foreach ($dirContent as $originalFileName) {
+            if (
+                \in_array($originalFileName, [".", ".."]) === false &&
+                \str_starts_with($originalFileName, "_") === false &&
+                \str_ends_with($originalFileName, ".php") === true
+            ) {
                 $completePath   = \to_system_path($this->projectDirectory . DS . $originalFileName);
                 $tmpData        = include $completePath;
 
-                if (\array_is_assoc($tmpData) === true && isset($tmpData["tableName"]) === true)
-                {
+                if (\array_is_assoc($tmpData) === true && isset($tmpData["tableName"]) === true) {
                     $tableName      = $tmpData["tableName"];
                     $useAlias       = $tmpData["alias"];
 
@@ -175,7 +175,7 @@ class DataTableFactory implements iDataTableFactory
 
 
             foreach ($columnNames as $cName) {
-                $field = $oTable->{"_".$cName};
+                $field = $oTable->{"_" . $cName};
                 $sc = [
                     "select"            => null,
                     "oColumnFK"         => null,
@@ -215,8 +215,7 @@ class DataTableFactory implements iDataTableFactory
                         $projectDataFile[$fkTableName]["ormInstructions"]["attachWith"][$tableName]     = $strSQLAttach;
                         $projectDataFile[$fkTableName]["ormInstructions"]["detachWith"][$tableName]     = $strSQLDetach;
                         $projectDataFile[$fkTableName]["ormInstructions"]["detachWithAll"][$tableName]  = $strSQLDetachAll;
-                    }
-                    else {
+                    } else {
                         // Se for uma relação 1-N
                         if ($field->isFKLinkTable() === false) {
                             $fkName = $tableName . "_Id";
@@ -295,15 +294,15 @@ class DataTableFactory implements iDataTableFactory
      * Array associativo trazendo nas chaves o nome de cada uma das tabelas de dados do projeto,
      * e em seus respectivos valores o nome do arquivo que armazena suas configurações.
      *
-     * @var         array
+     * @var array
      */
     private array $projectDataFile = [];
     /**
      * Retorna um array com a lista de todas as tabelas de dados existêntes neste projeto.
      *
-     * @return      array
+     * @return array
      */
-    public function getDataTableList() : array
+    public function getDataTableList(): array
     {
         return \array_keys($this->projectDataFile);
     }
@@ -316,12 +315,12 @@ class DataTableFactory implements iDataTableFactory
      * Identifica se esta fábrica pode fornecer um objeto compatível com o nome do Identificador
      * passado.
      *
-     * @param       string $idName
-     *              Identificador único do modelo de dados dentro do escopo definido.
+     * @param string $idName
+     * Identificador único do modelo de dados dentro do escopo definido.
      *
-     * @return      bool
+     * @return bool
      */
-    public function hasDataModel(string $idName) : bool
+    public function hasDataModel(string $idName): bool
     {
         return (\key_exists($idName, $this->projectDataFile) === true);
     }
@@ -331,12 +330,12 @@ class DataTableFactory implements iDataTableFactory
     /**
      * Identifica se no atual projeto existe uma tabela de dados com o nome passado.
      *
-     * @param       string $tableName
-     *              Nome da tabela de dados.
+     * @param string $tableName
+     * Nome da tabela de dados.
      *
-     * @return      bool
+     * @return bool
      */
-    public function hasDataTable(string $tableName) : bool
+    public function hasDataTable(string $tableName): bool
     {
         return $this->hasDataModel($tableName);
     }
@@ -347,25 +346,25 @@ class DataTableFactory implements iDataTableFactory
      * Array associativo que vai sendo incrementado conforme novas tabelas de dados vão sendo
      * carregadas evitando assim o reprocessamento de modelos de dados já carregados.
      *
-     * @var         array
+     * @var array
      */
     private array $projectRawDataTables = [];
     /**
      * Retorna um objeto ``iModel`` com as configurações equivalentes ao identificador único
      * do mesmo.
      *
-     * @param       string $idName
-     *              Identificador único do modelo de dados dentro do escopo definido.
+     * @param string $idName
+     * Identificador único do modelo de dados dentro do escopo definido.
      *
-     * @param       mixed $initialValues
-     *              Coleção de valores a serem setados para a nova instância que será retornada.
+     * @param mixed $initialValues
+     * Coleção de valores a serem setados para a nova instância que será retornada.
      *
-     * @return      iModel
+     * @return iModel
      *
-     * @throws      \InvalidArgumentException
-     *              Caso o nome da tabela seja inexistente.
+     * @throws \InvalidArgumentException
+     * Caso o nome da tabela seja inexistente.
      */
-    public function createDataModel(string $idName, $initialValues = null) : iModel
+    public function createDataModel(string $idName, $initialValues = null): iModel
     {
         if ($this->hasDataTable($idName) === false) {
             $msg = "The given data table name does not exist in this project [\"$idName\"].";
@@ -437,18 +436,18 @@ class DataTableFactory implements iDataTableFactory
     /**
      * Retorna uma tabela de dados correspondente ao nome informado no argumento ``$tableName``.
      *
-     * @param       string $tableName
-     *              Nome da tabela de dados.
+     * @param string $tableName
+     * Nome da tabela de dados.
      *
-     * @param       mixed $initialValues
-     *              Coleção de valores a serem setados para a nova instância que será retornada.
+     * @param mixed $initialValues
+     * Coleção de valores a serem setados para a nova instância que será retornada.
      *
-     * @return      iTable
+     * @return iTable
      *
-     * @throws      \InvalidArgumentException
-     *              Caso o nome da tabela seja inexistente.
+     * @throws \InvalidArgumentException
+     * Caso o nome da tabela seja inexistente.
      */
-    public function createDataTable(string $tableName, $initialValues = null) : iTable
+    public function createDataTable(string $tableName, $initialValues = null): iTable
     {
         return $this->createDataModel($tableName, $initialValues);
     }
@@ -465,18 +464,18 @@ class DataTableFactory implements iDataTableFactory
     /**
      * Inicia uma fábrica de DataTables para o projeto.
      *
-     * @param       string $projectDirectory
-     *              Caminho completo até o local onde devem ser definidos os modelos de dados das
-     *              tabelas do projeto.
+     * @param string $projectDirectory
+     * Caminho completo até o local onde devem ser definidos os modelos de dados das
+     * tabelas do projeto.
      *
-     * @param       iDAL $DAL
-     *              Conexão que permite a manipulação do banco de dados alvo.
+     * @param iDAL $DAL
+     * Conexão que permite a manipulação do banco de dados alvo.
      *
-     * @throws      \InvalidArgumentException
-     *              Caso algum valor passado não seja válido.
+     * @throws \InvalidArgumentException
+     * Caso algum valor passado não seja válido.
      *
-     * @throws      \Exception
-     *              Caso não existam modelos de dados a serem carregados.
+     * @throws \Exception
+     * Caso não existam modelos de dados a serem carregados.
      */
     function __construct(
         string $projectDirectory,

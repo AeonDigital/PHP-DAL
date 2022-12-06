@@ -1,12 +1,12 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 namespace AeonDigital\ORM;
 
 use AeonDigital\Interfaces\DAL\iDAL as iDAL;
 use AeonDigital\Interfaces\ORM\iTable as iTable;
 use AeonDigital\DataModel\Abstracts\aModel as aModel;
-
 
 
 
@@ -26,7 +26,11 @@ class DataTable extends aModel implements iTable
 
 
 
-
+    /**
+     * Objeto ``iDAL``.
+     *
+     * @var ?IDAL
+     */
     private ?iDAL $DAL = null;
     /**
      * Define o objeto ``iDAL`` a ser usado para executar as instruções ``CRUD`` desta
@@ -34,12 +38,12 @@ class DataTable extends aModel implements iTable
      *
      * Deve ser definido apenas 1 vez.
      *
-     * @param       iDAL $DAL
-     *              Objeto DAL a ser usado.
+     * @param iDAL $DAL
+     * Objeto DAL a ser usado.
      *
-     * @return      void
+     * @return void
      */
-    public function setDAL(iDAL $DAL) : void
+    public function setDAL(iDAL $DAL): void
     {
         if ($this->DAL === null) {
             $this->DAL = $DAL;
@@ -53,7 +57,7 @@ class DataTable extends aModel implements iTable
     /**
      * Nome abreviado da tabela de dados.
      *
-     * @var         ?string
+     * @var ?string
      */
     private ?string $alias = null;
     /**
@@ -61,9 +65,9 @@ class DataTable extends aModel implements iTable
      * Usado para evitar ambiguidades entre as colunas desta e de outras tabelas de
      * dados.
      *
-     * @return      string
+     * @return string
      */
-    public function getAlias() : string
+    public function getAlias(): string
     {
         return $this->alias;
     }
@@ -76,16 +80,16 @@ class DataTable extends aModel implements iTable
      * Propriedade que traz um array contendo as instruções que devem ser executadas após a
      * tabela de dados ser criada.
      *
-     * @var         ?array
+     * @var ?array
      */
     private ?array $executeAfterCreateTable = null;
     /**
      * Retorna um array contendo as instruções que devem ser executadas após a tabela de
      * dados ser criada.
      *
-     * @return      ?array
+     * @return ?array
      */
-    public function getExecuteAfterCreateTable() : ?array
+    public function getExecuteAfterCreateTable(): ?array
     {
         return $this->executeAfterCreateTable;
     }
@@ -99,7 +103,7 @@ class DataTable extends aModel implements iTable
      * dados desta mesma tabela. Cada conjunto de nomes irá corresponder a uma constraint
      * do tipo unique composta.
      *
-     * @var         ?array
+     * @var ?array
      */
     private ?array $uniqueMultipleKeys = null;
     /**
@@ -107,9 +111,9 @@ class DataTable extends aModel implements iTable
      * dados desta mesma tabela. Cada conjunto de nomes irá corresponder a uma constraint
      * do tipo unique composta.
      *
-     * @return      ?array
+     * @return ?array
      */
-    public function getUniqueMultipleKeys() : ?array
+    public function getUniqueMultipleKeys(): ?array
     {
         return $this->uniqueMultipleKeys;
     }
@@ -129,18 +133,16 @@ class DataTable extends aModel implements iTable
      * Isto significa que apenas ela deve poder encerrar a transação dando um ``rollback`` ou o
      * commit dos dados.
      *
-     * @var         bool
+     * @var bool
      */
     private bool $isTransactionOwner = false;
     /**
      * Identifica se a conexão com o banco de dados está em modo de transação. Se não estiver,
      * tenta iniciar.
      *
-     * @codeCoverageIgnore
-     *
-     * @return      bool
+     * @return bool
      */
-    private function openTransactionIfClosed() : bool
+    private function openTransactionIfClosed(): bool
     {
         $r = $this->DAL->inTransaction();
         if ($r === false) {
@@ -156,15 +158,13 @@ class DataTable extends aModel implements iTable
      * Esta ação será executada apenas se esta própria instância for a dona da
      * transaction.
      *
-     * @codeCoverageIgnore
+     * @return bool
      *
-     * @return      bool
-     *
-     * @throws      \Exception
-     *              Caso a transação não esteja aberta.
-     *              Caso o rollBack falhe por qualquer motivo.
+     * @throws \Exception
+     * Caso a transação não esteja aberta.
+     * Caso o rollBack falhe por qualquer motivo.
      */
-    private function executeRollBackAndCloseTransaction() : bool
+    private function executeRollBackAndCloseTransaction(): bool
     {
         $r = $this->DAL->inTransaction();
         if ($r === true && $this->isTransactionOwner === true) {
@@ -182,15 +182,13 @@ class DataTable extends aModel implements iTable
      * Esta ação será executada apenas se esta própria instância for a dona da
      * transaction.
      *
-     * @codeCoverageIgnore
+     * @return bool
      *
-     * @return      bool
-     *
-     * @throws      \Exception
-     *              Caso a transação não esteja aberta.
-     *              Caso o commit falhe por qualquer motivo.
+     * @throws \Exception
+     * Caso a transação não esteja aberta.
+     * Caso o commit falhe por qualquer motivo.
      */
-    private function executeCommitAndCloseTransaction() : bool
+    private function executeCommitAndCloseTransaction(): bool
     {
         $r = $this->DAL->inTransaction();
         if ($r === false) {
@@ -222,7 +220,7 @@ class DataTable extends aModel implements iTable
      * Traz inúmeros dados pré-processados para simplificar o uso desta instância. É melhor
      * definido quando utilizada uma factory que providencie as informações a serem utilizadas.
      *
-     * @var         ?array
+     * @var ?array
      */
     private ?array $ormInstructions = null;
     /**
@@ -230,23 +228,23 @@ class DataTable extends aModel implements iTable
      * desta tabela contendo os respectivos valores já em formato de armazenamento para serem
      * usados em uma instrução SQL de ``INSERT`` ou ``UPDATE``.
      *
-     * @param       ?string $parentTableName
-     *              Se definido, deve ser o nome do modelo de dados ao qual o objeto atual deve
-     *              ser associado.
+     * @param ?string $parentTableName
+     * Se definido, deve ser o nome do modelo de dados ao qual o objeto atual deve
+     * ser associado.
      *
-     * @param       ?int $parentId
-     *              Id do objeto pai ao qual este registro deve estar associado.
+     * @param ?int $parentId
+     * Id do objeto pai ao qual este registro deve estar associado.
      *
-     * @param       bool $isNew
-     *              Indica quando trata-se de um objeto novo ou de um pré-existente.
+     * @param bool $isNew
+     * Indica quando trata-se de um objeto novo ou de um pré-existente.
      *
-     * @return      array
+     * @return array
      */
     private function retrieveRowData(
         ?string $parentTableName = null,
         ?int $parentId = null,
         bool $isNew = true
-    ) : array {
+    ): array {
         $arr = [];
 
         // Resgata os dados comuns.
@@ -275,9 +273,9 @@ class DataTable extends aModel implements iTable
      * pela conexão com o banco de dados.
      * Não havendo erro, retorna ``null``.
      *
-     * @return      ?string
+     * @return ?string
      */
-    public function getLastDALError() : ?string
+    public function getLastDALError(): ?string
     {
         return $this->DAL->getLastError();
     }
@@ -287,9 +285,9 @@ class DataTable extends aModel implements iTable
     /**
      * Retorna o total de registros existentes nesta tabela de dados.
      *
-     * @return      int
+     * @return int
      */
-    public function countRows() : int
+    public function countRows(): int
     {
         return $this->DAL->countRowsFrom($this->getName(), "Id");
     }
@@ -299,12 +297,12 @@ class DataTable extends aModel implements iTable
     /**
      * Identifica se existe na tabela de dados um registro com o Id indicado.
      *
-     * @param       int $Id
-     *              Id do objeto.
+     * @param int $Id
+     * Id do objeto.
      *
-     * @return      bool
+     * @return bool
      */
-    public function hasId(int $Id) : bool
+    public function hasId(int $Id): bool
     {
         return $this->DAL->hasRowsWith($this->getName(), "Id", $Id);
     }
@@ -314,20 +312,20 @@ class DataTable extends aModel implements iTable
     /**
      * Insere ou atualiza os dados da instância atual no banco de dados.
      *
-     * @param       ?string $parentTableName
-     *              Se definido, deve ser o nome do modelo de dados ao qual o objeto atual
-     *              deve ser associado.
+     * @param ?string $parentTableName
+     * Se definido, deve ser o nome do modelo de dados ao qual o objeto atual
+     * deve ser associado.
      *
-     * @param       ?int $parentId
-     *              Id do objeto pai ao qual este registro deve estar associado.
+     * @param ?int $parentId
+     * Id do objeto pai ao qual este registro deve estar associado.
      *
-     * @return      bool
-     *              Retornará ``true`` caso esta ação tenha sido bem sucedida.
+     * @return bool
+     * Retornará ``true`` caso esta ação tenha sido bem sucedida.
      */
     public function save(
         ?string $parentTableName = null,
         ?int $parentId = null
-    ) : bool {
+    ): bool {
         $r = $this->isValid();
 
         // Apenas se a instância atual estiver validada.
@@ -441,20 +439,20 @@ class DataTable extends aModel implements iTable
      *
      * Se este objeto já possui um Id definido esta ação irá falhar.
      *
-     * @param       ?string $parentTableName
-     *              Se definido, deve ser o nome do modelo de dados ao qual o objeto atual
-     *              deve ser associado.
+     * @param ?string $parentTableName
+     * Se definido, deve ser o nome do modelo de dados ao qual o objeto atual
+     * deve ser associado.
      *
-     * @param       ?int $parentId
-     *              Id do objeto pai ao qual este registro deve estar associado.
+     * @param ?int $parentId
+     * Id do objeto pai ao qual este registro deve estar associado.
      *
-     * @return      bool
-     *              Retornará ``true`` caso esta ação tenha sido bem sucedida.
+     * @return bool
+     * Retornará ``true`` caso esta ação tenha sido bem sucedida.
      */
     public function insert(
         ?string $parentTableName = null,
         ?int $parentId = null
-    ) : bool {
+    ): bool {
         if ($this->Id === 0) {
             return $this->save($parentTableName, $parentId);
         } else {
@@ -466,20 +464,20 @@ class DataTable extends aModel implements iTable
      *
      * Se este objeto não possui um Id definido esta ação irá falhar.
      *
-     * @param       ?string $parentTableName
-     *              Se definido, deve ser o nome do modelo de dados ao qual o objeto atual
-     *              deve ser associado.
+     * @param ?string $parentTableName
+     * Se definido, deve ser o nome do modelo de dados ao qual o objeto atual
+     * deve ser associado.
      *
-     * @param       ?int $parentId
-     *              Id do objeto pai ao qual este registro deve estar associado.
+     * @param ?int $parentId
+     * Id do objeto pai ao qual este registro deve estar associado.
      *
-     * @return      bool
-     *              Retornará ``true`` caso esta ação tenha sido bem sucedida.
+     * @return bool
+     * Retornará ``true`` caso esta ação tenha sido bem sucedida.
      */
     public function update(
         ?string $parentTableName = null,
         ?int $parentId = null
-    ) : bool {
+    ): bool {
         if ($this->Id !== 0) {
             return $this->save($parentTableName, $parentId);
         } else {
@@ -494,19 +492,19 @@ class DataTable extends aModel implements iTable
     /**
      * Carrega esta instância com os dados do registro de Id informado.
      *
-     * @param       int $Id
-     *              Id do registro que será carregado.
+     * @param int $Id
+     * Id do registro que será carregado.
      *
-     * @param       bool $loadChilds
-     *              Quando ``true`` irá carregar todos os objetos que são filhos diretos
-     *              deste.
+     * @param bool $loadChilds
+     * Quando ``true`` irá carregar todos os objetos que são filhos diretos
+     * deste.
      *
-     * @return      bool
+     * @return bool
      */
     public function select(
         int $Id,
-        bool $loadChilds = false) : bool
-    {
+        bool $loadChilds = false
+    ): bool {
         $r = false;
 
         if ($Id > 0) {
@@ -516,10 +514,11 @@ class DataTable extends aModel implements iTable
                 $rowData["Id"] = $Id;
                 $r = $this->setValues($rowData);
 
-                if ($r === true &&
+                if (
+                    $r === true &&
                     $loadChilds === true &&
-                    $this->ormInstructions["selectChild"] !== [])
-                {
+                    $this->ormInstructions["selectChild"] !== []
+                ) {
                     foreach ($this->ormInstructions["selectChild"] as $cName => $sData) {
                         if ($r === true) {
                             $r = $this->loadChild($cName);
@@ -542,12 +541,12 @@ class DataTable extends aModel implements iTable
      *
      * Apenas funcionará para os objetos FILHOS em relações ``1-1`` e ``1-N``.
      *
-     * @param       string $tableName
-     *              Nome da tabela de dados do objeto pai.
+     * @param string $tableName
+     * Nome da tabela de dados do objeto pai.
      *
-     * @return      ?int
+     * @return ?int
      */
-    public function selectParentIdOf(string $tableName) : ?int
+    public function selectParentIdOf(string $tableName): ?int
     {
         $tgtId = null;
 
@@ -568,9 +567,9 @@ class DataTable extends aModel implements iTable
      * Irá limpar totalmente os objetos filhos substituindo-os por instâncias vazias, ou
      * por coleções vazias.
      *
-     * @return      bool
+     * @return bool
      */
-    public function delete() : bool
+    public function delete(): bool
     {
         $r = false;
 
@@ -609,16 +608,16 @@ class DataTable extends aModel implements iTable
      * Permite definir o vínculo da instância atualmente carregada a um de seus possíveis
      * relacionamentos indicados nos modelos de dados.
      *
-     * @param       string $tableName
-     *              Nome da tabela de dados com a qual esta instância passará a ter um
-     *              vínculo referencial.
+     * @param string $tableName
+     * Nome da tabela de dados com a qual esta instância passará a ter um
+     * vínculo referencial.
      *
-     * @param       int $tgtId
-     *              Id do registro da tabela de dados alvo onde este vinculo será firmado.
+     * @param int $tgtId
+     * Id do registro da tabela de dados alvo onde este vinculo será firmado.
      *
-     * @return      bool
+     * @return bool
      */
-    public function attachWith(string $tableName, int $tgtId) : bool
+    public function attachWith(string $tableName, int $tgtId): bool
     {
         $r = false;
 
@@ -668,16 +667,16 @@ class DataTable extends aModel implements iTable
      *   Omitindo ``$tgtId``:
      *   TODOS os vínculos entre a instância atual e TODOS os demais serão desfeitos.
      *
-     * @param       string $tableName
-     *              Nome da tabela de dados com a qual esta instância irá romper um vínculo
-     *              existente.
+     * @param string $tableName
+     * Nome da tabela de dados com a qual esta instância irá romper um vínculo
+     * existente.
      *
-     * @param       ?int $tgtId
-     *              Id do registro da tabela de dados.
+     * @param ?int $tgtId
+     * Id do registro da tabela de dados.
      *
-     * @return      bool
+     * @return bool
      */
-    public function detachWith(string $tableName, ?int $tgtId = null) : bool
+    public function detachWith(string $tableName, ?int $tgtId = null): bool
     {
         $r = false;
 
@@ -711,10 +710,10 @@ class DataTable extends aModel implements iTable
     /**
      * Inicia uma nova tabela de dados.
      *
-     * @param       array $config
-     *              Array associativo com as configurações para esta tabela de dados.
+     * @param array $config
+     * Array associativo com as configurações para esta tabela de dados.
      *
-     * ``` php
+     * ```php
      *      $arr = [
      *          string          "tableName"
      *          Nome da tabela de dados.
@@ -743,8 +742,8 @@ class DataTable extends aModel implements iTable
      *      ];
      * ```
      *
-     * @throws      \InvalidArgumentException
-     *              Caso algum valor passado não seja válido.
+     * @throws \InvalidArgumentException
+     * Caso algum valor passado não seja válido.
      */
     function __construct(array $config)
     {
@@ -764,20 +763,22 @@ class DataTable extends aModel implements iTable
         }
 
         // Identifica se o parametro "executeAfterCreateTable" é válido.
-        if ($executeAfterCreateTable !== null &&
-            (   \is_array($executeAfterCreateTable) === false ||
+        if (
+            $executeAfterCreateTable !== null &&
+            (\is_array($executeAfterCreateTable) === false ||
                 \array_is_assoc($executeAfterCreateTable) === true ||
-                $executeAfterCreateTable === []))
-        {
+                $executeAfterCreateTable === [])
+        ) {
             $msg = "Invalid value defined for \"executeAfterCreateTable\". Expected non empty array of strings.";
             throw new \InvalidArgumentException($msg);
         }
 
         // Identifica se o parametro "ormInstructions" é válido.
-        if (\array_is_assoc($ormInstructions) === false ||
+        if (
+            \array_is_assoc($ormInstructions) === false ||
             \key_exists("select", $ormInstructions) === false ||
-            \key_exists("selectChild", $ormInstructions) === false)
-        {
+            \key_exists("selectChild", $ormInstructions) === false
+        ) {
             $msg = "Invalid value defined for \"ormInstructions\".";
             throw new \InvalidArgumentException($msg);
         }
@@ -790,8 +791,12 @@ class DataTable extends aModel implements iTable
 
         // Renomeia as chaves usadas de acordo com as
         // exigências da classe "aModel".
-        if ($tableName !== null)    { $config["name"]   = $tableName; }
-        if ($columns !== null)      { $config["fields"] = $columns; }
+        if ($tableName !== null) {
+            $config["name"]   = $tableName;
+        }
+        if ($columns !== null) {
+            $config["fields"] = $columns;
+        }
 
         parent::__construct($config);
 
@@ -832,19 +837,20 @@ class DataTable extends aModel implements iTable
      * Carrega os dados de uma coluna que seja usada como referência para registros de outras
      * colunas.
      *
-     * @param       string $columnName
-     *              Nome da coluna de dados que faz o vínculo entre este registro e as
-     *              instâncias filhas.
+     * @param string $columnName
+     * Nome da coluna de dados que faz o vínculo entre este registro e as
+     * instâncias filhas.
      *
-     * @return      bool
+     * @return bool
      */
-    private function loadChild(string $columnName) : bool
+    private function loadChild(string $columnName): bool
     {
         $r = false;
 
-        if ($this->Id !== 0 &&
-            isset($this->ormInstructions["selectChild"][$columnName]) === true)
-        {
+        if (
+            $this->Id !== 0 &&
+            isset($this->ormInstructions["selectChild"][$columnName]) === true
+        ) {
             $strSQL = $this->ormInstructions["selectChild"][$columnName]["select"];
             $field = $this->getField($columnName);
 
@@ -891,12 +897,12 @@ class DataTable extends aModel implements iTable
      * Exclui definitivamente todas as instâncias vinculadas ao registro atualmente
      * carregado.
      *
-     * @param       string $columnName
-     *              Nome da coluna de dados que possui as instâncias que serão excluídas
+     * @param string $columnName
+     * Nome da coluna de dados que possui as instâncias que serão excluídas
      *
-     * @return      bool
+     * @return bool
      */
-    private function deleteChild(string $columnName) : bool
+    private function deleteChild(string $columnName): bool
     {
         $r = false;
 
@@ -913,8 +919,7 @@ class DataTable extends aModel implements iTable
 
                     if ($r === false) {
                         $this->executeRollBackAndCloseTransaction();
-                    }
-                    else {
+                    } else {
                         $r = $inst->delete();
 
                         // Ocorrendo algum erro, executa o rollback
@@ -950,8 +955,7 @@ class DataTable extends aModel implements iTable
 
                         if ($r === false) {
                             $this->executeRollBackAndCloseTransaction();
-                        }
-                        else {
+                        } else {
                             $this->executeCommitAndCloseTransaction();
                             $field->setValue([]);
                         }
@@ -971,34 +975,32 @@ class DataTable extends aModel implements iTable
      * Método que deve ser definido nas classes concretas e que permitem expandir o uso do
      * método ``__call``.
      *
-     * @param       string $name
-     *              Nome do método.
-     *              É preciso ter o prefixo ``new`` e o nome do campo que será automaticamente
-     *              definido.
+     * @param string $name
+     * Nome do método.
+     * É preciso ter o prefixo ``new`` e o nome do campo que será automaticamente
+     * definido.
      *
-     * @param       array $arguments
-     *              Opcionalmente pode ser definido uma coleção de valores a serem definidos
-     *              para a nova instância.
+     * @param array $arguments
+     * Opcionalmente pode ser definido uma coleção de valores a serem definidos
+     * para a nova instância.
      *
-     * @return      void|mixed
+     * @return mixed
      */
-    protected function extendCall($name, $arguments)
+    protected function extendCall(string $name, array $arguments): mixed
     {
-        if (\mb_str_starts_with($name, "load") === true) {
+        if (\str_starts_with($name, "load") === true) {
             $this->useMainCall = false;
             $useName = \substr($name, 4);
 
             $this->throwErrorIfFieldDoesNotExists($useName);
             return $this->loadChild($useName);
-        }
-        elseif (\mb_str_starts_with($name, "delete") === true) {
+        } elseif (\str_starts_with($name, "delete") === true) {
             $this->useMainCall = false;
             $useName = \substr($name, 6);
 
             $this->throwErrorIfFieldDoesNotExists($useName);
             return $this->deleteChild($useName);
-        }
-        else {
+        } else {
             $this->useMainCall = true;
             return true;
         }

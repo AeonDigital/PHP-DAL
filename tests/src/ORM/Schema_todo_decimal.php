@@ -1,12 +1,12 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 namespace AeonDigital\ORM;
 
 use AeonDigital\Interfaces\ORM\iSchema as iSchema;
 use AeonDigital\Interfaces\ORM\iColumnFK as iColumnFK;
 use AeonDigital\Interfaces\ORM\iDataTableFactory as iDataTableFactory;
-
 
 
 
@@ -54,18 +54,18 @@ class Schema implements iSchema
      */
     private array $dataTypeMap = [
         "mysql"         => [
-                        "Bool"          =>  "TINYINT(1)",
-                        "Byte"          =>  "TINYINT",
-                        "Short"         =>  "SMALLINT",
-                        "Int"           =>  "INTEGER",
-                        "Long"          =>  "BIGINT",
-                        "Float"         =>  "FLOAT",
-                        "Double"        =>  "DOUBLE",
-                        "Real"          =>  "DECIMAL(p,s)",
-                        "DateTime"      =>  "DATETIME",
-                        "String"        =>  "VARCHAR(x)",
-                        "Text"          =>  "LONGTEXT"
-                    ],
+            "Bool"          =>  "TINYINT(1)",
+            "Byte"          =>  "TINYINT",
+            "Short"         =>  "SMALLINT",
+            "Int"           =>  "INTEGER",
+            "Long"          =>  "BIGINT",
+            "Float"         =>  "FLOAT",
+            "Double"        =>  "DOUBLE",
+            "Real"          =>  "DECIMAL(p,s)",
+            "DateTime"      =>  "DATETIME",
+            "String"        =>  "VARCHAR(x)",
+            "Text"          =>  "LONGTEXT"
+        ],
         "mssqlserver"   => [],
         "oracle"        => [],
         "postgree"      => []
@@ -90,7 +90,7 @@ class Schema implements iSchema
      *
      * @return      string
      */
-    private function createContraintValidName(string $str) : string
+    private function createContraintValidName(string $str): string
     {
         if (\strlen($str) > 60) {
             $regex = "/(?<=\s|^)[A-Z]/";
@@ -123,7 +123,7 @@ class Schema implements iSchema
      * @throws      \Exception
      *              Quando a configuração de uma linkTable não está correta.
      */
-    public function generateCreateSchemaFiles() : bool
+    public function generateCreateSchemaFiles(): bool
     {
         $r = false;
 
@@ -168,7 +168,7 @@ class Schema implements iSchema
 
                         $scale = null;
                         $precision = null;
-                        if (\mb_str_starts_with($oColumn->getType(), "Real") === true) {
+                        if (\str_starts_with($oColumn->getType(), "Real") === true) {
                             $scale = 4;
                             $precision = 14;
 
@@ -227,8 +227,7 @@ class Schema implements iSchema
                 else {
 
                     // Sendo uma referência 1-1
-                    if ($oColumn->isCollection() === false)
-                    {
+                    if ($oColumn->isCollection() === false) {
                         $usedColumns[] = $oColumn->getModelName() . "_Id";
 
                         $columns[] = $this->generateInstructionAddColumn(
@@ -257,7 +256,9 @@ class Schema implements iSchema
 
                         if ($oColumn->isFKUnique() === true) {
                             $constraints[] = $this->generateInstructionConstraintUnique(
-                                $tableName, $tableAlias, $oColumn->getModelName() . "_Id"
+                                $tableName,
+                                $tableAlias,
+                                $oColumn->getModelName() . "_Id"
                             );
                         }
                     }
@@ -267,7 +268,8 @@ class Schema implements iSchema
                             $link = $this->retrieveLinkTableData(
                                 $tableName,
                                 $tableAlias,
-                                $oColumn);
+                                $oColumn
+                            );
 
                             if ($link === []) {
                                 $tgtCol = $tableName . "." . $cName;
@@ -308,10 +310,11 @@ class Schema implements iSchema
                         // trata-se de uma coleção de registros.
                         // E
                         // o modelo apontado é a tabela que está sendo construida no momento...
-                        if ($oColumnFK->isReference() === true &&
+                        if (
+                            $oColumnFK->isReference() === true &&
                             $oColumnFK->isCollection() === true &&
-                            $oColumnFK->getModelName() === $tableName)
-                        {
+                            $oColumnFK->getModelName() === $tableName
+                        ) {
                             if ($oColumnFK->isFKLinkTable() === false) {
                                 $fkName = $tableNameFK . "_Id";
                                 if (\in_array($fkName, $usedColumns) === false) {
@@ -358,7 +361,9 @@ class Schema implements iSchema
             if ($uniqueMultipleKeys !== null) {
                 foreach ($uniqueMultipleKeys as $multiKeys) {
                     $constraints[] = $this->generateInstructionConstraintUniqueMultiKeys(
-                        $tableName, $tableAlias, $multiKeys
+                        $tableName,
+                        $tableAlias,
+                        $multiKeys
                     );
                 }
             }
@@ -422,7 +427,7 @@ class Schema implements iSchema
      *
      * @return      string
      */
-    private function generateInstructionCreateTable(string $tableName, ?string $description) : string
+    private function generateInstructionCreateTable(string $tableName, ?string $description): string
     {
         $str = "";
 
@@ -453,7 +458,7 @@ class Schema implements iSchema
      *
      * @return      string
      */
-    private function generateInstructionAddPK() : string
+    private function generateInstructionAddPK(): string
     {
         $str = "";
 
@@ -479,7 +484,7 @@ class Schema implements iSchema
      *
      * @return      string
      */
-    private function generateInstructionConstraintPK() : string
+    private function generateInstructionConstraintPK(): string
     {
         $str = "";
 
@@ -544,7 +549,7 @@ class Schema implements iSchema
         $default = undefined,
         ?int $precision = null,
         ?int $scale = null
-    ) : string {
+    ): string {
 
 
         switch ($this->dbType) {
@@ -585,7 +590,7 @@ class Schema implements iSchema
 
                 switch ($type) {
                     case "VARCHAR(x)":
-                        $type = \str_replace("x", $length, $type);
+                        $type = \str_replace("x", (string)$length, $type);
                         break;
 
                     case "DECIMAL(p,s)":
@@ -635,7 +640,7 @@ class Schema implements iSchema
         string $tableName,
         string $tableAlias,
         string $colName
-    ) : string {
+    ): string {
         $str = "";
 
         switch ($this->dbType) {
@@ -674,7 +679,7 @@ class Schema implements iSchema
         string $linkTableName,
         string $linkTableAlias,
         array $multiKeys
-    ) : string {
+    ): string {
         $str = "";
 
         switch ($this->dbType) {
@@ -717,7 +722,7 @@ class Schema implements iSchema
         string $tableName,
         string $tableAlias,
         string $colName
-    ) : string {
+    ): string {
         $str = "";
 
         switch ($this->dbType) {
@@ -762,15 +767,14 @@ class Schema implements iSchema
         string $tableAlias,
         string $colName,
         array $enum
-    ) : string {
+    ): string {
         $str = "";
 
         $useEnum = [];
         foreach ($enum as $k => $v) {
             if (\is_array($v) === false) {
                 $useEnum[] = $v;
-            }
-            else {
+            } else {
                 if (\count($v) !== 2) {
                     $msg = "Invalid enumerator value. Multidimensional arrays must have 2 values defined.";
                     throw new \InvalidArgumentException($msg);
@@ -834,13 +838,13 @@ class Schema implements iSchema
         string $colName,
         ?string $fkOnUpdate,
         ?string $fkOnDelete
-    ) : string {
+    ): string {
         $str = "";
 
         switch ($this->dbType) {
             case "mysql":
                 $ctName     = $this->createContraintValidName(
-                    "fk_" . $tableAlias . "_to_" . $tableAliasFK . "_". $colName
+                    "fk_" . $tableAlias . "_to_" . $tableAliasFK . "_" . $colName
                 );
                 $onUpdate   = ($fkOnUpdate === null) ? "" : " ON UPDATE $fkOnUpdate";
                 $onDelete   = ($fkOnDelete === null) ? "" : " ON DELETE $fkOnDelete";
@@ -874,7 +878,7 @@ class Schema implements iSchema
      * @return      array
      *              Retornará um array associativo conforme o modelo:
      *
-     * ``` php
+     * ```php
      *      $arr => [
      *          "linkTableName"     string  Nome da tabela "linkTable".
      *          "createTable"       string  Instrução para criação da "linkTable".
@@ -886,7 +890,7 @@ class Schema implements iSchema
         string $table01Name,
         string $table01Alias,
         iColumnFK $table01Column
-    ) : array {
+    ): array {
         $table01Description = $table01Column->getFKDescription();
         $table01AllowNull   = $table01Column->isFKAllowNull();
 
@@ -899,10 +903,11 @@ class Schema implements iSchema
         $table02Column      = null;
         foreach ($fieldNames as $colName) {
             $field = $fkTable->{"_$colName"};
-            if ($field->isReference() === true &&
+            if (
+                $field->isReference() === true &&
                 $field->isFKLinkTable() === true &&
-                $field->getModelName() === $table01Name)
-            {
+                $field->getModelName() === $table01Name
+            ) {
                 $table02Column = $field;
                 break;
             }
@@ -967,7 +972,6 @@ class Schema implements iSchema
                 "constraints"   => $constraint
             ];
         }
-
     }
     /**
      * Gera uma instrução ``CREATE TABLE`` para a criação de uma ``linkTable`` permitindo
@@ -1009,7 +1013,7 @@ class Schema implements iSchema
         string $table02Alias,
         string $table02Description,
         bool $table02AllowNull
-    ) : string {
+    ): string {
 
         $arrTables = [$table01Alias, $table02Alias];
         \rsort($arrTables);
@@ -1054,7 +1058,7 @@ class Schema implements iSchema
      * Retorna uma coleção de arrays contendo o nome e a descrição de cada uma das
      * tabelas do atual banco de dados (mesmo aquelas que não estão mapeadas).
      *
-     * ``` php
+     * ```php
      *      // O array retornado é uma coleção de entradas conforme o exemplo abaixo:
      *      $arr = [
      *          string  "tableName"         Nome da tabela.
@@ -1067,7 +1071,7 @@ class Schema implements iSchema
      *
      * @return      ?array
      */
-    public function listDataBaseTables() : ?array
+    public function listDataBaseTables(): ?array
     {
         $r = null;
 
@@ -1114,7 +1118,7 @@ class Schema implements iSchema
      *
      * @return      bool
      */
-    public function executeDropSchema() : bool
+    public function executeDropSchema(): bool
     {
         $r = false;
 
@@ -1159,7 +1163,7 @@ class Schema implements iSchema
      * Retorna uma coleção de arrays contendo o nome, tipo e a descrição de cada uma das
      * colunas da tabela indicada.
      *
-     * ``` php
+     * ```php
      *      // O array retornado é uma coleção de entradas conforme o exemplo abaixo:
      *      $arr = [
      *          bool    "columnPrimaryKey"      Indica se a coluna é uma chave primária.
@@ -1177,7 +1181,7 @@ class Schema implements iSchema
      *
      * @return      ?array
      */
-    public function listTableColumns(string $tableName) : ?array
+    public function listTableColumns(string $tableName): ?array
     {
         $r = null;
 
@@ -1223,7 +1227,7 @@ class Schema implements iSchema
      * Retorna um array associativo contendo a coleção de ``constraints`` definidas
      * atualmente no banco de dados.
      *
-     * ``` php
+     * ```php
      *      // O array retornado é uma coleção de entradas conforme o exemplo abaixo:
      *      $arr = [
      *          string "tableName"              Nome da tabela de dados na qual a regra está vinculada.
@@ -1240,7 +1244,7 @@ class Schema implements iSchema
      *
      * @return      ?array
      */
-    public function listSchemaConstraint(?string $tableName = null) : ?array
+    public function listSchemaConstraint(?string $tableName = null): ?array
     {
         $r = null;
         $dbName = $this->factory->getDAL()->getDBName();
@@ -1301,7 +1305,7 @@ class Schema implements iSchema
      *
      * @return      bool
      */
-    public function executeCreateSchema(bool $dropSchema = false) : bool
+    public function executeCreateSchema(bool $dropSchema = false): bool
     {
         $tgtSchemaFilePath = $this->factory->getProjectDirectory() . DS . "_projectSchema.sql";
 

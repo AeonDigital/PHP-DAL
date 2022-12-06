@@ -1,11 +1,11 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 namespace AeonDigital\ORM;
 
 use AeonDigital\Interfaces\ORM\iColumn as iColumn;
 use AeonDigital\DataModel\Abstracts\aField as aField;
-
 
 
 
@@ -31,10 +31,10 @@ class DataColumn extends aField implements iColumn
     /**
      * Inicia um novo campo de dados.
      *
-     * @param       array $config
-     *              Array associativo com as configurações para este campo.
+     * @param array $config
+     * Array associativo com as configurações para este campo.
      *
-     * ``` php
+     * ```php
      *      $arr = [
      *          string          "name"
      *          Nome do campo.
@@ -104,8 +104,8 @@ class DataColumn extends aField implements iColumn
      *      ];
      * ```
      *
-     * @throws      \InvalidArgumentException
-     *              Caso algum valor passado não seja válido.
+     * @throws \InvalidArgumentException
+     * Caso algum valor passado não seja válido.
      */
     function __construct(array $config)
     {

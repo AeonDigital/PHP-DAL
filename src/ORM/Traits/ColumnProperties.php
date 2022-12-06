@@ -1,8 +1,8 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 namespace AeonDigital\ORM\Traits;
-
 
 
 
@@ -32,16 +32,16 @@ trait ColumnProperties
      * Propriedade que indica se o valor para esta coluna pode ser repetido entre os
      * demais registros que compões a coleção da tabela de dados.
      *
-     * @var         bool
+     * @var bool
      */
     private bool $unique = false;
     /**
      * Indica se o valor para esta coluna pode ser repetido entre os demais registros
      * que compões a coleção da tabela de dados.
      *
-     * @return      bool
+     * @return bool
      */
-    public function isUnique() : bool
+    public function isUnique(): bool
     {
         return $this->unique;
     }
@@ -53,15 +53,15 @@ trait ColumnProperties
     /**
      * Propriedade que indica quando o o valor desta coluna é do tipo *auto-incremento*.
      *
-     * @var         bool
+     * @var bool
      */
     private bool $autoIncrement = false;
     /**
      * Indica quando o o valor desta coluna é do tipo *auto-incremento*.
      *
-     * @return      bool
+     * @return bool
      */
-    public function isAutoIncrement() : bool
+    public function isAutoIncrement(): bool
     {
         return $this->autoIncrement;
     }
@@ -73,15 +73,15 @@ trait ColumnProperties
     /**
      * Propriedade que indica se esta coluna é a chave primária da tabela de dados.
      *
-     * @var         bool
+     * @var bool
      */
     private bool $primaryKey = false;
     /**
      * Indica se esta coluna é a chave primária da tabela de dados.
      *
-     * @return      bool
+     * @return bool
      */
-    public function isPrimaryKey() : bool
+    public function isPrimaryKey(): bool
     {
         return $this->primaryKey;
     }
@@ -93,15 +93,15 @@ trait ColumnProperties
     /**
      * Propriedade que indica se esta coluna é uma chave extrangeira.
      *
-     * @var         bool
+     * @var bool
      */
     private bool $foreignKey = false;
     /**
      * Indica se esta coluna é uma chave extrangeira.
      *
-     * @return      bool
+     * @return bool
      */
-    public function isForeignKey() : bool
+    public function isForeignKey(): bool
     {
         return $this->foreignKey;
     }
@@ -113,16 +113,16 @@ trait ColumnProperties
     /**
      * Propriedade que indica se esta coluna está ou não indexada.
      *
-     * @var         bool
+     * @var bool
      */
     private bool $index = false;
     /**
      * Indica se esta coluna está ou não indexada.
      * Por padrão, toda ``primaryKey`` e ``foreignKey`` é automaticamente indexada.
      *
-     * @return      bool
+     * @return bool
      */
-    public function isIndex() : bool
+    public function isIndex(): bool
     {
         return $this->index;
     }

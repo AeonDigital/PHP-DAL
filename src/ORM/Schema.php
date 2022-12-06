@@ -1,12 +1,12 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 namespace AeonDigital\ORM;
 
 use AeonDigital\Interfaces\ORM\iSchema as iSchema;
 use AeonDigital\Interfaces\ORM\iColumnFK as iColumnFK;
 use AeonDigital\Interfaces\ORM\iDataTableFactory as iDataTableFactory;
-
 
 
 
@@ -31,13 +31,13 @@ class Schema implements iSchema
      * Instância da fábrica de objetos ``iTable`` referentes ao projeto que está sendo
      * usado.
      *
-     * @var         iDataTableFactory
+     * @var iDataTableFactory
      */
     private ?iDataTableFactory $factory = null;
     /**
      * Tipo do banco de dados utilizado.
      *
-     * @var         ?string
+     * @var ?string
      */
     private ?string $dbType = null;
 
@@ -54,18 +54,18 @@ class Schema implements iSchema
      */
     private array $dataTypeMap = [
         "mysql"         => [
-                        "Bool"          =>  "TINYINT(1)",
-                        "Byte"          =>  "TINYINT",
-                        "Short"         =>  "SMALLINT",
-                        "Int"           =>  "INTEGER",
-                        "Long"          =>  "BIGINT",
-                        "Float"         =>  "FLOAT",
-                        "Double"        =>  "DOUBLE",
-                        "Real"          =>  "DECIMAL(14,4)",
-                        "DateTime"      =>  "DATETIME",
-                        "String"        =>  "VARCHAR(x)",
-                        "Text"          =>  "LONGTEXT"
-                    ],
+            "Bool"          =>  "TINYINT(1)",
+            "Byte"          =>  "TINYINT",
+            "Short"         =>  "SMALLINT",
+            "Int"           =>  "INTEGER",
+            "Long"          =>  "BIGINT",
+            "Float"         =>  "FLOAT",
+            "Double"        =>  "DOUBLE",
+            "Real"          =>  "DECIMAL(14,4)",
+            "DateTime"      =>  "DATETIME",
+            "String"        =>  "VARCHAR(x)",
+            "Text"          =>  "LONGTEXT"
+        ],
         "mssqlserver"   => [],
         "oracle"        => [],
         "postgree"      => []
@@ -85,12 +85,12 @@ class Schema implements iSchema
      * Se ainda assim o resultado for maior que 60 caracteres será criado um hash usando sha1
      * para ser usado no lugar.
      *
-     * @param       string $str
-     *              Nome ideal da constraint.
+     * @param string $str
+     * Nome ideal da constraint.
      *
-     * @return      string
+     * @return string
      */
-    private function createContraintValidName(string $str) : string
+    private function createContraintValidName(string $str): string
     {
         if (\strlen($str) > 60) {
             $regex = "/(?<=\s|^)[A-Z]/";
@@ -118,12 +118,12 @@ class Schema implements iSchema
      * uso, gera um arquivo ``_schema.php`` contendo todas as instruções SQL necessárias
      * para a criação dos modelos no banco de dados alvo.
      *
-     * @return      bool
+     * @return bool
      *
-     * @throws      \Exception
-     *              Quando a configuração de uma linkTable não está correta.
+     * @throws \Exception
+     * Quando a configuração de uma linkTable não está correta.
      */
-    public function generateCreateSchemaFiles() : bool
+    public function generateCreateSchemaFiles(): bool
     {
         $r = false;
 
@@ -198,8 +198,7 @@ class Schema implements iSchema
                 else {
 
                     // Sendo uma referência 1-1
-                    if ($oColumn->isCollection() === false)
-                    {
+                    if ($oColumn->isCollection() === false) {
                         $usedColumns[] = $oColumn->getModelName() . "_Id";
 
                         $columns[] = $this->generateInstructionAddColumn(
@@ -228,7 +227,9 @@ class Schema implements iSchema
 
                         if ($oColumn->isFKUnique() === true) {
                             $constraints[] = $this->generateInstructionConstraintUnique(
-                                $tableName, $tableAlias, $oColumn->getModelName() . "_Id"
+                                $tableName,
+                                $tableAlias,
+                                $oColumn->getModelName() . "_Id"
                             );
                         }
                     }
@@ -238,7 +239,8 @@ class Schema implements iSchema
                             $link = $this->retrieveLinkTableData(
                                 $tableName,
                                 $tableAlias,
-                                $oColumn);
+                                $oColumn
+                            );
 
                             if ($link === []) {
                                 $tgtCol = $tableName . "." . $cName;
@@ -279,10 +281,11 @@ class Schema implements iSchema
                         // trata-se de uma coleção de registros.
                         // E
                         // o modelo apontado é a tabela que está sendo construida no momento...
-                        if ($oColumnFK->isReference() === true &&
+                        if (
+                            $oColumnFK->isReference() === true &&
                             $oColumnFK->isCollection() === true &&
-                            $oColumnFK->getModelName() === $tableName)
-                        {
+                            $oColumnFK->getModelName() === $tableName
+                        ) {
                             if ($oColumnFK->isFKLinkTable() === false) {
                                 $fkName = $tableNameFK . "_Id";
                                 if (\in_array($fkName, $usedColumns) === false) {
@@ -329,7 +332,9 @@ class Schema implements iSchema
             if ($uniqueMultipleKeys !== null) {
                 foreach ($uniqueMultipleKeys as $multiKeys) {
                     $constraints[] = $this->generateInstructionConstraintUniqueMultiKeys(
-                        $tableName, $tableAlias, $multiKeys
+                        $tableName,
+                        $tableAlias,
+                        $multiKeys
                     );
                 }
             }
@@ -385,15 +390,15 @@ class Schema implements iSchema
      * Retorna o modelo que deve ser usado por uma instrução SQL para a criação de uma
      * tabela de dados para o tipo de banco de dados que está sendo usado no momento.
      *
-     * @param       string $tableName
-     *              Nome da tabela de dados.
+     * @param string $tableName
+     * Nome da tabela de dados.
      *
-     * @param       ?string $description
-     *              Descrição para a coluna de dados.
+     * @param ?string $description
+     * Descrição para a coluna de dados.
      *
-     * @return      string
+     * @return string
      */
-    private function generateInstructionCreateTable(string $tableName, ?string $description) : string
+    private function generateInstructionCreateTable(string $tableName, ?string $description): string
     {
         $str = "";
 
@@ -422,9 +427,9 @@ class Schema implements iSchema
     /**
      * Retorna uma instrução para inserir uma chave primária (Id).
      *
-     * @return      string
+     * @return string
      */
-    private function generateInstructionAddPK() : string
+    private function generateInstructionAddPK(): string
     {
         $str = "";
 
@@ -448,9 +453,9 @@ class Schema implements iSchema
     /**
      * Retorna uma instrução para inserir uma constraint para a chave primária.
      *
-     * @return      string
+     * @return string
      */
-    private function generateInstructionConstraintPK() : string
+    private function generateInstructionConstraintPK(): string
     {
         $str = "";
 
@@ -475,27 +480,27 @@ class Schema implements iSchema
      * Retorna uma instrução para inserir uma coluna de dados em uma tabela que corresponda
      * aos valores dos parametros informados.
      *
-     * @param       string $name
-     *              Nome da coluna.
+     * @param string $name
+     * Nome da coluna.
      *
-     * @param       ?string $description
-     *              Descrição para a coluna de dados.
+     * @param ?string $description
+     * Descrição para a coluna de dados.
      *
-     * @param       string $type
-     *              Tipo de dados da coluna.
+     * @param string $type
+     * Tipo de dados da coluna.
      *
-     * @param       ?int $length
-     *              Quantidade de caracteres suportados por uma coluna de dados que armazena
-     *              strings.
+     * @param ?int $length
+     * Quantidade de caracteres suportados por uma coluna de dados que armazena
+     * strings.
      *
-     * @param       bool $allowNull
-     *              Indica quando é ou não permitido definir ``null`` como um valor válido para
-     *              esta coluna.
+     * @param bool $allowNull
+     * Indica quando é ou não permitido definir ``null`` como um valor válido para
+     * esta coluna.
      *
-     * @param       mixed $default
-     *              Valor padrão a ser definido para a coluna de dados.
+     * @param mixed $default
+     * Valor padrão a ser definido para a coluna de dados.
      *
-     * @return      string
+     * @return string
      */
     private function generateInstructionAddColumn(
         string $name,
@@ -504,7 +509,7 @@ class Schema implements iSchema
         ?int $length,
         bool $allowNull,
         $default = undefined
-    ) : string {
+    ): string {
 
 
         switch ($this->dbType) {
@@ -540,11 +545,9 @@ class Schema implements iSchema
                             $use = null;
                             if (\is_a($default, "\DateTime") === true) {
                                 $use = "'" . $default->format("Y-m-d H-i-s") . "'";
-                            }
-                            elseif (\mb_strtoupper($default) === "NOW()") {
+                            } elseif (\mb_strtoupper($default) === "NOW()") {
                                 $use = "NOW()";
-                            }
-                            else {
+                            } else {
                                 $use = "'$default'";
                             }
 
@@ -554,7 +557,7 @@ class Schema implements iSchema
                     $default = $useDefault;
                 }
 
-                $type = (($type === "VARCHAR(x)") ? \str_replace("x", $length, $type) : $type);
+                $type = (($type === "VARCHAR(x)") ? \str_replace("x", (string)$length, $type) : $type);
 
                 $str = "$name $type" . $allowNull . $default;
                 if ($description !== null && $description !== "") {
@@ -578,23 +581,23 @@ class Schema implements iSchema
      * Retorna uma instrução para inserir uma constraint para verificar se o valor desta
      * coluna é unico dentro da coleção de registros da tabela.
      *
-     * @param       string $tableName
-     *              Nome da tabela alvo.
+     * @param string $tableName
+     * Nome da tabela alvo.
      *
-     * @param       string $tableAlias
-     *              Alias usado para identificar a tabela que contém a coluna que receberá
-     *              esta regra.
+     * @param string $tableAlias
+     * Alias usado para identificar a tabela que contém a coluna que receberá
+     * esta regra.
      *
-     * @param       string $colName
-     *              Nome da coluna.
+     * @param string $colName
+     * Nome da coluna.
      *
-     * @return      string
+     * @return string
      */
     private function generateInstructionConstraintUnique(
         string $tableName,
         string $tableAlias,
         string $colName
-    ) : string {
+    ): string {
         $str = "";
 
         switch ($this->dbType) {
@@ -618,22 +621,22 @@ class Schema implements iSchema
     /**
      * Retorna uma instrução para inserir uma constraint de uma chave única composta.
      *
-     * @param       string $linkTableName
-     *              Nome da tabela usada como linkTable.
+     * @param string $linkTableName
+     * Nome da tabela usada como linkTable.
      *
-     * @param       string $linkTableAlias
-     *              Alias usado para esta linkTable.
+     * @param string $linkTableAlias
+     * Alias usado para esta linkTable.
      *
-     * @param       array $multiKeys
-     *              Coleção de chaves que irão compor a constraint.
+     * @param array $multiKeys
+     * Coleção de chaves que irão compor a constraint.
      *
-     * @return      string
+     * @return string
      */
     private function generateInstructionConstraintUniqueMultiKeys(
         string $linkTableName,
         string $linkTableAlias,
         array $multiKeys
-    ) : string {
+    ): string {
         $str = "";
 
         switch ($this->dbType) {
@@ -660,23 +663,23 @@ class Schema implements iSchema
      * Retorna uma instrução para inserir uma constraint para verificar se o valor desta
      * coluna é unico dentro da coleção de registros da tabela.
      *
-     * @param       string $tableName
-     *              Nome da tabela alvo.
+     * @param string $tableName
+     * Nome da tabela alvo.
      *
-     * @param       string $tableAlias
-     *              Alias usado para identificar a tabela que contém a coluna que receberá
-     *              esta regra.
+     * @param string $tableAlias
+     * Alias usado para identificar a tabela que contém a coluna que receberá
+     * esta regra.
      *
-     * @param       string $colName
-     *              Nome da coluna.
+     * @param string $colName
+     * Nome da coluna.
      *
-     * @return      string
+     * @return string
      */
     private function generateInstructionDefineIndex(
         string $tableName,
         string $tableAlias,
         string $colName
-    ) : string {
+    ): string {
         $str = "";
 
         switch ($this->dbType) {
@@ -701,35 +704,34 @@ class Schema implements iSchema
      * Retorna uma instrução para inserir uma constraint para verificar se o valor desta
      * coluna é um dos valores definidos em sua lista enumerada de valores.
      *
-     * @param       string $tableName
-     *              Nome da tabela alvo.
+     * @param string $tableName
+     * Nome da tabela alvo.
      *
-     * @param       string $tableAlias
-     *              Alias usado para identificar a tabela que contém a coluna que receberá
-     *              esta regra.
+     * @param string $tableAlias
+     * Alias usado para identificar a tabela que contém a coluna que receberá
+     * esta regra.
      *
-     * @param       string $colName
-     *              Nome da coluna.
+     * @param string $colName
+     * Nome da coluna.
      *
-     * @param       array $enum
-     *              Coleção de enumeradores.
+     * @param array $enum
+     * Coleção de enumeradores.
      *
-     * @return      string
+     * @return string
      */
     private function generateInstructionConstraintEnumerator(
         string $tableName,
         string $tableAlias,
         string $colName,
         array $enum
-    ) : string {
+    ): string {
         $str = "";
 
         $useEnum = [];
         foreach ($enum as $k => $v) {
             if (\is_array($v) === false) {
                 $useEnum[] = $v;
-            }
-            else {
+            } else {
                 if (\count($v) !== 2) {
                     $msg = "Invalid enumerator value. Multidimensional arrays must have 2 values defined.";
                     throw new \InvalidArgumentException($msg);
@@ -761,29 +763,29 @@ class Schema implements iSchema
     /**
      * Retorna uma instrução para inserir uma constraint para definir uma chave extrangeira.
      *
-     * @param       string $tableName
-     *              Nome da tabela que contêm a chave extrangeira.
+     * @param string $tableName
+     * Nome da tabela que contêm a chave extrangeira.
      *
-     * @param       string $tableAlias
-     *              Alias usado para identificar a tabela que contém
-     *              a coluna que receberá esta regra.
+     * @param string $tableAlias
+     * Alias usado para identificar a tabela que contém
+     * a coluna que receberá esta regra.
      *
-     * @param       string $tableNameFK
-     *              Nome da tabela para onde a chave extrangeira aponta.
+     * @param string $tableNameFK
+     * Nome da tabela para onde a chave extrangeira aponta.
      *
-     * @param       string $tableAliasFk
-     *              Alias usado para identificar a tabela da chave etrangeira.
+     * @param string $tableAliasFk
+     * Alias usado para identificar a tabela da chave etrangeira.
      *
-     * @param       string $colName
-     *              Nome da coluna.
+     * @param string $colName
+     * Nome da coluna.
      *
-     * @param       ?string $fkOnUpdate
-     *              Regra a ser executada quando o registro pai for alterado.
+     * @param ?string $fkOnUpdate
+     * Regra a ser executada quando o registro pai for alterado.
      *
-     * @param       ?string $fkOnDelete
-     *              Regra a ser executada quando o registro pai for excluído.
+     * @param ?string $fkOnDelete
+     * Regra a ser executada quando o registro pai for excluído.
      *
-     * @return      string
+     * @return string
      */
     private function generateInstructionAddFK(
         string $tableName,
@@ -793,13 +795,13 @@ class Schema implements iSchema
         string $colName,
         ?string $fkOnUpdate,
         ?string $fkOnDelete
-    ) : string {
+    ): string {
         $str = "";
 
         switch ($this->dbType) {
             case "mysql":
                 $ctName     = $this->createContraintValidName(
-                    "fk_" . $tableAlias . "_to_" . $tableAliasFK . "_". $colName
+                    "fk_" . $tableAlias . "_to_" . $tableAliasFK . "_" . $colName
                 );
                 $onUpdate   = ($fkOnUpdate === null) ? "" : " ON UPDATE $fkOnUpdate";
                 $onDelete   = ($fkOnDelete === null) ? "" : " ON DELETE $fkOnDelete";
@@ -821,19 +823,19 @@ class Schema implements iSchema
     /**
      * Retorna os metadados necessários para definir uma linkTable.
      *
-     * @param       string $table01Name
-     *              Nome da tabela 01 da relação.
+     * @param string $table01Name
+     * Nome da tabela 01 da relação.
      *
-     * @param       string $table01Alias
-     *              Alias da tabela 01 da relação.
+     * @param string $table01Alias
+     * Alias da tabela 01 da relação.
      *
-     * @param       iColumnFK $table01Column
-     *              Coluna de dados que faz referência a uma FK do tipo ``linkTable``.
+     * @param iColumnFK $table01Column
+     * Coluna de dados que faz referência a uma FK do tipo ``linkTable``.
      *
-     * @return      array
-     *              Retornará um array associativo conforme o modelo:
+     * @return array
+     * Retornará um array associativo conforme o modelo:
      *
-     * ``` php
+     * ```php
      *      $arr => [
      *          "linkTableName"     string  Nome da tabela "linkTable".
      *          "createTable"       string  Instrução para criação da "linkTable".
@@ -845,7 +847,7 @@ class Schema implements iSchema
         string $table01Name,
         string $table01Alias,
         iColumnFK $table01Column
-    ) : array {
+    ): array {
         $table01Description = $table01Column->getFKDescription();
         $table01AllowNull   = $table01Column->isFKAllowNull();
 
@@ -858,10 +860,11 @@ class Schema implements iSchema
         $table02Column      = null;
         foreach ($fieldNames as $colName) {
             $field = $fkTable->{"_$colName"};
-            if ($field->isReference() === true &&
+            if (
+                $field->isReference() === true &&
                 $field->isFKLinkTable() === true &&
-                $field->getModelName() === $table01Name)
-            {
+                $field->getModelName() === $table01Name
+            ) {
                 $table02Column = $field;
                 break;
             }
@@ -926,38 +929,37 @@ class Schema implements iSchema
                 "constraints"   => $constraint
             ];
         }
-
     }
     /**
      * Gera uma instrução ``CREATE TABLE`` para a criação de uma ``linkTable`` permitindo
      * assim que 2 tabelas de dados se referenciem mutuamente em uma relação ``N-N``.
      *
      *
-     * @param       string $table01Name
-     *              Nome da tabela 01 da relação.
+     * @param string $table01Name
+     * Nome da tabela 01 da relação.
      *
-     * @param       string $table01Alias
-     *              Alias da tabela 01 da relação.
+     * @param string $table01Alias
+     * Alias da tabela 01 da relação.
      *
-     * @param       string $table01Description
-     *              Descrição da coluna de dados 01 da relação.
+     * @param string $table01Description
+     * Descrição da coluna de dados 01 da relação.
      *
-     * @param       bool $table01AllowNull
-     *              Instrução ``allowNull`` referente a coluna de dados 01 da relação.
+     * @param bool $table01AllowNull
+     * Instrução ``allowNull`` referente a coluna de dados 01 da relação.
      *
-     * @param       string $table02Name
-     *              Nome da tabela 02 da relação.
+     * @param string $table02Name
+     * Nome da tabela 02 da relação.
      *
-     * @param       string $table02Alias
-     *              Alias da tabela 02 da relação.
+     * @param string $table02Alias
+     * Alias da tabela 02 da relação.
      *
-     * @param       string $table02Description
-     *              Descrição da coluna de dados 02 da relação.
+     * @param string $table02Description
+     * Descrição da coluna de dados 02 da relação.
      *
-     * @param       bool $table02AllowNull
-     *              Instrução ``allowNull`` referente a coluna de dados 02 da relação.
+     * @param bool $table02AllowNull
+     * Instrução ``allowNull`` referente a coluna de dados 02 da relação.
      *
-     * @return      string
+     * @return string
      */
     private function generateInstructionCreateLinkTable(
         string $table01Name,
@@ -968,7 +970,7 @@ class Schema implements iSchema
         string $table02Alias,
         string $table02Description,
         bool $table02AllowNull
-    ) : string {
+    ): string {
 
         $arrTables = [$table01Alias, $table02Alias];
         \rsort($arrTables);
@@ -1013,7 +1015,7 @@ class Schema implements iSchema
      * Retorna uma coleção de arrays contendo o nome e a descrição de cada uma das
      * tabelas do atual banco de dados (mesmo aquelas que não estão mapeadas).
      *
-     * ``` php
+     * ```php
      *      // O array retornado é uma coleção de entradas conforme o exemplo abaixo:
      *      $arr = [
      *          string  "tableName"         Nome da tabela.
@@ -1024,9 +1026,9 @@ class Schema implements iSchema
      * ```
      *
      *
-     * @return      ?array
+     * @return ?array
      */
-    public function listDataBaseTables() : ?array
+    public function listDataBaseTables(): ?array
     {
         $r = null;
 
@@ -1071,9 +1073,9 @@ class Schema implements iSchema
      * Remove completamente todo o schema atualmente existente dentro do banco de dados
      * alvo.
      *
-     * @return      bool
+     * @return bool
      */
-    public function executeDropSchema() : bool
+    public function executeDropSchema(): bool
     {
         $r = false;
 
@@ -1118,7 +1120,7 @@ class Schema implements iSchema
      * Retorna uma coleção de arrays contendo o nome, tipo e a descrição de cada uma das
      * colunas da tabela indicada.
      *
-     * ``` php
+     * ```php
      *      // O array retornado é uma coleção de entradas conforme o exemplo abaixo:
      *      $arr = [
      *          bool    "columnPrimaryKey"      Indica se a coluna é uma chave primária.
@@ -1131,12 +1133,12 @@ class Schema implements iSchema
      *      ];
      * ```
      *
-     * @param       string $tableName
-     *              Nome da tabela de dados alvo.
+     * @param string $tableName
+     * Nome da tabela de dados alvo.
      *
-     * @return      ?array
+     * @return ?array
      */
-    public function listTableColumns(string $tableName) : ?array
+    public function listTableColumns(string $tableName): ?array
     {
         $r = null;
 
@@ -1182,7 +1184,7 @@ class Schema implements iSchema
      * Retorna um array associativo contendo a coleção de ``constraints`` definidas
      * atualmente no banco de dados.
      *
-     * ``` php
+     * ```php
      *      // O array retornado é uma coleção de entradas conforme o exemplo abaixo:
      *      $arr = [
      *          string "tableName"              Nome da tabela de dados na qual a regra está vinculada.
@@ -1193,13 +1195,13 @@ class Schema implements iSchema
      *      ];
      * ```
      *
-     * @param       ?string $tableName
-     *              Se for definido, deverá retornar apenas os registros relacionados
-     *              com a tabela alvo.
+     * @param ?string $tableName
+     * Se for definido, deverá retornar apenas os registros relacionados
+     * com a tabela alvo.
      *
-     * @return      ?array
+     * @return ?array
      */
-    public function listSchemaConstraint(?string $tableName = null) : ?array
+    public function listSchemaConstraint(?string $tableName = null): ?array
     {
         $r = null;
         $dbName = $this->factory->getDAL()->getDBName();
@@ -1255,13 +1257,13 @@ class Schema implements iSchema
      * Executa o script de criação do schema gerado por último pela função
      * ``generateCreateSchemaFiles``.
      *
-     * @param       bool $dropSchema
-     *              Quando ``true`` irá excluir totalmente todas as tabelas de dados
-     *              existentes no banco de dados alvo e então recriar o schema.
+     * @param bool $dropSchema
+     * Quando ``true`` irá excluir totalmente todas as tabelas de dados
+     * existentes no banco de dados alvo e então recriar o schema.
      *
-     * @return      bool
+     * @return bool
      */
-    public function executeCreateSchema(bool $dropSchema = false) : bool
+    public function executeCreateSchema(bool $dropSchema = false): bool
     {
         $tgtSchemaFilePath = $this->factory->getProjectDirectory() . DS . "_projectSchema.sql";
 
@@ -1334,12 +1336,12 @@ class Schema implements iSchema
      * Inicia uma instância de um Schema para lidar com os modelos de dados definidos
      * para o objeto ``iDataTableFactory`` passado.
      *
-     * @param       iDataTableFactory $factory
-     *              Instância de uma fábrica de objetos ``iTable`` para o projeto que
-     *              está sendo usado.
+     * @param iDataTableFactory $factory
+     * Instância de uma fábrica de objetos ``iTable`` para o projeto que
+     * está sendo usado.
      *
-     * @throws      \Exception
-     *              Caso não seja possível criar algum dos diretórios do projeto.
+     * @throws \Exception
+     * Caso não seja possível criar algum dos diretórios do projeto.
      */
     function __construct(iDataTableFactory $factory)
     {

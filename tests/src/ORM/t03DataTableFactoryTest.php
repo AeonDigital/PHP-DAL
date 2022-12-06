@@ -1,5 +1,6 @@
 <?php
-declare (strict_types = 1);
+
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
@@ -8,7 +9,6 @@ use AeonDigital\ORM\DataTable as DataTable;
 use AeonDigital\DAL\DAL as DAL;
 
 require_once __DIR__ . "/../../phpunit.php";
-
 
 
 
@@ -41,7 +41,8 @@ class t03DataTableFactoryTest extends TestCase
                 $con["dbHost"],
                 $con["dbName"],
                 $con["dbUserName"],
-                $con["dbUserPassword"]);
+                $con["dbUserPassword"]
+            );
         }
         return $this->useConnection;
     }
@@ -241,7 +242,7 @@ class t03DataTableFactoryTest extends TestCase
         $obj = $this->provider_factory();
 
         try {
-           $tbCidade = $obj->createDataTable("InvalidTableName");
+            $tbCidade = $obj->createDataTable("InvalidTableName");
         } catch (\Exception $ex) {
             $fail = true;
             $this->assertSame("The given data table name does not exist in this project [\"InvalidTableName\"].", $ex->getMessage());
@@ -261,5 +262,4 @@ class t03DataTableFactoryTest extends TestCase
         $this->assertTrue($tbCidade->hasField("Estado"));
         $this->assertFalse($tbCidade->hasField("invalidFieldName"));
     }
-
 }

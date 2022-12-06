@@ -1,8 +1,8 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 namespace AeonDigital\ORM\Traits;
-
 
 
 
@@ -36,17 +36,25 @@ trait DataColumnCommomMethods
      * ``removeFormat`` quanto ``format`` fazem o mesmo efeito. Com isso, os valores serão
      * SEMPRE armazenados em seu formato transformado.
      *
-     * @return      array
+     * @return array
      */
-    private function inputFormat_UPPER() : array
+    private function inputFormat_UPPER(): array
     {
         return [
             "name"          => "UPPER",
             "length"        => null,
-            "check"         => function($v) { return true; },
-            "removeFormat"  => function($v) { return \strtoupper($v); },
-            "format"        => function($v) { return \strtoupper($v); },
-            "storageFormat" => function($v) { return \strtoupper($v); }
+            "check"         => function ($v) {
+                return true;
+            },
+            "removeFormat"  => function ($v) {
+                return \strtoupper($v);
+            },
+            "format"        => function ($v) {
+                return \strtoupper($v);
+            },
+            "storageFormat" => function ($v) {
+                return \strtoupper($v);
+            }
         ];
     }
 
@@ -60,17 +68,25 @@ trait DataColumnCommomMethods
      * ``removeFormat`` quanto ``format`` fazem o mesmo efeito. Com isso, os valores serão
      * SEMPRE armazenados em seu formato transformado.
      *
-     * @return      array
+     * @return array
      */
-    private function inputFormat_LOWER() : array
+    private function inputFormat_LOWER(): array
     {
         return [
             "name"          => "LOWER",
             "length"        => null,
-            "check"         => function($v) { return true; },
-            "removeFormat"  => function($v) { return \strtolower($v); },
-            "format"        => function($v) { return \strtolower($v); },
-            "storageFormat" => function($v) { return \strtolower($v); }
+            "check"         => function ($v) {
+                return true;
+            },
+            "removeFormat"  => function ($v) {
+                return \strtolower($v);
+            },
+            "format"        => function ($v) {
+                return \strtolower($v);
+            },
+            "storageFormat" => function ($v) {
+                return \strtolower($v);
+            }
         ];
     }
 
@@ -90,17 +106,25 @@ trait DataColumnCommomMethods
      * ``removeFormat`` quanto ``format`` fazem o mesmo efeito. Com isso, os valores serão
      * SEMPRE armazenados em seu formato transformado.
      *
-     * @return      array
+     * @return array
      */
-    private function inputFormat_NAMES_PTBR() : array
+    private function inputFormat_NAMES_PTBR(): array
     {
         return [
             "name"          => "NAMES_PTBR",
             "length"        => null,
-            "check"         => function($v) { return true; },
-            "removeFormat"  => function($v) { return \mb_str_uc_names_ptbr($v); },
-            "format"        => function($v) { return \mb_str_uc_names_ptbr($v); },
-            "storageFormat" => function($v) { return \mb_str_uc_names_ptbr($v); }
+            "check"         => function ($v) {
+                return true;
+            },
+            "removeFormat"  => function ($v) {
+                return \mb_str_uc_names_ptbr($v);
+            },
+            "format"        => function ($v) {
+                return \mb_str_uc_names_ptbr($v);
+            },
+            "storageFormat" => function ($v) {
+                return \mb_str_uc_names_ptbr($v);
+            }
         ];
     }
 
@@ -116,17 +140,25 @@ trait DataColumnCommomMethods
      * ``removeFormat`` quanto ``format`` fazem o mesmo efeito. Com isso, os valores serão
      * SEMPRE armazenados em seu formato transformado.
      *
-     * @return      array
+     * @return array
      */
-    private function inputFormat_NUMERIC_STR() : array
+    private function inputFormat_NUMERIC_STR(): array
     {
         return [
             "name"          => "NUMERIC_STR",
             "length"        => null,
-            "check"         => function($v) { return \is_string($v); },
-            "removeFormat"  => function($v) { return \mb_str_preserve_chars($v, "0123456789"); },
-            "format"        => function($v) { return \mb_str_preserve_chars($v, "0123456789"); },
-            "storageFormat" => function($v) { return \mb_str_preserve_chars($v, "0123456789"); },
+            "check"         => function ($v) {
+                return \is_string($v);
+            },
+            "removeFormat"  => function ($v) {
+                return \mb_str_preserve_chars($v, "0123456789");
+            },
+            "format"        => function ($v) {
+                return \mb_str_preserve_chars($v, "0123456789");
+            },
+            "storageFormat" => function ($v) {
+                return \mb_str_preserve_chars($v, "0123456789");
+            },
         ];
     }
 
@@ -139,10 +171,10 @@ trait DataColumnCommomMethods
      *
      * Os tipos especiais são ``UPPER``, ``LOWER``, ``NAMES`` e ``NUMERIC_STR``.
      *
-     * @param       mixed $inputFormat
-     *              Regra ``inputFormat`` que será utilizado.
+     * @param mixed $inputFormat
+     * Regra ``inputFormat`` que será utilizado.
      *
-     * @return      mixed
+     * @return mixed
      */
     private function selectInputFormat($inputFormat)
     {
@@ -169,5 +201,4 @@ trait DataColumnCommomMethods
         }
         return $inputFormat;
     }
-
 }

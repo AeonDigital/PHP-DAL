@@ -1,5 +1,6 @@
 <?php
-declare (strict_types = 1);
+
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
@@ -8,7 +9,6 @@ use AeonDigital\ORM\DataTable as DataTable;
 use AeonDigital\DAL\DAL as DAL;
 
 require_once __DIR__ . "/../../phpunit.php";
-
 
 
 
@@ -41,7 +41,8 @@ class t05DataTableFactoryFKTest extends TestCase
                 $con["dbHost"],
                 $con["dbName"],
                 $con["dbUserName"],
-                $con["dbUserPassword"]);
+                $con["dbUserPassword"]
+            );
         }
         return $this->useConnection;
     }

@@ -1,12 +1,12 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 namespace AeonDigital\ORM;
 
 use AeonDigital\Interfaces\ORM\iDataTableFactory as iDataTableFactory;
 use AeonDigital\Interfaces\ORM\iColumnFK as iColumnFK;
 use AeonDigital\DataModel\Abstracts\aFieldModel as aFieldModel;
-
 
 
 
@@ -33,10 +33,10 @@ class DataColumnFK extends aFieldModel implements iColumnFK
     /**
      * Inicia um novo campo de dados.
      *
-     * @param       array $config
-     *              Array associativo com as configurações para este campo.
+     * @param array $config
+     * Array associativo com as configurações para este campo.
      *
-     * ``` php
+     * ```php
      *      $arr = [
      *          string          "name"
      *          Nome do campo.
@@ -80,11 +80,11 @@ class DataColumnFK extends aFieldModel implements iColumnFK
      *      ];
      * ```
      *
-     * @param       iDataTableFactory $factory
-     *              Instância de uma fábrica de tabelas de dados.
+     * @param iDataTableFactory $factory
+     * Instância de uma fábrica de tabelas de dados.
      *
-     * @throws      \InvalidArgumentException
-     *              Caso algum valor passado não seja válido.
+     * @throws \InvalidArgumentException
+     * Caso algum valor passado não seja válido.
      */
     function __construct(array $config, iDataTableFactory $factory)
     {
@@ -113,12 +113,12 @@ class DataColumnFK extends aFieldModel implements iColumnFK
         ];
 
         if ($fkOnUpdate !== null && \in_array($fkOnUpdate, $validOptions) === false) {
-            $msg = "Invalid \"ON UPDATE\" definition [\"".$fkOnUpdate."\"].";
+            $msg = "Invalid \"ON UPDATE\" definition [\"" . $fkOnUpdate . "\"].";
             throw new \InvalidArgumentException($msg);
         }
 
         if ($fkOnDelete !== null && \in_array($fkOnDelete, $validOptions) === false) {
-            $msg = "Invalid \"ON DELETE\" definition [\"".$fkOnDelete."\"].";
+            $msg = "Invalid \"ON DELETE\" definition [\"" . $fkOnDelete . "\"].";
             throw new \InvalidArgumentException($msg);
         }
 

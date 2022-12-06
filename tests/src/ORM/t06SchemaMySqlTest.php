@@ -1,5 +1,6 @@
 <?php
-declare (strict_types = 1);
+
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
@@ -8,7 +9,6 @@ use AeonDigital\DAL\DAL as DAL;
 use AeonDigital\ORM\Schema as Schema;
 
 require_once __DIR__ . "/../../phpunit.php";
-
 
 
 
@@ -41,7 +41,8 @@ class t06SchemaMySqlTest extends TestCase
                 $con["dbHost"],
                 $con["dbName"],
                 $con["dbUserName"],
-                $con["dbUserPassword"]);
+                $con["dbUserPassword"]
+            );
         }
         return $this->useConnection;
     }
@@ -251,10 +252,12 @@ class t06SchemaMySqlTest extends TestCase
         }
 
 
-        $columnNames = ["Apresentacao", "Ativo", "DataDeDefinicaoDeSenha", "DataDeRegistro",
-                        "EmailContato", "Genero", "Id", "Locale", "Login", "Nome", "Senha",
-                        "SessaoDeAcesso_Id", "ShortLogin", "ValorInteiro", "ValorFloat",
-                        "ValorReal"];
+        $columnNames = [
+            "Apresentacao", "Ativo", "DataDeDefinicaoDeSenha", "DataDeRegistro",
+            "EmailContato", "Genero", "Id", "Locale", "Login", "Nome", "Senha",
+            "SessaoDeAcesso_Id", "ShortLogin", "ValorInteiro", "ValorFloat",
+            "ValorReal"
+        ];
 
 
         $listColumns = $obj->listTableColumns("UsuarioDoDominio");
@@ -269,7 +272,7 @@ class t06SchemaMySqlTest extends TestCase
             $this->assertTrue(array_key_exists("columnDataType", $row));
             $this->assertTrue(array_key_exists("columnAllowNull", $row));
             $this->assertTrue(array_key_exists("columnDefaultValue", $row));
-            $this->assertTrue(array_in_ci($row["columnName"], $columnNames));
+            $this->assertTrue(in_array_ci($row["columnName"], $columnNames));
         }
     }
 

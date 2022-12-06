@@ -1,14 +1,12 @@
 <?php
-declare (strict_types=1);
+
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
 use AeonDigital\DAL\DAL as DAL;
 
 require_once __DIR__ . "/../phpunit.php";
-
-
-
 
 
 
@@ -42,7 +40,8 @@ class DALTest extends TestCase
                 $con["dbHost"],
                 $con["dbName"],
                 $con["dbUserName"],
-                $con["dbUserPassword"]);
+                $con["dbUserPassword"]
+            );
         }
         return $this->useConnection;
     }
@@ -104,7 +103,8 @@ class DALTest extends TestCase
                 $con["dbHost"],
                 "invalidDataBase",
                 $con["dbUserName"],
-                $con["dbUserPassword"]);
+                $con["dbUserPassword"]
+            );
         } catch (\Exception $ex) {
             $fail = true;
             $this->assertSame("SQLSTATE[HY000] [1049] Unknown database 'invalidDataBase'", $ex->getMessage());
@@ -124,7 +124,8 @@ class DALTest extends TestCase
                 $con["dbHost"],
                 $con["dbName"],
                 $con["dbUserName"],
-                $con["dbUserPassword"]);
+                $con["dbUserPassword"]
+            );
         } catch (\Exception $ex) {
             $fail = true;
             $this->assertSame("Invalid value defined for \"dbType\". Expected [ mysql, mssqlserver, oracle, postgree ]. Given: [ invalidDbType ].", $ex->getMessage());
@@ -531,12 +532,12 @@ class DALTest extends TestCase
 
 
         $strSQL = "SELECT COUNT(id) as count FROM user;";
-        $dataTable = $obj->getDataTable($strSQL, $parans);
+        $dataTable = $obj->getDataTable($strSQL);
         $this->assertTrue($obj->isExecuted());
         $this->assertNull($obj->getLastError());
         $this->assertTrue(is_array($dataTable));
         $this->assertSame(1, count($dataTable));
-        $this->assertSame("0", $dataTable[0]["count"]);
+        $this->assertSame(0, $dataTable[0]["count"]);
 
 
 
@@ -579,11 +580,11 @@ class DALTest extends TestCase
         $this->assertFalse($obj->inTransaction());
 
         $strSQL = "SELECT COUNT(id) as count FROM user;";
-        $dataTable = $obj->getDataTable($strSQL, $parans);
+        $dataTable = $obj->getDataTable($strSQL);
         $this->assertTrue($obj->isExecuted());
         $this->assertNull($obj->getLastError());
         $this->assertTrue(is_array($dataTable));
         $this->assertSame(1, count($dataTable));
-        $this->assertSame("2", $dataTable[0]["count"]);
+        $this->assertSame(2, $dataTable[0]["count"]);
     }
 }

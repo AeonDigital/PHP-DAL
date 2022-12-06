@@ -1,5 +1,6 @@
 <?php
-declare (strict_types = 1);
+
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
@@ -8,7 +9,6 @@ use AeonDigital\DAL\DAL as DAL;
 use AeonDigital\ORM\Schema as Schema;
 
 require_once __DIR__ . "/../../phpunit.php";
-
 
 
 
@@ -41,14 +41,15 @@ class t07DataTableORMTest extends TestCase
                 $con["dbHost"],
                 $con["dbName"],
                 $con["dbUserName"],
-                $con["dbUserPassword"]);
+                $con["dbUserPassword"]
+            );
         }
         return $this->useConnection;
     }
 
 
 
-    private function provider_factory() : DataTableFactory
+    private function provider_factory(): DataTableFactory
     {
         $tgtPath = to_system_path(realpath(__DIR__) . "/datamodel/valid");
         $factory = new DataTableFactory($tgtPath, $this->provider_connection());
@@ -237,7 +238,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
-            "ValorReal"     => 10,  
+            "ValorReal"     => 10,
             "Sessao"        => [
                 "Login"             => "userlogin@email.com",
                 "Aplicacao"         => "Application",
@@ -422,7 +423,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
-            "ValorReal"     => 10,  
+            "ValorReal"     => 10,
             "Sessao"        => [
                 "Login"             => "userlogin@email.com",
                 "Aplicacao"         => "Application",
@@ -529,7 +530,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "userlogin",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
-            "ValorReal"     => 10,  
+            "ValorReal"     => 10,
             "Sessao"        => [
                 "Login"             => "userlogin@email.com",
                 "Aplicacao"         => "Application",
@@ -736,7 +737,7 @@ class t07DataTableORMTest extends TestCase
             "ShortLogin"    => "attachdetach",
             "Senha"         => "12345678",
             "EmailContato"  => "usercontato@email.com",
-            "ValorReal"     => 10,  
+            "ValorReal"     => 10,
             "Sessao"        => [
                 "Login"             => "attachdetach@email.com",
                 "Aplicacao"         => "Application",
@@ -824,7 +825,7 @@ class t07DataTableORMTest extends TestCase
     public function test_method_attatch_detach()
     {
         $obj = $this->provider_prepare_attachdetach_to_test();
-        
+
         // Gera uma nova sessão de acesso desvinculada de qualquer usuário
         $SessaoDeAcesso = $obj->createDataTable("SessaoDeAcesso");
         $newSession = [
@@ -857,7 +858,7 @@ class t07DataTableORMTest extends TestCase
         $this->assertTrue($r);
         $r = $SessaoDeAcesso->attachWith("UsuarioDoDominio", $SessaoDeAcesso->Id);
         $this->assertTrue($r);
-        
+
         // A partir do objeto dono,
         // Retoma para si o vínculo com o objeto filho em uma relação 1-1
         $Usuario = $obj->createDataTable("UsuarioDoDominio");
@@ -876,7 +877,7 @@ class t07DataTableORMTest extends TestCase
 
 
 
-        
+
         // A partir de um objeto dono,
         // Adiciona novos itens em sua coleção
         $Cidade = $obj->createDataTable("Cidade");
@@ -995,13 +996,10 @@ class t07DataTableORMTest extends TestCase
         $this->assertTrue($r);
         $this->assertSame([], $Usuario->GruposDeSeguranca());
 
-        // Não é possível excluir este regstro por que a tabela  
+        // Não é possível excluir este regstro por que a tabela
         // 'UsuarioDoDominio' exige referencia a um registro do tipo 'SessaoDeAcesso'
         $r = $Usuario->deleteSessao();
         $this->assertFalse($r);
         $this->assertSame(2, $Usuario->Sessao()->Id);
     }
-
-
-
 }
